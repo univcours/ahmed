@@ -34,11 +34,11 @@ const CONFIG = {
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@500;700;800&family=Rubik:wght@400;500;700&display=swap');
   :root{
-    --bg:#F6F1E7; --card:#FFFFFF; --ink:#14322E; --ink-2:#5F6F6A; --ink-3:#93A09B;
-    --green:#123F3A; --green-2:#0D4F44; --gold:#D9A21B; --gold-soft:#FBF3DC;
-    --line:#E8E0D0; --red:#B23A2A; --red-soft:#F9E7E3; --wa:#25D366; --ok:#1B7A4E;
-    --sh-sm:0 1px 3px rgba(20,50,46,.08); --sh-md:0 8px 24px rgba(20,50,46,.10);
-    --sh-lg:0 18px 50px rgba(20,50,46,.18);
+    --bg:#EAF6FA; --card:#FFFFFF; --ink:#0A2C3D; --ink-2:#4C6B7A; --ink-3:#8AA6B2;
+    --green:#0A3D5C; --green-2:#0B5E8A; --gold:#0FB5D6; --gold-soft:#DCF4FA;
+    --line:#D5E8F0; --red:#C2452F; --red-soft:#FBE7E1; --wa:#25D366; --ok:#0E8A6A;
+    --sh-sm:0 1px 3px rgba(10,61,92,.10); --sh-md:0 8px 24px rgba(10,61,92,.14);
+    --sh-lg:0 18px 50px rgba(10,61,92,.22);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
@@ -58,20 +58,26 @@ const CONFIG = {
   .top-actions{margin-inline-start:auto;display:flex;gap:6px;align-items:center;flex-shrink:0}
   .iconbtn{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:500;white-space:nowrap}
   .iconbtn:hover{background:rgba(255,255,255,.22)}
-  .langbtn{background:transparent;color:#F1E7CE;border:1.5px solid rgba(255,255,255,.35);border-radius:12px;padding:8px 10px;font-size:12px;font-weight:700}
+  .langbtn{background:transparent;color:#CFF3FB;border:1.5px solid rgba(255,255,255,.35);border-radius:12px;padding:8px 10px;font-size:12px;font-weight:700}
+  .btn.red{background:transparent;color:var(--red);border:1.5px solid var(--red)}
+  .btn.red:hover{background:var(--red-soft)}
   .cartbtn{position:relative;background:var(--gold);color:var(--ink);border:none;border-radius:12px;padding:9px 13px;font-size:13px;font-weight:700;white-space:nowrap}
   .badge{position:absolute;top:-7px;inset-inline-start:-7px;background:var(--red);color:#fff;font-size:11px;font-weight:700;
     min-width:19px;height:19px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid var(--green)}
 
   /* ---------- الهيرو ---------- */
-  .hero{background:var(--green);color:#fff;position:relative;overflow:hidden}
-  .hero::before{content:'';position:absolute;inset:0;opacity:.07;
-    background-image:radial-gradient(circle at 2px 2px,#fff 1.5px,transparent 0);background-size:26px 26px}
+  .hero{background:linear-gradient(165deg,#052235 0%,#0A3D5C 55%,#0C7CA0 100%);color:#fff;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;opacity:.10;
+    background-image:radial-gradient(circle at 3px 3px,#fff 2px,transparent 0);background-size:34px 34px;
+    animation:bubbles 18s linear infinite}
+  @keyframes bubbles{from{background-position:0 0}to{background-position:0 -680px}}
+  @media (prefers-reduced-motion:reduce){.hero::before{animation:none}}
+  .hero .wave{position:absolute;bottom:-1px;left:0;width:100%;height:60px;display:block}
   .hero-in{max-width:1140px;margin:0 auto;padding:32px 16px 84px;position:relative;text-align:center}
-  .hero .tag{display:inline-flex;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
-    border-radius:999px;padding:6px 14px;font-size:12px;color:#F1E7CE}
+  .hero .tag{display:inline-flex;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);
+    border-radius:999px;padding:6px 14px;font-size:12px;color:#CFF3FB}
   .hero h1{font-size:clamp(28px,6vw,52px);font-weight:800;margin:12px 0 6px;color:#fff}
-  .hero p{color:#C8D6D0;max-width:520px;margin:0 auto;font-size:15px}
+  .hero p{color:#BFE3EF;max-width:520px;margin:0 auto;font-size:15px}
   .gold-line{width:56px;height:4px;background:var(--gold);border-radius:2px;margin:16px auto 0}
 
   /* ---------- قسم الشيف ---------- */
@@ -257,6 +263,10 @@ const CONFIG = {
     logout:['خروج','Log out'], refresh:['🔄 تحديث الصور','🔄 Refresh'],
     save:['💾 حفظ','💾 Save'], saved:['💾 تم الحفظ','💾 Saved'], cancel:['إلغاء','Cancel'],
     hide:['إخفاء هذه الوجبة عن الزوار','Hide this dish from visitors'], hidden:['مخفية','Hidden'],
+    del:['🗑️ مسح من الصفحة (لن تظهر للزوار)','🗑️ Remove from page (hidden from visitors)'],
+    restore:['♻️ استرجاع الوجبة','♻️ Restore dish'],
+    deleted:['🗑️ مُسحت — لن تظهر للزوار','🗑️ Removed — hidden from visitors'],
+    restoredMsg:['♻️ رجعت تظهر للزوار','♻️ Visible to visitors again'],
     nameAr:['اسم الوجبة (عربي)','Dish name (Arabic)'], nameEn:['اسم الوجبة (إنجليزي)','Dish name (English)'],
     descAr:['الوصف (عربي)','Description (Arabic)'], descEn:['الوصف (إنجليزي)','Description (English)'],
     price:['السعر','Price'], category:['التصنيف (اختياري)','Category (optional)'],
@@ -548,7 +558,12 @@ const CONFIG = {
         <h1>${esc(restName)}</h1>
         <p>${t('heroSub')}</p>
         <div class="gold-line"></div>
-      </div></div>
+      </div>
+      <svg class="wave" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0,45 C180,75 360,5 620,32 C880,60 1100,8 1440,42 L1440,70 L0,70 Z" fill="#EAF6FA" opacity=".55"/>
+        <path d="M0,52 C240,78 520,18 780,40 C1040,62 1240,22 1440,50 L1440,70 L0,70 Z" fill="#EAF6FA"/>
+      </svg>
+      </div>
 
       <div class="chef"><div class="chef-card">
         ${chef ? `<img src="${esc(chef.url)}" alt="Chef" data-lb-chef="1">` : `<div style="width:100px;height:100px;border-radius:50%;border:4px solid var(--gold);background:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-size:40px;flex-shrink:0">👨‍🍳</div>`}
@@ -655,7 +670,10 @@ const CONFIG = {
         </div>
       </div>`
     : adminCard ? `
-      <button class="btn gold" data-edit="${esc(f.name)}" style="width:100%">✏️ ${S.lang==='ar'?'تعديل الوجبة':'Edit dish'}</button>`
+      <div style="display:flex;gap:8px">
+        <button class="btn gold" data-edit="${esc(f.name)}" style="flex:1">✏️ ${S.lang==='ar'?'تعديل':'Edit'}</button>
+        <button class="btn ${it.hidden?'ghost':'red'}" data-del="${esc(f.name)}" style="padding:12px 14px" title="${it.hidden?t('restore'):t('del')}">${it.hidden?'♻️':'🗑️'}</button>
+      </div>`
     : qty===0 ? `
       <button class="addbtn" data-add="${esc(f.name)}">${t('add')} <b>+</b></button>`
     : `
@@ -791,6 +809,13 @@ const CONFIG = {
     all('[data-dec]', b => b.onclick = () => { const k=b.dataset.dec; S.cart[k]--; if(S.cart[k]<=0) delete S.cart[k]; render(); });
     all('[data-edit]', b => b.onclick = () => { S.editing=b.dataset.edit; render(); });
     all('[data-cancel]', b => b.onclick = () => { S.editing=null; render(); });
+    all('[data-del]', b => b.onclick = async () => {
+      const k = b.dataset.del;
+      const it = S.data.items[k] || {};
+      S.data.items[k] = Object.assign({}, it, { hidden: !it.hidden });
+      toast(S.data.items[k].hidden ? t('deleted') : t('restoredMsg'));
+      await persist();
+    });
 
     /* تكبير الصور */
     all('[data-lb]', el => el.onclick = e => {
