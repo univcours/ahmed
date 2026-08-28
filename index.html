@@ -276,10 +276,13 @@ const CONFIG = {
     delivery:['🛵 معلومات التوصيل','🛵 Delivery details'],
     name:['الاسم الكامل *','Full name *'], phone:['رقم الهاتف *','Phone number *'],
     address:['عنوان التوصيل *','Delivery address *'], notes:['ملاحظات (اختياري)','Notes (optional)'],
+    persons:['عدد الأشخاص *','Number of persons *'],
+    personsPh:['مثال: 10 أشخاص','e.g. 10 persons'],
+    personsInfo:['يساعد الشيف على تحضير الكمية المناسبة','Helps the chef prepare the right quantity'],
     notesPh:['مثال: بدون بصل','e.g. no onions'],
     cod:['الدفع نقداً عند الاستلام — لا حاجة لبطاقة بنكية.','Cash on delivery — no bank card needed.'],
     waOrder:['أرسل الطلب عبر واتساب','Send order on WhatsApp'],
-    fillAll:['⚠️ املأ الاسم والهاتف والعنوان','⚠️ Please fill name, phone and address'],
+    fillAll:['⚠️ املأ الاسم والهاتف والعنوان وعدد الأشخاص','⚠️ Please fill name, phone, address and number of persons'],
     admin:['👤 المدير','👤 Admin'], adminLogin:['👤 دخول المدير','👤 Admin login'],
     pin:['الرمز السري','PIN code'], login:['دخول','Log in'], wrongPin:['الرمز غير صحيح','Wrong PIN'],
     noHashMsg:['لم تُضبط بصمة الرمز السري بعد. ولّد بصمة بالأسفل ثم الصقها في CONFIG.adminPinHash داخل الملف.','No PIN hash is set yet. Generate one below then paste it into CONFIG.adminPinHash inside the file.'],
@@ -577,6 +580,7 @@ const CONFIG = {
       '',
       `${t('customer')}:`,
       `👤 ${c.name}`, `📞 ${c.phone}`, `📍 ${c.address}`,
+      `👥 ${S.lang==='ar'?'عدد الأشخاص':'Persons'}: ${c.persons}`,
       c.notes ? `📝 ${c.notes}` : ''
     ].filter(Boolean).join('\n');
     window.open(waLink(nums[0], msg), '_blank');
@@ -844,6 +848,9 @@ const CONFIG = {
             <div class="field"><label>${t('name')}</label><input class="input" id="c-name" autocomplete="name"></div>
             <div class="field"><label>${t('phone')}</label><input class="input" id="c-phone" type="tel" inputmode="tel" dir="ltr" style="text-align:left" autocomplete="tel"></div>
             <div class="field"><label>${t('address')}</label><textarea class="input" id="c-addr" rows="2"></textarea></div>
+            <div class="field"><label>${t('persons')}</label>
+              <input class="input" id="c-persons" type="number" inputmode="numeric" min="1" placeholder="${t('personsPh')}">
+              <span style="font-size:12px;color:var(--ink-3)">👨‍🍳 ${t('personsInfo')}</span></div>
             <div class="field"><label>${t('notes')}</label><input class="input" id="c-notes" placeholder="${t('notesPh')}"></div>
           </div>
           <div class="cod">💵 <span>${t('cod')}</span></div>
@@ -962,8 +969,9 @@ const CONFIG = {
 
     if ($('wa-order')) $('wa-order').onclick = function(){
       const c = { name:$('c-name').value.trim(), phone:$('c-phone').value.trim(),
-                  address:$('c-addr').value.trim(), notes:$('c-notes').value.trim() };
-      if (!c.name || !c.phone || !c.address){ toast(t('fillAll')); return; }
+                  address:$('c-addr').value.trim(), persons:$('c-persons').value.trim(),
+                  notes:$('c-notes').value.trim() };
+      if (!c.name || !c.phone || !c.address || !c.persons){ toast(t('fillAll')); return; }
       sendWhatsApp(c);
     };
 
