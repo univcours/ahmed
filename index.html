@@ -642,7 +642,55 @@ const CONFIG = {
       </div></div>`;
   }
 
-  /* --- الصفحة الرئيسية (الزوار) --- */
+  /* ---------- قسم الفيديوات ---------- */
+  const VIDEOS = [
+    'https://raw.githubusercontent.com/univcours/ahmed/main/WhatsApp%20Video%202026-08-28%20at%2012.17.49%20%281%29.mp4',
+    'https://raw.githubusercontent.com/univcours/ahmed/main/WhatsApp%20Video%202026-08-28%20at%2012.17.49.mp4',
+  ];
+
+  function videosHTML(){
+    if (!VIDEOS.length) return '';
+    const label = S.lang==='ar' ? '🎬 من مطبخنا' : '🎬 From our kitchen';
+    const dots = VIDEOS.map((_,i) =>
+      `<button class="vdot ${i===0?'von':''}" data-vdot="${i}" aria-label="فيديو ${i+1}"></button>`).join('');
+    const vids = VIDEOS.map((src,i) =>
+      `<video class="${i===0?'vactive':''}" data-vi="${i}" src="${esc(src)}"
+        preload="metadata" playsinline controls muted loop
+        style="background:#000"></video>`).join('');
+    return `
+      <div class="videos">
+        <h2 class="videos-head">${label}</h2>
+        <div class="vslider" id="vslider">
+          ${vids}
+          <button class="vprev" id="vprev">&#8249;</button>
+          <button class="vnext" id="vnext">&#8250;</button>
+        </div>
+        <div class="vdots" id="vdots">${dots}</div>
+      </div>`;
+  }
+
+  function bindVideos(){
+    const slider = document.getElementById('vslider');
+    if (!slider) return;
+    const vels = Array.from(slider.querySelectorAll('video'));
+    const dots = Array.from(document.querySelectorAll('[data-vdot]'));
+    let cur = 0;
+    function go(idx){
+      vels[cur].pause();
+      vels[cur].classList.remove('vactive');
+      dots[cur].classList.remove('von');
+      cur = ((idx % VIDEOS.length) + VIDEOS.length) % VIDEOS.length;
+      vels[cur].classList.add('vactive');
+      dots[cur].classList.add('von');
+    }
+    const pp = document.getElementById('vprev');
+    const pn = document.getElementById('vnext');
+    if (pp) pp.onclick = () => go(cur - 1);
+    if (pn) pn.onclick = () => go(cur + 1);
+    dots.forEach(d => d.onclick = () => go(Number(d.dataset.vdot)));
+  }
+
+  /* --- الصفحة الرئيسية --- */
   function homeHTML(restName){
     const welcome = S.lang==='ar' ? CONFIG.welcomeAr : CONFIG.welcomeEn;
     const chef = S.chefImgs[0];
@@ -711,50 +759,6 @@ const CONFIG = {
   }
 
   /* --- لوحة التحكم (المدير) --- */
-  /* ---------- قسم الفيديوات ---------- */
-  const VIDEOS = [
-    'https://raw.githubusercontent.com/univcours/ahmed/main/WhatsApp%20Video%202026-08-28%20at%2012.17.49%20%281%29.mp4',
-    'https://raw.githubusercontent.com/univcours/ahmed/main/WhatsApp%20Video%202026-08-28%20at%2012.17.49.mp4',
-  ];
-
-  function videosHTML(){
-    if (!VIDEOS.length) return '';
-    const label = S.lang==='ar' ? '🎬 من مطبخنا' : '🎬 From our kitchen';
-    const dots = VIDEOS.map((_,i) => `<button class="vdot ${i===0?'von':''}" data-vdot="${i}" aria-label="فيديو ${i+1}"></button>`).join('');
-    const vids = VIDEOS.map((src,i) => `<video class="${i===0?'vactive':''}" data-vi="${i}" src="${esc(src)}" preload="metadata" playsinline controls muted loop></video>`).join('');
-    return `
-      <div class="videos">
-        <h2 class="videos-head">${label}</h2>
-        <div class="vslider" id="vslider">
-          ${vids}
-          <button class="vprev" id="vprev">&#8249;</button>
-          <button class="vnext" id="vnext">&#8250;</button>
-        </div>
-        <div class="vdots" id="vdots">${dots}</div>
-      </div>`;
-  }
-
-  function bindVideos(){
-    const slider = document.getElementById('vslider');
-    if (!slider) return;
-    const vids = slider.querySelectorAll('video');
-    const dots = document.querySelectorAll('[data-vdot]');
-    let cur = 0;
-
-    function go(idx){
-      vids[cur].pause(); vids[cur].classList.remove('vactive');
-      dots[cur].classList.remove('von');
-      cur = (idx + VIDEOS.length) % VIDEOS.length;
-      vids[cur].classList.add('vactive');
-      dots[cur].classList.add('von');
-    }
-
-    document.getElementById('vprev').onclick = () => go(cur - 1);
-    document.getElementById('vnext').onclick = () => go(cur + 1);
-    dots.forEach(d => d.onclick = () => go(Number(d.dataset.vdot)));
-  }
-
-  function adminHTML(){\n
     const all = S.files.length;
     const hiddenN = S.files.filter(f => itemOf(f).hidden).length;
     const pricedN = S.files.filter(f => iprice(f) > 0).length;
