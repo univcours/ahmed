@@ -47,11 +47,11 @@ const CONFIG = {
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@500;700;800&family=Rubik:wght@400;500;700&display=swap');
   :root{
-    --bg:#EAF6FA; --card:#FFFFFF; --ink:#0A2C3D; --ink-2:#4C6B7A; --ink-3:#8AA6B2;
-    --green:#0A3D5C; --green-2:#0B5E8A; --gold:#0FB5D6; --gold-soft:#DCF4FA;
-    --line:#D5E8F0; --red:#C2452F; --red-soft:#FBE7E1; --wa:#25D366; --ok:#0E8A6A;
-    --sh-sm:0 1px 3px rgba(10,61,92,.10); --sh-md:0 8px 24px rgba(10,61,92,.14);
-    --sh-lg:0 18px 50px rgba(10,61,92,.22);
+    --bg:#FAF6EF; --card:#FFFFFF; --ink:#221F1C; --ink-2:#6E675F; --ink-3:#A39A8F;
+    --green:#B3202C; --green-2:#8F1822; --gold:#E0A63C; --gold-soft:#FBF0DC;
+    --line:#EBE3D6; --red:#B3202C; --red-soft:#FBE7E4; --wa:#25D366; --ok:#1B7A4E;
+    --sh-sm:0 1px 3px rgba(35,25,15,.08); --sh-md:0 8px 24px rgba(35,25,15,.12);
+    --sh-lg:0 18px 50px rgba(35,25,15,.20);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
@@ -60,7 +60,7 @@ const CONFIG = {
   img{display:block} button{font-family:'Rubik',sans-serif;cursor:pointer}
 
   /* ---------- الشريط العلوي ---------- */
-  .topbar{position:sticky;top:0;z-index:30;background:var(--green);color:#fff;box-shadow:var(--sh-md)}
+  .topbar{position:sticky;top:0;z-index:30;background:#171310;color:#fff;box-shadow:var(--sh-md)}
   .topbar-in{max-width:1140px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;gap:8px}
   .homebtn{width:40px;height:40px;flex-shrink:0;border:none;border-radius:12px;background:rgba(255,255,255,.12);
     color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
@@ -71,15 +71,15 @@ const CONFIG = {
   .top-actions{margin-inline-start:auto;display:flex;gap:6px;align-items:center;flex-shrink:0}
   .iconbtn{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:500;white-space:nowrap}
   .iconbtn:hover{background:rgba(255,255,255,.22)}
-  .langbtn{background:transparent;color:#CFF3FB;border:1.5px solid rgba(255,255,255,.35);border-radius:12px;padding:8px 10px;font-size:12px;font-weight:700}
+  .langbtn{background:transparent;color:#F5DFAE;border:1.5px solid rgba(255,255,255,.35);border-radius:12px;padding:8px 10px;font-size:12px;font-weight:700}
   .btn.red{background:transparent;color:var(--red);border:1.5px solid var(--red)}
   .btn.red:hover{background:var(--red-soft)}
   .cartbtn{position:relative;background:var(--gold);color:var(--ink);border:none;border-radius:12px;padding:9px 13px;font-size:13px;font-weight:700;white-space:nowrap}
   .badge{position:absolute;top:-7px;inset-inline-start:-7px;background:var(--red);color:#fff;font-size:11px;font-weight:700;
-    min-width:19px;height:19px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid var(--green)}
+    min-width:19px;height:19px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid #171310}
 
   /* ---------- الهيرو ---------- */
-  .hero{background:linear-gradient(165deg,rgba(4,28,44,.93) 0%,rgba(8,50,76,.88) 55%,rgba(10,100,130,.80) 100%),
+  .hero{background:linear-gradient(165deg,rgba(16,9,5,.93) 0%,rgba(30,16,8,.87) 55%,rgba(78,38,14,.76) 100%),
     url('https://raw.githubusercontent.com/univcours/ahmed/main/WhatsApp%20Image%202026-08-28%20at%2012.17.47%20%281%29.jpeg') center 40%/cover no-repeat;
     color:#fff;position:relative;overflow:hidden}
   .hero::before{content:'';position:absolute;inset:0;opacity:.10;
@@ -90,10 +90,16 @@ const CONFIG = {
   .hero .wave{position:absolute;bottom:-1px;left:0;width:100%;height:60px;display:block}
   .hero-in{max-width:1140px;margin:0 auto;padding:32px 16px 84px;position:relative;text-align:center}
   .hero .tag{display:inline-flex;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);
-    border-radius:999px;padding:6px 14px;font-size:12px;color:#CFF3FB}
+    border-radius:999px;padding:6px 14px;font-size:12px;color:#F5DFAE}
   .hero h1{font-size:clamp(28px,6vw,52px);font-weight:800;margin:12px 0 6px;color:#fff}
-  .hero p{color:#BFE3EF;max-width:520px;margin:0 auto;font-size:15px}
+  .hero p{color:#EBDCC6;max-width:520px;margin:0 auto;font-size:15px}
   .gold-line{width:56px;height:4px;background:var(--gold);border-radius:2px;margin:16px auto 0}
+  .hero-cta{display:inline-block;margin-top:20px;background:var(--gold);color:#221F1C;
+    font-weight:700;font-family:'Alexandria',sans-serif;font-size:15px;padding:13px 36px;
+    border-radius:999px;text-decoration:none;box-shadow:0 6px 22px rgba(224,166,60,.45);
+    transition:transform .15s, box-shadow .15s}
+  .hero-cta:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(224,166,60,.55)}
+  .hero-cta:active{transform:scale(.97)}
 
   /* ---------- قسم الشيف ---------- */
   .chef{max-width:1140px;margin:-54px auto 0;padding:0 16px;position:relative;z-index:5}
@@ -234,7 +240,7 @@ const CONFIG = {
   /* شارة فيديو على البطاقة */
   .vid-badge{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     background:rgba(0,0,0,.32)}
-  .vid-play{width:58px;height:58px;border-radius:50%;background:rgba(15,181,214,.85);
+  .vid-play{width:58px;height:58px;border-radius:50%;background:rgba(179,32,44,.88);
     display:flex;align-items:center;justify-content:center;font-size:26px;
     box-shadow:0 4px 18px rgba(0,0,0,.4);transition:transform .2s}
   .dish:hover .vid-play{transform:scale(1.12)}
@@ -741,10 +747,11 @@ const CONFIG = {
         <h1>${esc(restName)}</h1>
         <p>${t('heroSub')}</p>
         <div class="gold-line"></div>
+        <a class="hero-cta" href="#menu-start">${S.lang==='ar'?'اطلب الآن 🍽️':'Order now 🍽️'}</a>
       </div>
       <svg class="wave" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0,45 C180,75 360,5 620,32 C880,60 1100,8 1440,42 L1440,70 L0,70 Z" fill="#EAF6FA" opacity=".55"/>
-        <path d="M0,52 C240,78 520,18 780,40 C1040,62 1240,22 1440,50 L1440,70 L0,70 Z" fill="#EAF6FA"/>
+        <path d="M0,45 C180,75 360,5 620,32 C880,60 1100,8 1440,42 L1440,70 L0,70 Z" fill="#FAF6EF" opacity=".55"/>
+        <path d="M0,52 C240,78 520,18 780,40 C1040,62 1240,22 1440,50 L1440,70 L0,70 Z" fill="#FAF6EF"/>
       </svg>
       </div>
 
@@ -757,7 +764,7 @@ const CONFIG = {
         </div>
       </div></div>
 
-      <div class="toolbar"><div class="toolbar-card">
+      <div class="toolbar" id="menu-start"><div class="toolbar-card">
         <div class="search"><span>🔍</span>
           <input id="search-in" placeholder="${t('search')}" value="${esc(S.q)}">
           ${query ? '<button class="xbtn" id="clear-q" style="width:30px;height:30px;font-size:13px">✕</button>' : ''}
