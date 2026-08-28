@@ -79,7 +79,9 @@ const CONFIG = {
     min-width:19px;height:19px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid var(--green)}
 
   /* ---------- الهيرو ---------- */
-  .hero{background:linear-gradient(165deg,#052235 0%,#0A3D5C 55%,#0C7CA0 100%);color:#fff;position:relative;overflow:hidden}
+  .hero{background:linear-gradient(165deg,rgba(4,28,44,.93) 0%,rgba(8,50,76,.88) 55%,rgba(10,100,130,.80) 100%),
+    url('https://raw.githubusercontent.com/univcours/ahmed/main/WhatsApp%20Image%202026-08-28%20at%2012.17.47%20%281%29.jpeg') center 40%/cover no-repeat;
+    color:#fff;position:relative;overflow:hidden}
   .hero::before{content:'';position:absolute;inset:0;opacity:.10;
     background-image:radial-gradient(circle at 3px 3px,#fff 2px,transparent 0);background-size:34px 34px;
     animation:bubbles 18s linear infinite}
@@ -274,6 +276,9 @@ const CONFIG = {
     {k:'أجواء المطبخ', en:'Behind the scenes'},
   ];
   const catLabel = k => !k ? '' : (S.lang==='ar' ? k : ((CATS.find(c=>c.k===k)||{}).en || k));
+  const CAT_ICONS = {'بسطيلة':'🥟','مأكولات بحرية':'🦞','لحوم ومشوي':'🥩','كسكس وسفة':'🍲',
+    'سلطات':'🥗','خضار':'🥦','مقبلات':'🧆','حلويات مغربية':'🍯','عصائر':'🧃','أجواء المطبخ':'👨‍🍳'};
+  const catIcon = k => CAT_ICONS[k] ? CAT_ICONS[k] + ' ' : '';
 
   /* ---------- نصوص الواجهة ---------- */
   const T = {
@@ -731,7 +736,7 @@ const CONFIG = {
         </div>
         <div class="cats">
           <button class="chip ${S.cat==='الكل'?'on':''}" data-cat="الكل">${t('all')}</button>
-          ${CATS.map(c => `<button class="chip ${S.cat===c.k?'on':''}" data-cat="${esc(c.k)}">${esc(catLabel(c.k))}</button>`).join('')}
+          ${CATS.map(c => `<button class="chip ${S.cat===c.k?'on':''}" data-cat="${esc(c.k)}">${catIcon(c.k)}${esc(catLabel(c.k))}</button>`).join('')}
         </div>
       </div></div>
 
