@@ -1,495 +1,462 @@
-import React, { useState, useEffect, useRef } from "react";
+<!-- صفحة قائمة الوجبات — HTML + JavaScript في ملف واحد -->
+<div id="app-root" dir="rtl"></div>
 
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rakkas&family=Rubik:wght@400;500;700&display=swap');
+  :root{
+    --paper:#F4EFE3; --card:#FFFDF7; --ink:#1E3A34; --ink-soft:#5C6F66;
+    --saffron:#DFA31F; --saffron-soft:#F3E3B8; --green:#14555A; --line:#E2D9C4;
+  }
+  *{box-sizing:border-box}
+  #app-root{font-family:'Rubik',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh}
+  .display{font-family:'Rakkas',serif;font-weight:400}
+  .arch{border-radius:170px 170px 18px 18px;overflow:hidden}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:180px 180px 20px 20px;
+    transition:transform .25s ease, box-shadow .25s ease;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(30,58,52,.12)}
+  .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);
+    padding:7px 18px;border-radius:999px;cursor:pointer;font-size:15px;font-family:'Rubik',sans-serif}
+  .chip.on{background:var(--green);color:#fff;border-color:var(--green)}
+  .btn{background:var(--green);color:#fff;border:none;border-radius:12px;padding:11px 20px;
+    font-family:'Rubik',sans-serif;font-size:15px;font-weight:500;cursor:pointer}
+  .btn:disabled{opacity:.5;cursor:default}
+  .btn.ghost{background:transparent;color:var(--green);border:1.5px solid var(--green)}
+  .btn.saffron{background:var(--saffron);color:var(--ink)}
+  .input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+    font-family:'Rubik',sans-serif;font-size:15px;background:#fff;color:var(--ink)}
+  .input:focus{outline:2px solid var(--saffron)}
+  .zellige{height:10px;background:repeating-linear-gradient(45deg,var(--green) 0 10px,
+    var(--saffron) 10px 20px,var(--card) 20px 30px,var(--green) 30px 40px)}
+  .fade{animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.card,.fade{transition:none;animation:none}}
+  .overlay{position:fixed;inset:0;background:rgba(30,58,52,.45);z-index:40;display:flex;
+    align-items:flex-end;justify-content:center}
+  .sheet{background:var(--card);width:100%;max-width:560px;max-height:88vh;overflow:auto;
+    border-radius:24px 24px 0 0;padding:24px}
+  @media(min-width:640px){.overlay{align-items:center}.sheet{border-radius:24px}}
+  .grid{max-width:1100px;margin:0 auto;padding:20px 20px 120px;display:grid;
+    gap:22px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  .bottombar{position:fixed;bottom:0;right:0;left:0;z-index:30;background:var(--card);
+    border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:10px;
+    align-items:center;justify-content:center;flex-wrap:wrap}
+  .alertbox{text-align:center;border-radius:12px;padding:10px 14px;margin:0 auto 10px;max-width:1060px}
+  .qtybtn{border:1px solid var(--line);background:var(--card);border-radius:999px;
+    width:34px;height:34px;cursor:pointer;font-size:18px}
+  .orderbox{border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+</style>
+
+<script>
 /* ============================================================
-   قائمة وجبات ذكية — تجلب الصور من GitHub، تصنّفها بالذكاء
-   الاصطناعي، وتتيح الطلب مع الدفع عند الاستلام.
+   قائمة وجبات ذكية — جافاسكريبت خالص، بدون أي إطار عمل
    ============================================================ */
+(function () {
+  const ROOT = document.getElementById('app-root');
+  const CATEGORIES = ["سلطات","أطباق رئيسية","ساندويتشات","بيتزا ومعجنات","فطور","حلويات","مشروبات","أخرى"];
+  const IMG_EXT = /\.(jpe?g|png|webp|gif)$/i;
 
-const CATEGORIES = [
-  "سلطات",
-  "أطباق رئيسية",
-  "ساندويتشات",
-  "بيتزا ومعجنات",
-  "فطور",
-  "حلويات",
-  "مشروبات",
-  "أخرى",
-];
+  /* ---------- الحالة العامة ---------- */
+  const S = {
+    phase: 'loading',        // loading | setup | shop
+    cfg: null,               // {owner,repo,branch,path,name,pin}
+    menu: {},                // filename -> {name,category,description,price,hidden}
+    files: [],               // [{name,url}]
+    error: '',
+    classifying: null,       // {done,total}
+    cat: 'الكل',
+    cart: {},                // filename -> qty
+    admin: false,
+    editing: null,           // filename قيد التعديل
+    modal: null,             // 'cart' | 'login' | 'orders' | {type:'done',order}
+    orders: null,
+    busy: false,
+  };
 
-const IMG_EXT = /\.(jpe?g|png|webp|gif)$/i;
+  /* ---------- التخزين ---------- */
+  async function sGet(key){ try{ const r = await window.storage.get(key, true); return r ? JSON.parse(r.value) : null; }catch(e){ return null; } }
+  async function sSet(key, val){ try{ await window.storage.set(key, JSON.stringify(val), true); }catch(e){ console.error(e); } }
 
-/* ---------- تنسيقات عامة ---------- */
-const GlobalStyle = () => (
-  <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Rakkas&family=Rubik:wght@400;500;700&display=swap');
-    :root{
-      --paper:#F4EFE3; --card:#FFFDF7; --ink:#1E3A34; --ink-soft:#5C6F66;
-      --saffron:#DFA31F; --saffron-soft:#F3E3B8; --green:#14555A; --line:#E2D9C4;
-    }
-    *{box-sizing:border-box}
-    body{margin:0}
-    .app{font-family:'Rubik',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh}
-    .display{font-family:'Rakkas',serif;font-weight:400}
-    .arch{border-radius:170px 170px 18px 18px;overflow:hidden}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:180px 180px 20px 20px;
-      transition:transform .25s ease, box-shadow .25s ease}
-    .card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(30,58,52,.12)}
-    .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);
-      padding:7px 18px;border-radius:999px;cursor:pointer;font-size:15px;font-family:'Rubik',sans-serif}
-    .chip.on{background:var(--green);color:#fff;border-color:var(--green)}
-    .btn{background:var(--green);color:#fff;border:none;border-radius:12px;padding:11px 20px;
-      font-family:'Rubik',sans-serif;font-size:15px;font-weight:500;cursor:pointer}
-    .btn:disabled{opacity:.5;cursor:default}
-    .btn.ghost{background:transparent;color:var(--green);border:1.5px solid var(--green)}
-    .btn.saffron{background:var(--saffron);color:var(--ink)}
-    .input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
-      font-family:'Rubik',sans-serif;font-size:15px;background:#fff;color:var(--ink)}
-    .input:focus{outline:2px solid var(--saffron)}
-    .zellige{height:10px;background:repeating-linear-gradient(45deg,var(--green) 0 10px,
-      var(--saffron) 10px 20px,var(--card) 20px 30px,var(--green) 30px 40px)}
-    .fade{animation:fade .4s ease}
-    @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-    @media (prefers-reduced-motion:reduce){.card,.fade{transition:none;animation:none}}
-    .overlay{position:fixed;inset:0;background:rgba(30,58,52,.45);z-index:40;display:flex;
-      align-items:flex-end;justify-content:center}
-    .sheet{background:var(--card);width:100%;max-width:560px;max-height:88vh;overflow:auto;
-      border-radius:24px 24px 0 0;padding:24px}
-    @media(min-width:640px){.overlay{align-items:center}.sheet{border-radius:24px}}
-  `}</style>
-);
+  /* ---------- أدوات ---------- */
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-/* ---------- أدوات مساعدة ---------- */
-async function sGet(key, shared = true) {
-  try { const r = await window.storage.get(key, shared); return r ? JSON.parse(r.value) : null; }
-  catch { return null; }
-}
-async function sSet(key, val, shared = true) {
-  try { await window.storage.set(key, JSON.stringify(val), shared); } catch (e) { console.error(e); }
-}
+  function parseRepoUrl(url){
+    try{
+      let u = url.trim().replace(/^https?:\/\/(www\.)?github\.com\//,'').replace(/\/+$/,'');
+      const p = u.split('/');
+      if (p.length < 2) return null;
+      const owner = p[0], repo = p[1];
+      let branch = 'main', path = '';
+      if (p[2] === 'tree' && p.length > 3){ branch = p[3]; path = p.slice(4).join('/'); }
+      else if (p.length > 2){ path = p.slice(2).join('/'); }
+      return { owner, repo, branch, path };
+    }catch(e){ return null; }
+  }
 
-function parseRepoUrl(url) {
-  // يقبل: https://github.com/owner/repo/tree/branch/path/to/folder أو owner/repo/path
-  try {
-    let u = url.trim().replace(/^https?:\/\/(www\.)?github\.com\//, "").replace(/\/+$/, "");
-    const parts = u.split("/");
-    if (parts.length < 2) return null;
-    const owner = parts[0], repo = parts[1];
-    let branch = "main", path = "";
-    if (parts[2] === "tree" && parts.length > 3) { branch = parts[3]; path = parts.slice(4).join("/"); }
-    else if (parts.length > 2) { path = parts.slice(2).join("/"); }
-    return { owner, repo, branch, path };
-  } catch { return null; }
-}
+  async function listImages(cfg){
+    const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(res.status === 404
+      ? 'المجلد غير موجود — تأكد من الرابط ومن أن المستودع عام (public)'
+      : 'تعذر الوصول إلى GitHub (رمز ' + res.status + ')');
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error('الرابط لا يشير إلى مجلد');
+    return data.filter(f => f.type === 'file' && IMG_EXT.test(f.name))
+               .map(f => ({ name: f.name, url: f.download_url }));
+  }
 
-async function listImages(cfg) {
-  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(res.status === 404 ? "المجلد غير موجود — تأكد من الرابط ومن أن المستودع عام (public)" : "تعذر الوصول إلى GitHub (رمز " + res.status + ")");
-  const data = await res.json();
-  if (!Array.isArray(data)) throw new Error("الرابط لا يشير إلى مجلد");
-  return data.filter((f) => f.type === "file" && IMG_EXT.test(f.name))
-    .map((f) => ({ name: f.name, url: f.download_url }));
-}
+  async function imageToSmallBase64(url){
+    const blob = await (await fetch(url)).blob();
+    const bmp = await createImageBitmap(blob);
+    const max = 700, scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    const cv = document.createElement('canvas');
+    cv.width = Math.round(bmp.width * scale);
+    cv.height = Math.round(bmp.height * scale);
+    cv.getContext('2d').drawImage(bmp, 0, 0, cv.width, cv.height);
+    return cv.toDataURL('image/jpeg', 0.8).split(',')[1];
+  }
 
-async function imageToSmallBase64(url) {
-  const blob = await (await fetch(url)).blob();
-  const bitmap = await createImageBitmap(blob);
-  const max = 700;
-  const scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.round(bitmap.width * scale);
-  canvas.height = Math.round(bitmap.height * scale);
-  canvas.getContext("2d").drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  return canvas.toDataURL("image/jpeg", 0.8).split(",")[1];
-}
-
-async function classifyImage(url) {
-  const b64 = await imageToSmallBase64(url);
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1000,
-      messages: [{
-        role: "user",
-        content: [
-          { type: "image", source: { type: "base64", media_type: "image/jpeg", data: b64 } },
-          { type: "text", text:
+  async function classifyImage(url){
+    const b64 = await imageToSmallBase64(url);
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: b64 } },
+            { type: 'text', text:
 `هذه صورة وجبة تُباع في مطعم. أجب فقط بكائن JSON دون أي نص آخر ودون علامات Markdown:
-{"name":"اسم قصير شهي للوجبة بالعربية","category":"واحدة فقط من: ${CATEGORIES.join("، ")}","description":"وصف شهي بالعربية من جملة إلى جملتين","price":سعر مقترح كرقم بالدرهم}` },
-        ],
-      }],
-    }),
-  });
-  const data = await res.json();
-  const text = (data.content || []).filter((c) => c.type === "text").map((c) => c.text).join("\n");
-  const clean = text.replace(/```json|```/g, "").trim();
-  const obj = JSON.parse(clean);
-  if (!CATEGORIES.includes(obj.category)) obj.category = "أخرى";
-  return obj;
-}
+{"name":"اسم قصير شهي للوجبة بالعربية","category":"واحدة فقط من: ${CATEGORIES.join('، ')}","description":"وصف شهي بالعربية من جملة إلى جملتين","price":سعر مقترح كرقم بالدرهم}` }
+          ]
+        }]
+      })
+    });
+    const data = await res.json();
+    const text = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('\n');
+    const obj = JSON.parse(text.replace(/```json|```/g, '').trim());
+    if (!CATEGORIES.includes(obj.category)) obj.category = 'أخرى';
+    return obj;
+  }
 
-/* ============================================================ */
-export default function App() {
-  const [phase, setPhase] = useState("loading"); // loading | setup | shop
-  const [cfg, setCfg] = useState(null);
-  const [menu, setMenu] = useState({});
-  const [files, setFiles] = useState([]);
-  const [error, setError] = useState("");
-  const [classifying, setClassifying] = useState(null); // {done,total}
-  const [cat, setCat] = useState("الكل");
-  const [cart, setCart] = useState({});
-  const [showCart, setShowCart] = useState(false);
-  const [admin, setAdmin] = useState(false);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
-  const [showOrders, setShowOrders] = useState(false);
-  const [orderDone, setOrderDone] = useState(null);
-  const menuRef = useRef(menu);
-  menuRef.current = menu;
+  /* ---------- منطق التطبيق ---------- */
+  async function boot(){
+    const c = await sGet('config');
+    if (!c){ S.phase = 'setup'; render(); return; }
+    S.cfg = c;
+    S.menu = (await sGet('menu')) || {};
+    S.phase = 'shop';
+    render();
+    refresh();
+  }
 
-  /* --- تحميل أولي --- */
-  useEffect(() => { (async () => {
-    const c = await sGet("config");
-    if (!c) { setPhase("setup"); return; }
-    setCfg(c);
-    const m = (await sGet("menu")) || {};
-    setMenu(m);
-    setPhase("shop");
-    refresh(c, m);
-  })(); }, []);
-
-  /* --- جلب الصور + تصنيف الجديد --- */
-  async function refresh(c = cfg, m = menuRef.current) {
-    setError("");
+  async function refresh(){
+    S.error = '';
+    render();
     let imgs;
-    try { imgs = await listImages(c); } catch (e) { setError(e.message); return; }
-    setFiles(imgs);
-    const fresh = imgs.filter((f) => !m[f.name]);
+    try{ imgs = await listImages(S.cfg); }
+    catch(e){ S.error = e.message; render(); return; }
+    S.files = imgs;
+    const fresh = imgs.filter(f => !S.menu[f.name]);
+    render();
     if (fresh.length === 0) return;
-    setClassifying({ done: 0, total: fresh.length });
-    let updated = { ...m };
-    for (let i = 0; i < fresh.length; i++) {
-      try {
+    S.classifying = { done: 0, total: fresh.length };
+    render();
+    for (let i = 0; i < fresh.length; i++){
+      try{
         const info = await classifyImage(fresh[i].url);
-        updated = { ...updated, [fresh[i].name]: { ...info, hidden: false } };
-      } catch {
-        updated = { ...updated, [fresh[i].name]: { name: fresh[i].name.replace(IMG_EXT, ""), category: "أخرى", description: "", price: 0, hidden: false } };
+        S.menu[fresh[i].name] = Object.assign({ hidden: false }, info);
+      }catch(e){
+        S.menu[fresh[i].name] = { name: fresh[i].name.replace(IMG_EXT, ''), category: 'أخرى', description: '', price: 0, hidden: false };
       }
-      setMenu(updated);
-      await sSet("menu", updated);
-      setClassifying({ done: i + 1, total: fresh.length });
+      await sSet('menu', S.menu);
+      S.classifying = { done: i + 1, total: fresh.length };
+      render();
     }
-    setClassifying(null);
+    S.classifying = null;
+    render();
   }
 
-  /* --- السلة --- */
-  const cartCount = Object.values(cart).reduce((a, b) => a + b, 0);
-  const cartTotal = Object.entries(cart).reduce((a, [k, q]) => a + (menu[k]?.price || 0) * q, 0);
-  const addToCart = (k) => setCart((c) => ({ ...c, [k]: (c[k] || 0) + 1 }));
-  const setQty = (k, q) => setCart((c) => { const n = { ...c }; if (q <= 0) delete n[k]; else n[k] = q; return n; });
+  function cartCount(){ return Object.values(S.cart).reduce((a,b)=>a+b,0); }
+  function cartTotal(){ return Object.entries(S.cart).reduce((a,[k,q])=>a+(S.menu[k]?.price||0)*q,0); }
 
-  async function placeOrder(customer) {
-    const items = Object.entries(cart).map(([k, q]) => ({ file: k, name: menu[k]?.name || k, qty: q, price: menu[k]?.price || 0 }));
-    const order = { id: "O" + Date.now(), items, total: cartTotal, customer, time: new Date().toLocaleString("ar-MA"), status: "جديد" };
-    const orders = (await sGet("orders")) || [];
-    await sSet("orders", [order, ...orders]);
-    setCart({}); setShowCart(false); setOrderDone(order);
+  async function placeOrder(customer){
+    const items = Object.entries(S.cart).map(([k,q]) => ({ file:k, name:S.menu[k]?.name||k, qty:q, price:S.menu[k]?.price||0 }));
+    const order = { id:'O'+Date.now(), items, total:cartTotal(), customer, time:new Date().toLocaleString('ar-MA'), status:'جديد' };
+    const orders = (await sGet('orders')) || [];
+    await sSet('orders', [order, ...orders]);
+    S.cart = {}; S.modal = { type:'done', order };
+    render();
   }
 
-  /* --- عرض --- */
-  if (phase === "loading") return <div className="app" dir="rtl"><GlobalStyle /><Center>جارٍ التحميل…</Center></div>;
-  if (phase === "setup") return <Setup onDone={async (c) => { await sSet("config", c); setCfg(c); setPhase("shop"); refresh(c, {}); }} />;
+  /* ---------- العرض ---------- */
+  function render(){
+    if (S.phase === 'loading'){ ROOT.innerHTML = '<div class="zellige"></div><p style="text-align:center;padding:80px;color:var(--ink-soft)">جارٍ التحميل…</p>'; return; }
+    if (S.phase === 'setup'){ renderSetup(); return; }
+    renderShop();
+  }
 
-  const visible = files
-    .filter((f) => menu[f.name] && (admin || !menu[f.name].hidden))
-    .filter((f) => cat === "الكل" || menu[f.name].category === cat);
-  const usedCats = ["الكل", ...CATEGORIES.filter((c) => files.some((f) => menu[f.name]?.category === c && (admin || !menu[f.name].hidden)))];
+  function renderSetup(){
+    ROOT.innerHTML = `
+      <div class="zellige"></div>
+      <div style="max-width:520px;margin:0 auto;padding:48px 20px">
+        <h1 class="display" style="font-size:46px;margin-bottom:4px">إعداد صفحة الوجبات</h1>
+        <p style="color:var(--ink-soft)">الصق رابط مجلد الصور في GitHub (مستودع عام). كل صورة تضيفها لاحقاً إلى المجلد ستظهر تلقائياً ويصنّفها الذكاء الاصطناعي.</p>
+        <div style="display:grid;gap:10px">
+          <input class="input" id="su-url" placeholder="مثال: https://github.com/user/repo/tree/main/meals">
+          <input class="input" id="su-name" placeholder="اسم المطعم / المطبخ">
+          <input class="input" id="su-pin" type="password" placeholder="رمز سري للمدير (لتعديل الأوصاف والاطلاع على الطلبات)">
+          <p id="su-err" style="color:#8C2F1B;margin:0"></p>
+          <button class="btn" id="su-go">ابدأ 🚀</button>
+        </div>
+      </div>`;
+    document.getElementById('su-go').onclick = async function(){
+      const errEl = document.getElementById('su-err');
+      const p = parseRepoUrl(document.getElementById('su-url').value);
+      const name = document.getElementById('su-name').value.trim();
+      const pin = document.getElementById('su-pin').value.trim();
+      if (!p){ errEl.textContent = 'الرابط غير صالح'; return; }
+      if (!pin){ errEl.textContent = 'اختر رمزاً سرياً للمدير'; return; }
+      this.disabled = true; this.textContent = 'جارٍ التحقق…'; errEl.textContent = '';
+      try{ await listImages(p); }
+      catch(e){
+        try{ p.branch = 'master'; await listImages(p); }
+        catch(e2){ errEl.textContent = e.message; this.disabled = false; this.textContent = 'ابدأ 🚀'; return; }
+      }
+      S.cfg = Object.assign({}, p, { name, pin });
+      await sSet('config', S.cfg);
+      S.phase = 'shop';
+      render();
+      refresh();
+    };
+  }
 
-  return (
-    <div className="app" dir="rtl">
-      <GlobalStyle />
-      <div className="zellige" />
+  function renderShop(){
+    const visible = S.files.filter(f => S.menu[f.name] && (S.admin || !S.menu[f.name].hidden))
+                           .filter(f => S.cat === 'الكل' || S.menu[f.name].category === S.cat);
+    const usedCats = ['الكل'].concat(CATEGORIES.filter(c =>
+      S.files.some(f => S.menu[f.name]?.category === c && (S.admin || !S.menu[f.name].hidden))));
 
-      {/* رأس الصفحة */}
-      <header style={{ maxWidth: 1100, margin: "0 auto", padding: "36px 20px 8px", textAlign: "center" }}>
-        <div style={{ color: "var(--saffron)", letterSpacing: 2, fontSize: 13, fontWeight: 700 }}>مطبخنا · توصيل · الدفع عند الاستلام</div>
-        <h1 className="display" style={{ fontSize: "clamp(44px,8vw,84px)", margin: "6px 0 4px", lineHeight: 1.1 }}>
-          {cfg.name || "قائمة وجباتنا"}
-        </h1>
-        <p style={{ color: "var(--ink-soft)", margin: "0 auto 18px", maxWidth: 520, fontSize: 16 }}>
-          اختر وجبتك، أرسل طلبك، ونوصله إلى بابك — تدفع عند الاستلام.
-        </p>
-        <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
-          {usedCats.map((c) => (
-            <button key={c} className={"chip" + (cat === c ? " on" : "")} onClick={() => setCat(c)}>{c}</button>
-          ))}
+    let html = `
+      <div class="zellige"></div>
+      <header style="max-width:1100px;margin:0 auto;padding:36px 20px 8px;text-align:center">
+        <div style="color:var(--saffron);letter-spacing:2px;font-size:13px;font-weight:700">مطبخنا · توصيل · الدفع عند الاستلام</div>
+        <h1 class="display" style="font-size:clamp(44px,8vw,84px);margin:6px 0 4px;line-height:1.1">${esc(S.cfg.name || 'قائمة وجباتنا')}</h1>
+        <p style="color:var(--ink-soft);margin:0 auto 18px;max-width:520px;font-size:16px">اختر وجبتك، أرسل طلبك، ونوصله إلى بابك — تدفع عند الاستلام.</p>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          ${usedCats.map(c => `<button class="chip ${S.cat===c?'on':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('')}
         </div>
       </header>
-
-      {/* حالة التصنيف / الأخطاء */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 20px" }}>
-        {classifying && (
-          <p style={{ textAlign: "center", color: "var(--green)", background: "var(--saffron-soft)", borderRadius: 12, padding: "10px 14px" }}>
-            🤖 الذكاء الاصطناعي يتعرّف على الوجبات الجديدة… {classifying.done}/{classifying.total}
-          </p>
-        )}
-        {error && (
-          <p style={{ textAlign: "center", color: "#8C2F1B", background: "#F7E2DC", borderRadius: 12, padding: "10px 14px" }}>
-            {error} — <button className="btn ghost" style={{ padding: "4px 12px" }} onClick={() => refresh()}>إعادة المحاولة</button>
-          </p>
-        )}
-        {!classifying && !error && files.length === 0 && (
-          <p style={{ textAlign: "center", color: "var(--ink-soft)", padding: 40 }}>
-            لا توجد صور في المجلد بعد. أضف صور وجباتك إلى مجلد GitHub ثم اضغط «تحديث».
-          </p>
-        )}
+      <div style="padding:0 20px">
+        ${S.classifying ? `<p class="alertbox" style="color:var(--green);background:var(--saffron-soft)">🤖 الذكاء الاصطناعي يتعرّف على الوجبات الجديدة… ${S.classifying.done}/${S.classifying.total}</p>` : ''}
+        ${S.error ? `<p class="alertbox" style="color:#8C2F1B;background:#F7E2DC">${esc(S.error)} — <button class="btn ghost" id="retry" style="padding:4px 12px">إعادة المحاولة</button></p>` : ''}
+        ${(!S.classifying && !S.error && S.files.length === 0) ? `<p style="text-align:center;color:var(--ink-soft);padding:40px">لا توجد صور في المجلد بعد. أضف صور وجباتك إلى مجلد GitHub ثم اضغط «تحديث».</p>` : ''}
       </div>
-
-      {/* شبكة الوجبات */}
-      <main style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 20px 120px", display: "grid",
-        gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 22 }}>
-        {visible.map((f) => (
-          <DishCard key={f.name} file={f} item={menu[f.name]} admin={admin}
-            onAdd={() => addToCart(f.name)}
-            onSave={async (updated) => { const m = { ...menuRef.current, [f.name]: updated }; setMenu(m); await sSet("menu", m); }}
-            onReclassify={async () => {
-              try { const info = await classifyImage(f.url);
-                const m = { ...menuRef.current, [f.name]: { ...info, hidden: menuRef.current[f.name]?.hidden || false } };
-                setMenu(m); await sSet("menu", m);
-              } catch { alert("تعذر التصنيف، حاول مجدداً"); }
-            }} />
-        ))}
-      </main>
-
-      {/* شريط سفلي */}
-      <div style={{ position: "fixed", bottom: 0, insetInlineStart: 0, insetInlineEnd: 0, zIndex: 30,
-        background: "var(--card)", borderTop: "1px solid var(--line)", padding: "10px 16px",
-        display: "flex", gap: 10, alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
-        <button className="btn saffron" onClick={() => setShowCart(true)} disabled={cartCount === 0}>
-          🧺 السلة ({cartCount}) — {cartTotal} درهم
-        </button>
-        <button className="btn ghost" onClick={() => refresh()}>تحديث الصور</button>
-        {!admin
-          ? <button className="btn ghost" onClick={() => setShowAdminLogin(true)}>دخول المدير</button>
-          : <>
-              <button className="btn" onClick={() => setShowOrders(true)}>الطلبات</button>
-              <button className="btn ghost" onClick={() => setAdmin(false)}>خروج المدير</button>
-            </>}
+      <main class="grid">${visible.map(f => cardHTML(f)).join('')}</main>
+      <div class="bottombar">
+        <button class="btn saffron" id="open-cart" ${cartCount()===0?'disabled':''}>🧺 السلة (${cartCount()}) — ${cartTotal()} درهم</button>
+        <button class="btn ghost" id="do-refresh">تحديث الصور</button>
+        ${!S.admin
+          ? `<button class="btn ghost" id="open-login">دخول المدير</button>`
+          : `<button class="btn" id="open-orders">الطلبات</button>
+             <button class="btn ghost" id="logout">خروج المدير</button>`}
       </div>
+      ${modalHTML()}`;
 
-      {/* نوافذ */}
-      {showCart && <CartSheet cart={cart} menu={menu} total={cartTotal} setQty={setQty}
-        onClose={() => setShowCart(false)} onOrder={placeOrder} />}
-      {showAdminLogin && <AdminLogin pin={cfg.pin} onClose={() => setShowAdminLogin(false)}
-        onOk={() => { setAdmin(true); setShowAdminLogin(false); }} />}
-      {showOrders && <OrdersSheet onClose={() => setShowOrders(false)} />}
-      {orderDone && (
-        <div className="overlay" onClick={() => setOrderDone(null)}>
-          <div className="sheet fade" onClick={(e) => e.stopPropagation()} style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 54 }}>🎉</div>
-            <h2 className="display" style={{ fontSize: 34, margin: "8px 0" }}>تم استلام طلبك</h2>
-            <p style={{ color: "var(--ink-soft)" }}>رقم الطلب: <b>{orderDone.id}</b><br />
-              المجموع: <b>{orderDone.total} درهم</b> — الدفع عند الاستلام.<br />سنتصل بك على هاتفك لتأكيد التوصيل.</p>
-            <button className="btn" onClick={() => setOrderDone(null)}>حسناً</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ---------- بطاقة وجبة ---------- */
-function DishCard({ file, item, admin, onAdd, onSave, onReclassify }) {
-  const [edit, setEdit] = useState(false);
-  const [d, setD] = useState(item);
-  useEffect(() => setD(item), [item]);
-
-  return (
-    <div className="card fade" style={{ display: "flex", flexDirection: "column", opacity: item.hidden ? 0.5 : 1 }}>
-      <div className="arch" style={{ margin: "10px 10px 0" }}>
-        <img src={file.url} alt={item.name} loading="lazy"
-          style={{ width: "100%", height: 210, objectFit: "cover", display: "block" }} />
-      </div>
-      <div style={{ padding: "12px 16px 16px", display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
-        {!edit ? (
-          <>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
-              <h3 className="display" style={{ margin: 0, fontSize: 24 }}>{item.name}</h3>
-              <span style={{ color: "var(--green)", fontWeight: 700, whiteSpace: "nowrap" }}>{item.price} د.م</span>
-            </div>
-            <span style={{ fontSize: 12, color: "var(--saffron)", fontWeight: 700 }}>{item.category}</span>
-            <p style={{ margin: 0, color: "var(--ink-soft)", fontSize: 14, flex: 1 }}>{item.description}</p>
-            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-              <button className="btn" style={{ flex: 1 }} onClick={onAdd}>أضف إلى السلة</button>
-              {admin && <button className="btn ghost" onClick={() => setEdit(true)}>تعديل</button>}
-            </div>
-          </>
-        ) : (
-          <>
-            <input className="input" value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} placeholder="اسم الوجبة" />
-            <select className="input" value={d.category} onChange={(e) => setD({ ...d, category: e.target.value })}>
-              {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-            </select>
-            <textarea className="input" rows={3} value={d.description} onChange={(e) => setD({ ...d, description: e.target.value })} placeholder="الوصف" />
-            <input className="input" type="number" value={d.price} onChange={(e) => setD({ ...d, price: Number(e.target.value) })} placeholder="السعر بالدرهم" />
-            <label style={{ fontSize: 14, display: "flex", gap: 6, alignItems: "center" }}>
-              <input type="checkbox" checked={d.hidden} onChange={(e) => setD({ ...d, hidden: e.target.checked })} />
-              إخفاء عن الزوار
-            </label>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button className="btn" style={{ flex: 1 }} onClick={() => { onSave(d); setEdit(false); }}>حفظ</button>
-              <button className="btn saffron" onClick={() => { onReclassify(); setEdit(false); }}>🤖 صنّف من جديد</button>
-              <button className="btn ghost" onClick={() => { setD(item); setEdit(false); }}>إلغاء</button>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* ---------- السلة والطلب ---------- */
-function CartSheet({ cart, menu, total, setQty, onClose, onOrder }) {
-  const [c, setC] = useState({ name: "", phone: "", address: "", notes: "" });
-  const [sending, setSending] = useState(false);
-  const ok = c.name.trim() && c.phone.trim() && c.address.trim() && Object.keys(cart).length > 0;
-  return (
-    <div className="overlay" onClick={onClose}>
-      <div className="sheet fade" onClick={(e) => e.stopPropagation()}>
-        <h2 className="display" style={{ marginTop: 0, fontSize: 32 }}>🧺 سلتك</h2>
-        {Object.entries(cart).map(([k, q]) => (
-          <div key={k} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: "1px solid var(--line)" }}>
-            <span style={{ flex: 1 }}>{menu[k]?.name || k}</span>
-            <span style={{ color: "var(--ink-soft)", fontSize: 14 }}>{menu[k]?.price || 0} د.م</span>
-            <button className="chip" onClick={() => setQty(k, q - 1)}>−</button>
-            <b>{q}</b>
-            <button className="chip" onClick={() => setQty(k, q + 1)}>+</button>
-          </div>
-        ))}
-        <p style={{ textAlign: "left", fontWeight: 700, fontSize: 18 }}>المجموع: {total} درهم</p>
-        <h3 style={{ marginBottom: 6 }}>معلومات التوصيل</h3>
-        <div style={{ display: "grid", gap: 8 }}>
-          <input className="input" placeholder="الاسم الكامل *" value={c.name} onChange={(e) => setC({ ...c, name: e.target.value })} />
-          <input className="input" placeholder="رقم الهاتف *" value={c.phone} onChange={(e) => setC({ ...c, phone: e.target.value })} />
-          <textarea className="input" rows={2} placeholder="عنوان التوصيل *" value={c.address} onChange={(e) => setC({ ...c, address: e.target.value })} />
-          <input className="input" placeholder="ملاحظات (اختياري)" value={c.notes} onChange={(e) => setC({ ...c, notes: e.target.value })} />
-        </div>
-        <p style={{ background: "var(--saffron-soft)", borderRadius: 10, padding: "8px 12px", fontSize: 14 }}>
-          💵 الدفع نقداً عند استلام الطلب.
-        </p>
-        <div style={{ display: "flex", gap: 10 }}>
-          <button className="btn" style={{ flex: 1 }} disabled={!ok || sending}
-            onClick={async () => { setSending(true); await onOrder(c); setSending(false); }}>
-            {sending ? "جارٍ الإرسال…" : "أكّد الطلب — الدفع عند الاستلام"}
-          </button>
-          <button className="btn ghost" onClick={onClose}>إغلاق</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ---------- دخول المدير ---------- */
-function AdminLogin({ pin, onOk, onClose }) {
-  const [v, setV] = useState(""); const [err, setErr] = useState(false);
-  return (
-    <div className="overlay" onClick={onClose}>
-      <div className="sheet fade" onClick={(e) => e.stopPropagation()}>
-        <h2 className="display" style={{ marginTop: 0, fontSize: 30 }}>دخول المدير</h2>
-        <input className="input" type="password" placeholder="الرمز السري" value={v}
-          onChange={(e) => { setV(e.target.value); setErr(false); }} />
-        {err && <p style={{ color: "#8C2F1B", fontSize: 14 }}>الرمز غير صحيح</p>}
-        <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
-          <button className="btn" style={{ flex: 1 }} onClick={() => (v === pin ? onOk() : setErr(true))}>دخول</button>
-          <button className="btn ghost" onClick={onClose}>إلغاء</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ---------- طلبات المدير ---------- */
-function OrdersSheet({ onClose }) {
-  const [orders, setOrders] = useState(null);
-  useEffect(() => { sGet("orders").then((o) => setOrders(o || [])); }, []);
-  async function setStatus(id, status) {
-    const next = orders.map((o) => (o.id === id ? { ...o, status } : o));
-    setOrders(next); await sSet("orders", next);
+    ROOT.innerHTML = html;
+    bindShop(visible);
   }
-  return (
-    <div className="overlay" onClick={onClose}>
-      <div className="sheet fade" onClick={(e) => e.stopPropagation()}>
-        <h2 className="display" style={{ marginTop: 0, fontSize: 30 }}>📦 الطلبات</h2>
-        {orders === null && <p>جارٍ التحميل…</p>}
-        {orders && orders.length === 0 && <p style={{ color: "var(--ink-soft)" }}>لا توجد طلبات بعد.</p>}
-        {orders && orders.map((o) => (
-          <div key={o.id} style={{ border: "1px solid var(--line)", borderRadius: 14, padding: 14, marginBottom: 12 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 6 }}>
-              <b>{o.id}</b>
-              <span style={{ fontSize: 13, color: "var(--ink-soft)" }}>{o.time}</span>
+
+  function cardHTML(f){
+    const it = S.menu[f.name];
+    const editing = S.editing === f.name;
+    const body = !editing ? `
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+        <h3 class="display" style="margin:0;font-size:24px">${esc(it.name)}</h3>
+        <span style="color:var(--green);font-weight:700;white-space:nowrap">${esc(it.price)} د.م</span>
+      </div>
+      <span style="font-size:12px;color:var(--saffron);font-weight:700">${esc(it.category)}</span>
+      <p style="margin:0;color:var(--ink-soft);font-size:14px;flex:1">${esc(it.description)}</p>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn" style="flex:1" data-add="${esc(f.name)}">أضف إلى السلة</button>
+        ${S.admin ? `<button class="btn ghost" data-edit="${esc(f.name)}">تعديل</button>` : ''}
+      </div>`
+    : `
+      <input class="input" id="ed-name" value="${esc(it.name)}" placeholder="اسم الوجبة">
+      <select class="input" id="ed-cat">${CATEGORIES.map(c => `<option ${c===it.category?'selected':''}>${esc(c)}</option>`).join('')}</select>
+      <textarea class="input" id="ed-desc" rows="3" placeholder="الوصف">${esc(it.description)}</textarea>
+      <input class="input" id="ed-price" type="number" value="${esc(it.price)}" placeholder="السعر بالدرهم">
+      <label style="font-size:14px;display:flex;gap:6px;align-items:center">
+        <input type="checkbox" id="ed-hidden" ${it.hidden?'checked':''}> إخفاء عن الزوار
+      </label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" style="flex:1" data-save="${esc(f.name)}">حفظ</button>
+        <button class="btn saffron" data-reclass="${esc(f.name)}">🤖 صنّف من جديد</button>
+        <button class="btn ghost" data-cancel="1">إلغاء</button>
+      </div>`;
+    return `
+      <div class="card fade" style="opacity:${it.hidden ? .5 : 1}">
+        <div class="arch" style="margin:10px 10px 0">
+          <img src="${esc(f.url)}" alt="${esc(it.name)}" loading="lazy" style="width:100%;height:210px;object-fit:cover;display:block">
+        </div>
+        <div style="padding:12px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1">${body}</div>
+      </div>`;
+  }
+
+  function modalHTML(){
+    if (!S.modal) return '';
+    if (S.modal === 'cart'){
+      const rows = Object.entries(S.cart).map(([k,q]) => `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)">
+          <span style="flex:1">${esc(S.menu[k]?.name || k)}</span>
+          <span style="color:var(--ink-soft);font-size:14px">${esc(S.menu[k]?.price || 0)} د.م</span>
+          <button class="qtybtn" data-dec="${esc(k)}">−</button><b>${q}</b><button class="qtybtn" data-inc="${esc(k)}">+</button>
+        </div>`).join('');
+      return `
+      <div class="overlay" data-close="1"><div class="sheet fade">
+        <h2 class="display" style="margin-top:0;font-size:32px">🧺 سلتك</h2>
+        ${rows}
+        <p style="text-align:left;font-weight:700;font-size:18px">المجموع: ${cartTotal()} درهم</p>
+        <h3 style="margin-bottom:6px">معلومات التوصيل</h3>
+        <div style="display:grid;gap:8px">
+          <input class="input" id="c-name" placeholder="الاسم الكامل *">
+          <input class="input" id="c-phone" placeholder="رقم الهاتف *">
+          <textarea class="input" id="c-addr" rows="2" placeholder="عنوان التوصيل *"></textarea>
+          <input class="input" id="c-notes" placeholder="ملاحظات (اختياري)">
+        </div>
+        <p style="background:var(--saffron-soft);border-radius:10px;padding:8px 12px;font-size:14px">💵 الدفع نقداً عند استلام الطلب.</p>
+        <div style="display:flex;gap:10px">
+          <button class="btn" style="flex:1" id="confirm-order">أكّد الطلب — الدفع عند الاستلام</button>
+          <button class="btn ghost" data-close="1">إغلاق</button>
+        </div>
+      </div></div>`;
+    }
+    if (S.modal === 'login'){
+      return `
+      <div class="overlay" data-close="1"><div class="sheet fade">
+        <h2 class="display" style="margin-top:0;font-size:30px">دخول المدير</h2>
+        <input class="input" id="pin-in" type="password" placeholder="الرمز السري">
+        <p id="pin-err" style="color:#8C2F1B;font-size:14px;margin:6px 0 0"></p>
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <button class="btn" style="flex:1" id="pin-go">دخول</button>
+          <button class="btn ghost" data-close="1">إلغاء</button>
+        </div>
+      </div></div>`;
+    }
+    if (S.modal === 'orders'){
+      const body = S.orders === null ? '<p>جارٍ التحميل…</p>'
+        : S.orders.length === 0 ? '<p style="color:var(--ink-soft)">لا توجد طلبات بعد.</p>'
+        : S.orders.map(o => `
+          <div class="orderbox">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px">
+              <b>${esc(o.id)}</b><span style="font-size:13px;color:var(--ink-soft)">${esc(o.time)}</span>
             </div>
-            <p style={{ margin: "6px 0", fontSize: 14 }}>
-              👤 {o.customer.name} — 📞 {o.customer.phone}<br />📍 {o.customer.address}
-              {o.customer.notes ? <><br />📝 {o.customer.notes}</> : null}
-            </p>
-            <ul style={{ margin: "6px 0", paddingInlineStart: 18, fontSize: 14 }}>
-              {o.items.map((it, i) => <li key={i}>{it.name} × {it.qty} — {it.price * it.qty} د.م</li>)}
+            <p style="margin:6px 0;font-size:14px">👤 ${esc(o.customer.name)} — 📞 ${esc(o.customer.phone)}<br>📍 ${esc(o.customer.address)}${o.customer.notes ? '<br>📝 ' + esc(o.customer.notes) : ''}</p>
+            <ul style="margin:6px 0;padding-inline-start:18px;font-size:14px">
+              ${o.items.map(it => `<li>${esc(it.name)} × ${it.qty} — ${it.price * it.qty} د.م</li>`).join('')}
             </ul>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-              <b>المجموع: {o.total} د.م (نقداً عند الاستلام)</b>
-              <select className="input" style={{ width: "auto" }} value={o.status} onChange={(e) => setStatus(o.id, e.target.value)}>
-                <option>جديد</option><option>قيد التحضير</option><option>في الطريق</option><option>تم التسليم</option><option>ملغى</option>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+              <b>المجموع: ${o.total} د.م (نقداً عند الاستلام)</b>
+              <select class="input" style="width:auto" data-status="${esc(o.id)}">
+                ${['جديد','قيد التحضير','في الطريق','تم التسليم','ملغى'].map(s => `<option ${s===o.status?'selected':''}>${s}</option>`).join('')}
               </select>
             </div>
-          </div>
-        ))}
-        <button className="btn ghost" onClick={onClose}>إغلاق</button>
-      </div>
-    </div>
-  );
-}
+          </div>`).join('');
+      return `<div class="overlay" data-close="1"><div class="sheet fade">
+        <h2 class="display" style="margin-top:0;font-size:30px">📦 الطلبات</h2>${body}
+        <button class="btn ghost" data-close="1">إغلاق</button>
+      </div></div>`;
+    }
+    if (S.modal && S.modal.type === 'done'){
+      const o = S.modal.order;
+      return `<div class="overlay" data-close="1"><div class="sheet fade" style="text-align:center">
+        <div style="font-size:54px">🎉</div>
+        <h2 class="display" style="font-size:34px;margin:8px 0">تم استلام طلبك</h2>
+        <p style="color:var(--ink-soft)">رقم الطلب: <b>${esc(o.id)}</b><br>المجموع: <b>${o.total} درهم</b> — الدفع عند الاستلام.<br>سنتصل بك على هاتفك لتأكيد التوصيل.</p>
+        <button class="btn" data-close="1">حسناً</button>
+      </div></div>`;
+    }
+    return '';
+  }
 
-/* ---------- شاشة الإعداد الأول ---------- */
-function Setup({ onDone }) {
-  const [url, setUrl] = useState("");
-  const [name, setName] = useState("");
-  const [pin, setPin] = useState("");
-  const [err, setErr] = useState("");
-  const [busy, setBusy] = useState(false);
-  return (
-    <div className="app" dir="rtl">
-      <GlobalStyle />
-      <div className="zellige" />
-      <div style={{ maxWidth: 520, margin: "0 auto", padding: "48px 20px" }}>
-        <h1 className="display" style={{ fontSize: 46, marginBottom: 4 }}>إعداد صفحة الوجبات</h1>
-        <p style={{ color: "var(--ink-soft)" }}>
-          الصق رابط مجلد الصور في GitHub (مستودع عام). كل صورة تضيفها لاحقاً إلى المجلد ستظهر تلقائياً ويصنّفها الذكاء الاصطناعي.
-        </p>
-        <div style={{ display: "grid", gap: 10 }}>
-          <input className="input" placeholder="مثال: https://github.com/user/repo/tree/main/meals" value={url} onChange={(e) => setUrl(e.target.value)} />
-          <input className="input" placeholder="اسم المطعم / المطبخ" value={name} onChange={(e) => setName(e.target.value)} />
-          <input className="input" type="password" placeholder="رمز سري للمدير (لتعديل الأوصاف والاطلاع على الطلبات)" value={pin} onChange={(e) => setPin(e.target.value)} />
-          {err && <p style={{ color: "#8C2F1B" }}>{err}</p>}
-          <button className="btn" disabled={busy} onClick={async () => {
-            const p = parseRepoUrl(url);
-            if (!p) { setErr("الرابط غير صالح"); return; }
-            if (!pin.trim()) { setErr("اختر رمزاً سرياً للمدير"); return; }
-            setBusy(true); setErr("");
-            try { await listImages(p); }
-            catch (e) {
-              // جرّب فرع master إن فشل main
-              try { await listImages({ ...p, branch: "master" }); p.branch = "master"; }
-              catch { setErr(e.message); setBusy(false); return; }
-            }
-            onDone({ ...p, name: name.trim(), pin: pin.trim() });
-          }}>{busy ? "جارٍ التحقق…" : "ابدأ 🚀"}</button>
-        </div>
-      </div>
-    </div>
-  );
-}
+  /* ---------- ربط الأحداث ---------- */
+  function bindShop(){
+    ROOT.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { S.cat = b.dataset.cat; render(); });
+    ROOT.querySelectorAll('[data-add]').forEach(b => b.onclick = () => { S.cart[b.dataset.add] = (S.cart[b.dataset.add]||0)+1; render(); });
+    ROOT.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => { S.editing = b.dataset.edit; render(); });
+    ROOT.querySelectorAll('[data-cancel]').forEach(b => b.onclick = () => { S.editing = null; render(); });
+    ROOT.querySelectorAll('[data-save]').forEach(b => b.onclick = async () => {
+      const k = b.dataset.save;
+      S.menu[k] = {
+        name: document.getElementById('ed-name').value,
+        category: document.getElementById('ed-cat').value,
+        description: document.getElementById('ed-desc').value,
+        price: Number(document.getElementById('ed-price').value) || 0,
+        hidden: document.getElementById('ed-hidden').checked,
+      };
+      await sSet('menu', S.menu);
+      S.editing = null; render();
+    });
+    ROOT.querySelectorAll('[data-reclass]').forEach(b => b.onclick = async () => {
+      const k = b.dataset.reclass;
+      const f = S.files.find(x => x.name === k);
+      b.disabled = true; b.textContent = '⏳…';
+      try{
+        const info = await classifyImage(f.url);
+        S.menu[k] = Object.assign({ hidden: S.menu[k]?.hidden || false }, info);
+        await sSet('menu', S.menu);
+      }catch(e){ alert('تعذر التصنيف، حاول مجدداً'); }
+      S.editing = null; render();
+    });
 
-function Center({ children }) {
-  return <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink-soft)" }}>{children}</div>;
-}
+    const $ = id => document.getElementById(id);
+    if ($('retry')) $('retry').onclick = refresh;
+    if ($('do-refresh')) $('do-refresh').onclick = refresh;
+    if ($('open-cart')) $('open-cart').onclick = () => { S.modal = 'cart'; render(); };
+    if ($('open-login')) $('open-login').onclick = () => { S.modal = 'login'; render(); };
+    if ($('logout')) $('logout').onclick = () => { S.admin = false; S.editing = null; render(); };
+    if ($('open-orders')) $('open-orders').onclick = async () => { S.modal = 'orders'; S.orders = null; render(); S.orders = (await sGet('orders')) || []; render(); };
+
+    // إغلاق النوافذ
+    ROOT.querySelectorAll('[data-close]').forEach(el => el.onclick = (e) => { if (e.target === el){ S.modal = null; render(); } });
+    ROOT.querySelectorAll('.sheet').forEach(sh => sh.onclick = e => e.stopPropagation());
+    ROOT.querySelectorAll('.sheet [data-close]').forEach(b => b.onclick = () => { S.modal = null; render(); });
+
+    // السلة
+    ROOT.querySelectorAll('[data-inc]').forEach(b => b.onclick = () => { S.cart[b.dataset.inc]++; render(); S.modal='cart'; });
+    ROOT.querySelectorAll('[data-dec]').forEach(b => b.onclick = () => {
+      const k = b.dataset.dec; S.cart[k]--; if (S.cart[k] <= 0) delete S.cart[k];
+      if (Object.keys(S.cart).length === 0) S.modal = null;
+      render();
+    });
+    if ($('confirm-order')) $('confirm-order').onclick = async function(){
+      const c = { name: $('c-name').value.trim(), phone: $('c-phone').value.trim(),
+                  address: $('c-addr').value.trim(), notes: $('c-notes').value.trim() };
+      if (!c.name || !c.phone || !c.address){ alert('املأ الاسم والهاتف والعنوان من فضلك'); return; }
+      this.disabled = true; this.textContent = 'جارٍ الإرسال…';
+      await placeOrder(c);
+    };
+
+    // دخول المدير
+    if ($('pin-go')){
+      const go = () => {
+        if ($('pin-in').value === S.cfg.pin){ S.admin = true; S.modal = null; render(); }
+        else $('pin-err').textContent = 'الرمز غير صحيح';
+      };
+      $('pin-go').onclick = go;
+      $('pin-in').onkeydown = e => { if (e.key === 'Enter') go(); };
+    }
+
+    // حالة الطلبات
+    ROOT.querySelectorAll('[data-status]').forEach(sel => sel.onchange = async () => {
+      const id = sel.dataset.status;
+      S.orders = S.orders.map(o => o.id === id ? Object.assign({}, o, { status: sel.value }) : o);
+      await sSet('orders', S.orders);
+    });
+  }
+
+  boot();
+})();
+</script>
