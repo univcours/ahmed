@@ -759,6 +759,7 @@ const CONFIG = {
   }
 
   /* --- لوحة التحكم (المدير) --- */
+  function adminHTML(){
     const all = S.files.length;
     const hiddenN = S.files.filter(f => itemOf(f).hidden).length;
     const pricedN = S.files.filter(f => iprice(f) > 0).length;
