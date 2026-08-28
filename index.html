@@ -221,6 +221,26 @@ const CONFIG = {
   .cod{display:flex;gap:10px;align-items:center;background:var(--gold-soft);border:1px solid #EDD9A3;border-radius:12px;padding:10px 13px;font-size:13px;margin:10px 0 13px}
   .empty{grid-column:1/-1;text-align:center;padding:56px 18px;color:var(--ink-2)}
   .empty .big{font-size:48px;margin-bottom:8px}
+  /* ---------- قسم الفيديوات ---------- */
+  .videos{max-width:1140px;margin:20px auto 0;padding:0 16px}
+  .videos-head{font-size:20px;font-family:'Alexandria',sans-serif;font-weight:700;
+    margin:0 0 12px;display:flex;align-items:center;gap:8px;color:var(--ink)}
+  .vslider{position:relative;overflow:hidden;border-radius:18px;background:#000;
+    box-shadow:var(--sh-lg);aspect-ratio:16/9}
+  .vslider video{width:100%;height:100%;object-fit:cover;display:none}
+  .vslider video.vactive{display:block}
+  .vdots{display:flex;gap:8px;justify-content:center;margin-top:10px}
+  .vdot{width:9px;height:9px;border-radius:50%;background:var(--line);cursor:pointer;border:none;padding:0;transition:all .2s}
+  .vdot.von{background:var(--gold);transform:scale(1.3)}
+  .vprev,.vnext{position:absolute;top:50%;transform:translateY(-50%);
+    background:rgba(10,40,65,.65);color:#fff;border:none;border-radius:50%;
+    width:40px;height:40px;font-size:20px;cursor:pointer;z-index:2;backdrop-filter:blur(4px)}
+  .vprev{inset-inline-start:12px}.vnext{inset-inline-end:12px}
+  .vprev:hover,.vnext:hover{background:rgba(15,181,214,.7)}
+  @media(max-width:640px){
+    .videos{padding:0 12px}
+    .vprev,.vnext{width:34px;height:34px;font-size:16px}
+  }
   .foot{max-width:1140px;margin:0 auto;padding:0 16px 36px;text-align:center;color:var(--ink-3);font-size:12px}
 
   /* ---------- لوحة التحكم ---------- */
@@ -686,11 +706,55 @@ const CONFIG = {
           </div>`:''}
       </main>
 
+      ${videosHTML()}
       <p class="foot">${t('footer')}</p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
-  function adminHTML(){
+  /* ---------- قسم الفيديوات ---------- */
+  const VIDEOS = [
+    'https://raw.githubusercontent.com/univcours/ahmed/main/WhatsApp%20Video%202026-08-28%20at%2012.17.49%20%281%29.mp4',
+    'https://raw.githubusercontent.com/univcours/ahmed/main/WhatsApp%20Video%202026-08-28%20at%2012.17.49.mp4',
+  ];
+
+  function videosHTML(){
+    if (!VIDEOS.length) return '';
+    const label = S.lang==='ar' ? '🎬 من مطبخنا' : '🎬 From our kitchen';
+    const dots = VIDEOS.map((_,i) => `<button class="vdot ${i===0?'von':''}" data-vdot="${i}" aria-label="فيديو ${i+1}"></button>`).join('');
+    const vids = VIDEOS.map((src,i) => `<video class="${i===0?'vactive':''}" data-vi="${i}" src="${esc(src)}" preload="metadata" playsinline controls muted loop></video>`).join('');
+    return `
+      <div class="videos">
+        <h2 class="videos-head">${label}</h2>
+        <div class="vslider" id="vslider">
+          ${vids}
+          <button class="vprev" id="vprev">&#8249;</button>
+          <button class="vnext" id="vnext">&#8250;</button>
+        </div>
+        <div class="vdots" id="vdots">${dots}</div>
+      </div>`;
+  }
+
+  function bindVideos(){
+    const slider = document.getElementById('vslider');
+    if (!slider) return;
+    const vids = slider.querySelectorAll('video');
+    const dots = document.querySelectorAll('[data-vdot]');
+    let cur = 0;
+
+    function go(idx){
+      vids[cur].pause(); vids[cur].classList.remove('vactive');
+      dots[cur].classList.remove('von');
+      cur = (idx + VIDEOS.length) % VIDEOS.length;
+      vids[cur].classList.add('vactive');
+      dots[cur].classList.add('von');
+    }
+
+    document.getElementById('vprev').onclick = () => go(cur - 1);
+    document.getElementById('vnext').onclick = () => go(cur + 1);
+    dots.forEach(d => d.onclick = () => go(Number(d.dataset.vdot)));
+  }
+
+  function adminHTML(){\n
     const all = S.files.length;
     const hiddenN = S.files.filter(f => itemOf(f).hidden).length;
     const pricedN = S.files.filter(f => iprice(f) > 0).length;
@@ -899,6 +963,7 @@ const CONFIG = {
     const $ = id => document.getElementById(id);
     const all = (sel,fn) => ROOT.querySelectorAll(sel).forEach(fn);
 
+    bindVideos();
     ['go-home','brand-home'].forEach(id => { if ($(id)) $(id).onclick = goHome; });
     if ($('go-dash')) $('go-dash').onclick = () => { S.view='admin'; render(); window.scrollTo(0,0); };
 
