@@ -34,6 +34,7 @@ const CONFIG = {
   restaurantName: "الشيف أحمد",
   restaurantNameEn: "Chef AHMED",
   whatsapp: "21260545825",              // رقم واتساب الطلبات بالصيغة الدولية
+  phone: "+212 689-199142",             // رقم الاتصال الظاهر أعلى الصفحة
   // 🔒 بصمة الرمز السري (SHA-256) — لتوليدها: دخول المدير → «توليد بصمة رمز سري»
   adminPinHash: "576c85c584f60555c2a024cbb99dfbbdb5f58c3bdcf28dbc8ea315fd46a388f3",
   welcomeAr: "مرحباً بكم في مطبخنا! كل طبق نحضّره بمكونات طازجة وبكل حب، كما لو كنا نطبخ لعائلتنا.",
@@ -58,6 +59,12 @@ const CONFIG = {
   #app-root{font-family:'Rubik',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:16px;line-height:1.6}
   h1,h2,h3{font-family:'Alexandria',sans-serif;font-weight:700;margin:0}
   img{display:block} button{font-family:'Rubik',sans-serif;cursor:pointer}
+
+  /* ---------- شريط الاتصال ---------- */
+  .callbar{background:var(--gold);text-align:center;padding:8px 12px;font-size:13px;font-weight:700}
+  .callbar a{color:#221F1C;text-decoration:none;display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
+  .callbar b{font-family:'Alexandria',sans-serif;font-size:14px;letter-spacing:.5px}
+  @media(max-width:640px){.callbar{font-size:12px;padding:7px 10px}.callbar b{font-size:13px}}
 
   /* ---------- الشريط العلوي ---------- */
   .topbar{position:sticky;top:0;z-index:30;background:#171310;color:#fff;box-shadow:var(--sh-md)}
@@ -653,7 +660,11 @@ const CONFIG = {
   }
 
   function topbarHTML(restName){
+    const tel = String(CONFIG.phone||'').replace(/[^\d+]/g,'');
     return `
+      <div class="callbar">
+        <a href="tel:${esc(tel)}">📞 ${S.lang==='ar'?'للطلب والاستفسار اتصل بالشيف:':'Call the chef to order:'} <b dir="ltr">${esc(CONFIG.phone)}</b></a>
+      </div>
       <div class="topbar"><div class="topbar-in">
         <button class="homebtn" id="go-home" title="${t('home')}">🏠</button>
         <span class="brand" id="brand-home"><span class="dot"></span>${esc(restName)}</span>
