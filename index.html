@@ -1,13 +1,32 @@
-
-<!-- مطبخنا — صفحة وجبات احترافية ثنائية اللغة | طلب عبر واتساب | حفظ في GitHub -->
+<!-- ============================================================
+     صفحة الوجبات — بسيطة وسريعة | HTML + JavaScript في ملف واحد
+     ⚙️ عدّل الإعدادات في CONFIG أسفله مرة واحدة فقط
+     ============================================================ -->
 <div id="app-root" dir="rtl"></div>
+
+<script>
+/* ⚙️⚙️⚙️ الإعدادات — عدّلها هنا مرة واحدة ⚙️⚙️⚙️ */
+const CONFIG = {
+  // رابط مجلد الصور في GitHub (مستودع عام Public)
+  repoUrl: "https://github.com/univcours/ahmed",                          // مثال: "https://github.com/user/repo/tree/main/meals"
+  restaurantName: "الشيف أحمد",             // اسم المطعم
+  restaurantNameEn: "Chef AHMED",      // الاسم بالإنجليزية
+  whatsapp: "5646546646",                         // رقم واتساب الطلبات بالصيغة الدولية، مثال: "212612345678"
+  adminPin: "1980",                     // الرمز السري للمدير
+  welcomeAr: "مرحباً بكم في مطبخنا! كل طبق نحضّره بمكونات طازجة وبكل حب، كما لو كنا نطبخ لعائلتنا.",
+  welcomeEn: "Welcome to our kitchen! Every dish is made with fresh ingredients and lots of love.",
+  currency: "د.م",                      // العملة
+  currencyEn: "MAD",
+};
+/* ⚙️⚙️⚙️ نهاية الإعدادات ⚙️⚙️⚙️ */
+</script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@500;700;800&family=Rubik:wght@400;500;700&display=swap');
   :root{
     --bg:#F6F1E7; --card:#FFFFFF; --ink:#14322E; --ink-2:#5F6F6A; --ink-3:#93A09B;
     --green:#123F3A; --green-2:#0D4F44; --gold:#D9A21B; --gold-soft:#FBF3DC;
-    --line:#E8E0D0; --red:#B23A2A; --red-soft:#F9E7E3; --ok:#1B7A4E; --wa:#25D366;
+    --line:#E8E0D0; --red:#B23A2A; --red-soft:#F9E7E3; --wa:#25D366;
     --sh-sm:0 1px 3px rgba(20,50,46,.08); --sh-md:0 8px 24px rgba(20,50,46,.10);
     --sh-lg:0 18px 50px rgba(20,50,46,.18);
   }
@@ -22,7 +41,6 @@
   .brand .dot{width:10px;height:10px;background:var(--gold);border-radius:3px;transform:rotate(45deg)}
   .top-actions{margin-inline-start:auto;display:flex;gap:8px;align-items:center}
   .iconbtn{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:12px;padding:9px 13px;font-size:14px;font-weight:500}
-  .iconbtn:hover{background:rgba(255,255,255,.22)}
   .langbtn{background:transparent;color:#F1E7CE;border:1.5px solid rgba(255,255,255,.35);border-radius:12px;padding:8px 12px;font-size:13px;font-weight:700}
   .cartbtn{position:relative;background:var(--gold);color:var(--ink);border:none;border-radius:12px;padding:9px 15px;font-size:14px;font-weight:700}
   .badge{position:absolute;top:-7px;inset-inline-start:-7px;background:var(--red);color:#fff;font-size:12px;font-weight:700;
@@ -31,49 +49,44 @@
   .hero{background:var(--green);color:#fff;position:relative;overflow:hidden}
   .hero::before{content:'';position:absolute;inset:0;opacity:.07;
     background-image:radial-gradient(circle at 2px 2px,#fff 1.5px,transparent 0);background-size:26px 26px}
-  .hero-in{max-width:1140px;margin:0 auto;padding:38px 18px 90px;position:relative;text-align:center}
-  .hero .tag{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.1);
-    border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 16px;font-size:13px;color:#F1E7CE}
-  .hero h1{font-size:clamp(32px,6vw,56px);font-weight:800;margin:14px 0 8px;color:#fff}
-  .hero p{color:#C8D6D0;max-width:520px;margin:0 auto;font-size:16px}
-  .gold-line{width:56px;height:4px;background:var(--gold);border-radius:2px;margin:18px auto 0}
+  .hero-in{max-width:1140px;margin:0 auto;padding:34px 18px 86px;position:relative;text-align:center}
+  .hero .tag{display:inline-flex;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+    border-radius:999px;padding:6px 16px;font-size:13px;color:#F1E7CE}
+  .hero h1{font-size:clamp(30px,6vw,52px);font-weight:800;margin:12px 0 8px;color:#fff}
+  .hero p{color:#C8D6D0;max-width:520px;margin:0 auto;font-size:15px}
+  .gold-line{width:56px;height:4px;background:var(--gold);border-radius:2px;margin:16px auto 0}
 
-  /* قسم الشيف */
-  .chef{max-width:1140px;margin:-58px auto 0;padding:0 18px;position:relative;z-index:5}
+  .chef{max-width:1140px;margin:-56px auto 0;padding:0 18px;position:relative;z-index:5}
   .chef-card{background:var(--card);border-radius:22px;box-shadow:var(--sh-lg);padding:20px;
     display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-  .chef-card img{width:110px;height:110px;object-fit:cover;border-radius:50%;border:4px solid var(--gold);flex-shrink:0}
+  .chef-card img{width:104px;height:104px;object-fit:cover;border-radius:50%;border:4px solid var(--gold);flex-shrink:0;cursor:zoom-in}
   .chef-txt{flex:1;min-width:230px}
   .chef-txt .role{color:var(--gold);font-size:13px;font-weight:700;letter-spacing:1px}
-  .chef-txt h2{font-size:21px;margin:2px 0 6px}
+  .chef-txt h2{font-size:20px;margin:2px 0 6px}
   .chef-txt p{margin:0;color:var(--ink-2);font-size:15px}
-  .quote-mark{font-family:'Alexandria',sans-serif;font-size:44px;color:var(--gold);line-height:0;opacity:.5}
 
   .toolbar{max-width:1140px;margin:18px auto 0;padding:0 18px}
   .toolbar-card{background:var(--card);border-radius:20px;box-shadow:var(--sh-sm);padding:14px 18px;display:grid;gap:12px}
   .search{display:flex;align-items:center;gap:10px;background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:10px 16px}
   .search:focus-within{border-color:var(--gold)}
   .search input{border:none;background:transparent;outline:none;flex:1;font-family:'Rubik',sans-serif;font-size:16px;color:var(--ink)}
-  .cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
-  .cats::-webkit-scrollbar{display:none}
-  .chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink-2);white-space:nowrap;
-    padding:8px 18px;border-radius:999px;font-size:14px;font-weight:500}
-  .chip.on{background:var(--green);color:#fff;border-color:var(--green)}
 
+  /* شبكة موحّدة — كل الصور بنفس الحجم تماماً */
   .grid{max-width:1140px;margin:0 auto;padding:24px 18px 140px;display:grid;gap:20px;
-    grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+    grid-template-columns:repeat(auto-fill,minmax(255px,1fr))}
   .dish{background:var(--card);border-radius:22px;box-shadow:var(--sh-sm);overflow:hidden;
     display:flex;flex-direction:column;transition:transform .22s, box-shadow .22s;animation:up .4s ease both}
   .dish:hover{transform:translateY(-5px);box-shadow:var(--sh-md)}
   @keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
   @media (prefers-reduced-motion:reduce){.dish{animation:none;transition:none}}
-  .dish-img{position:relative;height:200px;background:var(--bg)}
-  .dish-img img{width:100%;height:100%;object-fit:cover}
+  .dish-img{position:relative;aspect-ratio:4/3;background:#EDE7D8;cursor:zoom-in;overflow:hidden}
+  .dish-img img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+  .dish:hover .dish-img img{transform:scale(1.06)}
+  .zoom-hint{position:absolute;top:12px;inset-inline-start:12px;background:rgba(20,50,46,.7);color:#fff;
+    width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;backdrop-filter:blur(4px)}
   .price-tag{position:absolute;bottom:12px;inset-inline-start:12px;background:var(--card);color:var(--green);
     font-weight:800;font-family:'Alexandria',sans-serif;font-size:16px;border-radius:12px;padding:5px 14px;box-shadow:var(--sh-md)}
-  .cat-tag{position:absolute;top:12px;inset-inline-end:12px;background:rgba(20,50,46,.82);color:#F1E7CE;
-    font-size:12px;border-radius:999px;padding:4px 12px;backdrop-filter:blur(4px)}
-  .dish-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .dish-body{padding:15px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
   .dish-body h3{font-size:19px;line-height:1.35}
   .dish-body p{margin:0;color:var(--ink-2);font-size:14px;flex:1;
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -84,6 +97,15 @@
     border:1.5px solid var(--gold);border-radius:13px;padding:5px}
   .stepper b{font-family:'Alexandria',sans-serif;font-size:17px}
   .stepbtn{width:40px;height:40px;border:none;background:var(--card);border-radius:10px;font-size:20px;font-weight:700;color:var(--green);box-shadow:var(--sh-sm)}
+
+  /* عارض الصور (Lightbox) */
+  .lightbox{position:fixed;inset:0;background:rgba(10,25,22,.93);z-index:70;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;padding:20px;animation:dim .2s ease;cursor:zoom-out}
+  .lightbox img{max-width:96vw;max-height:80vh;object-fit:contain;border-radius:14px;box-shadow:var(--sh-lg)}
+  .lb-cap{color:#fff;margin-top:14px;text-align:center;font-family:'Alexandria',sans-serif;font-size:18px;font-weight:700}
+  .lb-price{color:var(--gold);font-size:15px;margin-top:2px}
+  .lb-x{position:absolute;top:18px;inset-inline-end:18px;width:44px;height:44px;border:none;border-radius:12px;
+    background:rgba(255,255,255,.14);color:#fff;font-size:20px}
 
   .btn{background:var(--green);color:#fff;border:none;border-radius:13px;padding:13px 22px;font-size:15px;font-weight:700}
   .btn:hover{background:var(--green-2)} .btn:disabled{opacity:.45;cursor:default}
@@ -98,21 +120,13 @@
   textarea.input{resize:vertical}
 
   .notice{max-width:1104px;margin:16px auto 0;border-radius:14px;padding:12px 18px;font-size:14px;
-    display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap}
-  .notice.info{background:var(--gold-soft);color:var(--green);border:1px solid #EDD9A3}
+    display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;text-align:center}
   .notice.err{background:var(--red-soft);color:var(--red);border:1px solid #EBC4BB}
-  .spinner{width:16px;height:16px;border:2.5px solid var(--gold);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:60;background:var(--ink);color:#fff;
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:80;background:var(--ink);color:#fff;
     border-radius:999px;padding:11px 22px;font-size:14px;box-shadow:var(--sh-lg);animation:toast 2.4s ease both;pointer-events:none;white-space:nowrap}
   @keyframes toast{0%{opacity:0;transform:translate(-50%,12px)}12%,82%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-6px)}}
-
-  .skel{background:var(--card);border-radius:22px;overflow:hidden;box-shadow:var(--sh-sm)}
-  .skel .a{height:200px}.skel .b{height:18px;margin:16px 18px 8px;border-radius:8px;width:60%}
-  .skel .c{height:12px;margin:0 18px 18px;border-radius:8px}
-  .skel .a,.skel .b,.skel .c{background:linear-gradient(90deg,var(--line) 25%,#F2ECDF 50%,var(--line) 75%);
-    background-size:200% 100%;animation:shine 1.3s infinite}
-  @keyframes shine{to{background-position:-200% 0}}
+  .spinner{width:34px;height:34px;border:4px solid var(--gold);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
 
   .overlay{position:fixed;inset:0;background:rgba(15,35,32,.55);z-index:50;display:flex;align-items:flex-end;justify-content:center;animation:dim .2s ease}
   @keyframes dim{from{opacity:0}}
@@ -132,7 +146,11 @@
   .adminbar{position:sticky;top:62px;z-index:25;background:var(--gold);color:var(--ink);padding:8px 18px;
     display:flex;gap:10px;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-wrap:wrap}
   .adminbar button{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:7px 14px;font-size:13px;font-weight:600}
-  .sync{font-size:12px;font-weight:500;border-radius:999px;padding:3px 12px;background:rgba(20,50,46,.1)}
+  .cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+  .cats::-webkit-scrollbar{display:none}
+  .chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink-2);white-space:nowrap;
+    padding:8px 18px;border-radius:999px;font-size:14px;font-weight:500}
+  .chip.on{background:var(--green);color:#fff;border-color:var(--green)}
   .foot{max-width:1140px;margin:0 auto;padding:0 18px 40px;text-align:center;color:var(--ink-3);font-size:13px}
 </style>
 
@@ -140,115 +158,91 @@
 (function () {
   const ROOT = document.getElementById('app-root');
   const IMG_EXT = /\.(jpe?g|png|webp|gif)$/i;
-  const CHEF_RE = /^chef/i;                 // أي صورة اسمها يبدأ بـ chef تعتبر صورة الشيف
+  const CHEF_RE = /^chef/i;
   const MENU_FILE = 'menu.json';
-
-  /* ---------- التصنيفات (عربي/إنجليزي) ---------- */
-  const CATS = [
-    {k:'سلطات',en:'Salads'},{k:'أطباق رئيسية',en:'Main dishes'},{k:'ساندويتشات',en:'Sandwiches'},
-    {k:'بيتزا ومعجنات',en:'Pizza & pastry'},{k:'فطور',en:'Breakfast'},{k:'حلويات',en:'Desserts'},
-    {k:'مشروبات',en:'Drinks'},{k:'أخرى',en:'Other'},
-  ];
-  const catLabel = k => S.lang==='ar' ? k : (CATS.find(c=>c.k===k)?.en || k);
 
   /* ---------- نصوص الواجهة ---------- */
   const T = {
     slogan:['🛵 توصيل سريع · 💵 الدفع عند الاستلام','🛵 Fast delivery · 💵 Cash on delivery'],
     heroSub:['وجبات طازجة محضّرة بحب. اختر، اطلب عبر واتساب، ونوصلها إلى بابك.','Fresh meals made with love. Choose, order on WhatsApp, delivered to your door.'],
     chefRole:['الشيف','THE CHEF'],
-    welcomeDefaultAr:'مرحباً بكم في مطبخنا! كل طبق نحضّره بمكونات طازجة وبكل حب، كما لو كنا نطبخ لعائلتنا. تشرفنا بخدمتكم!',
-    welcomeDefaultEn:'Welcome to our kitchen! Every dish is made with fresh ingredients and lots of love, as if we were cooking for our own family. It is an honor to serve you!',
     search:['ابحث عن وجبة…','Search for a dish…'],
     all:['الكل','All'],
     add:['أضف إلى السلة','Add to cart'],
     added:['✅ أُضيفت إلى السلة','✅ Added to cart'],
-    cart:['🧺 السلة','🧺 Cart'],
-    cartTitle:['🧺 سلتك','🧺 Your cart'],
+    cart:['🧺 السلة','🧺 Cart'], cartTitle:['🧺 سلتك','🧺 Your cart'],
     cartEmpty:['سلتك فارغة — أضف بعض الوجبات الشهية 😋','Your cart is empty — add some tasty dishes 😋'],
     total:['المجموع','Total'],
-    currency:['د.م','MAD'],
-    dirham:['درهم','MAD'],
     delivery:['🛵 معلومات التوصيل','🛵 Delivery details'],
-    name:['الاسم الكامل *','Full name *'],
-    phone:['رقم الهاتف *','Phone number *'],
-    address:['عنوان التوصيل *','Delivery address *'],
-    notes:['ملاحظات (اختياري)','Notes (optional)'],
+    name:['الاسم الكامل *','Full name *'], phone:['رقم الهاتف *','Phone number *'],
+    address:['عنوان التوصيل *','Delivery address *'], notes:['ملاحظات (اختياري)','Notes (optional)'],
     notesPh:['مثال: بدون بصل','e.g. no onions'],
     cod:['الدفع نقداً عند الاستلام — لا حاجة لبطاقة بنكية.','Cash on delivery — no bank card needed.'],
     waOrder:['أرسل الطلب عبر واتساب','Send order on WhatsApp'],
     fillAll:['⚠️ املأ الاسم والهاتف والعنوان','⚠️ Please fill name, phone and address'],
-    admin:['👤 المدير','👤 Admin'],
-    adminLogin:['👤 دخول المدير','👤 Admin login'],
-    pin:['الرمز السري','PIN code'],
-    login:['دخول','Log in'],
-    wrongPin:['الرمز غير صحيح','Wrong PIN'],
-    adminOn:['🛠️ وضع المدير مفعّل','🛠️ Admin mode on'],
-    logout:['خروج','Log out'],
-    refresh:['🔄 تحديث الصور','🔄 Refresh photos'],
-    settings:['⚙️ الإعدادات','⚙️ Settings'],
-    classifying:['الذكاء الاصطناعي يتعرّف على الوجبات الجديدة…','AI is identifying new dishes…'],
-    classified:['✅ تم تصنيف الوجبات الجديدة','✅ New dishes classified'],
-    edit:['✏️','✏️'],
-    save:['💾 حفظ','💾 Save'],
-    saved:['💾 تم الحفظ','💾 Saved'],
-    reclass:['🤖 صنّف من جديد','🤖 Re-classify'],
-    reclassing:['⏳ جارٍ التصنيف…','⏳ Classifying…'],
-    reclassOk:['🤖 تم التصنيف من جديد','🤖 Re-classified'],
-    reclassFail:['⚠️ تعذر التصنيف، حاول مجدداً','⚠️ Classification failed, try again'],
-    cancel:['إلغاء','Cancel'],
-    hide:['إخفاء هذه الوجبة عن الزوار','Hide this dish from visitors'],
-    hidden:['مخفية','hidden'],
-    needsName:['⚠️ بدون اسم — لن تظهر للزوار حتى تكتب اسمها','⚠️ Unnamed — hidden from visitors until you name it'],
-    nameAr:['الاسم (عربي)','Name (Arabic)'],
-    nameEn:['الاسم (إنجليزي)','Name (English)'],
-    descAr:['الوصف (عربي)','Description (Arabic)'],
-    descEn:['الوصف (إنجليزي)','Description (English)'],
-    price:['السعر (درهم)','Price (MAD)'],
-    category:['التصنيف','Category'],
+    admin:['👤 المدير','👤 Admin'], adminLogin:['👤 دخول المدير','👤 Admin login'],
+    pin:['الرمز السري','PIN code'], login:['دخول','Log in'], wrongPin:['الرمز غير صحيح','Wrong PIN'],
+    adminOn:['🛠️ وضع المدير مفعّل — اضغط ✏️ على أي وجبة لتعديلها','🛠️ Admin mode — press ✏️ on any dish to edit'],
+    logout:['خروج','Log out'], refresh:['🔄 تحديث الصور','🔄 Refresh photos'],
+    save:['💾 حفظ','💾 Save'], saved:['💾 تم الحفظ','💾 Saved'], cancel:['إلغاء','Cancel'],
+    hide:['إخفاء هذه الوجبة عن الزوار','Hide this dish from visitors'], hidden:['مخفية','hidden'],
+    nameAr:['اسم الوجبة (عربي)','Dish name (Arabic)'], nameEn:['اسم الوجبة (إنجليزي)','Dish name (English)'],
+    descAr:['الوصف (عربي)','Description (Arabic)'], descEn:['الوصف (إنجليزي)','Description (English)'],
+    price:['السعر','Price'], category:['التصنيف (اختياري)','Category (optional)'],
     noResults:['لا نتائج مطابقة','No matching results'],
-    tryOther:['جرّب كلمة أخرى أو اختر تصنيف «الكل».','Try another word or choose "All".'],
+    tryOther:['جرّب كلمة أخرى.','Try another word.'],
     noDishes:['لا توجد وجبات بعد','No dishes yet'],
-    addToRepo:['أضف صور وجباتك إلى مجلد GitHub ثم اضغط «تحديث الصور».','Add your dish photos to the GitHub folder then press "Refresh photos".'],
+    addToRepo:['أضف صور وجباتك إلى مجلد GitHub وستظهر هنا تلقائياً.','Add your dish photos to the GitHub folder and they will appear here automatically.'],
     footer:['💵 الدفع نقداً عند الاستلام · الصور تُحدَّث تلقائياً من مجلد GitHub','💵 Cash on delivery · Photos update automatically from the GitHub folder'],
-    stName:['اسم المطعم','Restaurant name'],
-    stWa:['رقم واتساب لاستقبال الطلبات (بالصيغة الدولية)','WhatsApp number for orders (international format)'],
-    stWelAr:['كلمة ترحيبية للزبناء (عربي)','Welcome message (Arabic)'],
-    stWelEn:['كلمة ترحيبية للزبناء (إنجليزي)','Welcome message (English)'],
+    noRepo:['⚙️ لم يتم ضبط رابط المستودع بعد — افتح الملف وضع رابط مجلد صورك في CONFIG.repoUrl في أول الملف.','⚙️ Repo link not set — open the file and put your photos folder link in CONFIG.repoUrl at the top.'],
     stToken:['رمز GitHub للحفظ في المستودع (اختياري)','GitHub token to save into the repo (optional)'],
-    stTokenHint:['أنشئه من GitHub → Settings → Developer settings → Fine-grained tokens، بصلاحية Contents: Read and write على هذا المستودع فقط. يُحفظ في حسابك أنت فقط.','Create it from GitHub → Settings → Developer settings → Fine-grained tokens, with Contents: Read and write on this repo only. Stored only in your own account.'],
-    saveSettings:['💾 حفظ الإعدادات','💾 Save settings'],
-    pushRepo:['⬆️ احفظ القائمة في المستودع الآن','⬆️ Save menu to repo now'],
-    pushed:['✅ تم الحفظ في المستودع (menu.json)','✅ Saved to repo (menu.json)'],
-    pushFail:['⚠️ تعذر الحفظ في المستودع — تحقق من الرمز وصلاحياته','⚠️ Repo save failed — check token & permissions'],
-    synced:['✓ محفوظ في المستودع','✓ Synced to repo'],
-    notSynced:['⚠ تغييرات غير محفوظة في المستودع','⚠ Unsaved repo changes'],
-    noToken:['أضف رمز GitHub في الإعدادات ليُحفظ تلقائياً','Add a GitHub token in Settings for auto-save'],
+    stTokenHint:['GitHub → Settings → Developer settings → Fine-grained tokens، صلاحية Contents: Read and write على هذا المستودع فقط.','GitHub → Settings → Developer settings → Fine-grained tokens, Contents: Read and write on this repo only.'],
+    settings:['⚙️ الإعدادات','⚙️ Settings'],
+    pushRepo:['⬆️ احفظ القائمة في المستودع','⬆️ Save menu to repo'],
+    pushed:['✅ تم الحفظ في المستودع','✅ Saved to repo'],
+    pushFail:['⚠️ تعذر الحفظ — تحقق من الرمز وصلاحياته','⚠️ Save failed — check token & permissions'],
+    noToken:['أضف رمز GitHub أولاً من الإعدادات','Add a GitHub token first in Settings'],
     orderMsgTitle:['🛒 طلب جديد من','🛒 New order from'],
-    customer:['الزبون','Customer'],
+    customer:['الزبون','Customer'], codShort:['الدفع عند الاستلام','cash on delivery'],
     thanks:['شكراً! سنؤكد طلبك على واتساب.','Thank you! We will confirm your order on WhatsApp.'],
+    dirham:[CONFIG.currency, CONFIG.currencyEn],
   };
-  const t = k => Array.isArray(T[k]) ? T[k][S.lang==='ar'?0:1] : T[k];
+  const t = k => T[k][S.lang==='ar'?0:1];
 
   /* ---------- الحالة ---------- */
   const S = {
-    phase:'loading', lang:'ar', cfg:null,
-    data:{ settings:{ name:'', whatsapp:'', welcome_ar:'', welcome_en:'' }, items:{} },
-    files:[], chefImgs:[], sha:null, dirty:false, saving:false,
-    error:'', classifying:null, cat:'الكل', q:'', cart:{},
-    admin:false, editing:null, modal:null,
+    lang:'ar', cfg:null, ready:false,
+    data:{ items:{} },        // تعديلات المدير من menu.json
+    files:[], chefImgs:[], error:'', loadingList:true,
+    cat:'الكل', q:'', cart:{}, admin:false, editing:null, modal:null, lightbox:null,
+    dirty:false, saving:false, ghToken:'',
   };
 
-  /* ---------- تخزين ---------- */
-  async function sGet(k, shared=true){ try{ const r = await window.storage.get(k, shared); return r ? JSON.parse(r.value) : null; }catch(e){ return null; } }
-  async function sSet(k, v, shared=true){ try{ await window.storage.set(k, JSON.stringify(v), shared); }catch(e){ console.error(e); } }
+  /* ---------- تخزين آمن (يعمل حتى بدون window.storage) ---------- */
+  const mem = {};
+  async function sGet(k, shared=true){
+    try{ if (window.storage){ const r = await window.storage.get(k, shared); return r ? JSON.parse(r.value) : null; } }catch(e){}
+    return mem[k] ?? null;
+  }
+  async function sSet(k, v, shared=true){
+    mem[k] = v;
+    try{ if (window.storage) await window.storage.set(k, JSON.stringify(v), shared); }catch(e){}
+  }
 
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  function toast(msg){ const el = document.createElement('div'); el.className='toast'; el.textContent=msg; document.body.appendChild(el); setTimeout(()=>el.remove(),2500); }
+  function toast(msg){ const el=document.createElement('div'); el.className='toast'; el.textContent=msg; document.body.appendChild(el); setTimeout(()=>el.remove(),2500); }
   const b64enc = s => btoa(unescape(encodeURIComponent(s)));
   const b64dec = s => decodeURIComponent(escape(atob(s.replace(/\n/g,''))));
 
-  const iname = it => S.lang==='ar' ? (it.name_ar || it.name || '') : (it.name_en || it.name_ar || it.name || '');
-  const idesc = it => S.lang==='ar' ? (it.desc_ar || it.description || '') : (it.desc_en || it.desc_ar || it.description || '');
+  /* اسم افتراضي جميل من اسم الملف: tajine-lham_2.jpg → Tajine lham 2 */
+  function prettyName(file){
+    let n = file.replace(IMG_EXT,'').replace(/[-_]+/g,' ').replace(/\s+\d+$/,'').trim();
+    return n.charAt(0).toUpperCase() + n.slice(1);
+  }
+  const itemOf = f => S.data.items[f.name] || {};
+  const iname = (f) => { const it=itemOf(f); return (S.lang==='ar' ? (it.name_ar||it.name_en) : (it.name_en||it.name_ar)) || prettyName(f.name); };
+  const idesc = (f) => { const it=itemOf(f); return (S.lang==='ar' ? (it.desc_ar||'') : (it.desc_en||'')); };
+  const iprice = f => Number(itemOf(f).price) || 0;
 
   function parseRepoUrl(url){
     try{
@@ -267,9 +261,9 @@
   async function listImages(cfg){
     const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}`;
     const res = await fetch(url);
-    if (!res.ok) throw new Error(res.status===404
-      ? (S.lang==='ar' ? 'المجلد غير موجود — تأكد من الرابط ومن أن المستودع عام (Public)' : 'Folder not found — check the link and that the repo is Public')
-      : 'GitHub error ' + res.status);
+    if (!res.ok) throw new Error(S.lang==='ar'
+      ? 'تعذر جلب الصور — تأكد أن الرابط صحيح وأن المستودع عام (Public)'
+      : 'Could not load photos — check the link and that the repo is Public');
     const data = await res.json();
     if (!Array.isArray(data)) throw new Error(S.lang==='ar' ? 'الرابط لا يشير إلى مجلد' : 'Link is not a folder');
     return data.filter(f => f.type==='file' && IMG_EXT.test(f.name)).map(f => ({name:f.name, url:f.download_url}));
@@ -278,31 +272,27 @@
   async function loadRepoMenu(){
     try{
       const res = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${menuPath()}?ref=${S.cfg.branch}`);
-      if (!res.ok){ S.sha = null; return null; }
+      if (!res.ok) return null;
       const j = await res.json();
-      S.sha = j.sha;
       return JSON.parse(b64dec(j.content));
     }catch(e){ return null; }
   }
 
   async function pushRepoMenu(){
-    const token = await sGet('gh_token', false);   // شخصي — لا يُشارك مع الزوار
+    const token = S.ghToken || await sGet('gh_token', false);
     if (!token) return {ok:false, reason:'no_token'};
     S.saving = true; render();
     try{
-      // احصل على sha الحالي دائماً قبل الحفظ
       const head = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${menuPath()}?ref=${S.cfg.branch}`,
         { headers:{ Authorization:'Bearer '+token } });
       let sha = null;
-      if (head.ok){ sha = (await head.json()).sha; }
-      const body = { message:'Update menu from website', branch:S.cfg.branch, content:b64enc(JSON.stringify(S.data, null, 2)) };
+      if (head.ok) sha = (await head.json()).sha;
+      const body = { message:'Update menu from website', branch:S.cfg.branch, content:b64enc(JSON.stringify(S.data,null,2)) };
       if (sha) body.sha = sha;
       const res = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${menuPath()}`,
         { method:'PUT', headers:{ Authorization:'Bearer '+token, 'Content-Type':'application/json' }, body:JSON.stringify(body) });
       S.saving = false;
       if (!res.ok){ render(); return {ok:false}; }
-      const j = await res.json();
-      S.sha = j.content && j.content.sha;
       S.dirty = false; render();
       return {ok:true};
     }catch(e){ S.saving=false; render(); return {ok:false}; }
@@ -310,129 +300,68 @@
 
   async function persist(){
     S.dirty = true;
-    await sSet('data', S.data);                 // نسخة احتياطية مشتركة دائماً
-    const r = await pushRepoMenu();             // ثم في المستودع إن وُجد الرمز
+    await sSet('data', S.data);
+    const r = await pushRepoMenu();
     if (r.ok) toast(t('pushed'));
-    else if (r.reason !== 'no_token') toast(t('pushFail'));
     render();
-  }
-
-  /* ---------- التصنيف الذكي ---------- */
-  async function imageToSmallBase64(url){
-    const blob = await (await fetch(url)).blob();
-    const bmp = await createImageBitmap(blob);
-    const max=700, sc=Math.min(1, max/Math.max(bmp.width,bmp.height));
-    const cv=document.createElement('canvas');
-    cv.width=Math.round(bmp.width*sc); cv.height=Math.round(bmp.height*sc);
-    cv.getContext('2d').drawImage(bmp,0,0,cv.width,cv.height);
-    return cv.toDataURL('image/jpeg',0.8).split(',')[1];
-  }
-
-  async function classifyImage(url){
-    const b64 = await imageToSmallBase64(url);
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6', max_tokens:1200,
-        messages:[{role:'user', content:[
-          {type:'image', source:{type:'base64', media_type:'image/jpeg', data:b64}},
-          {type:'text', text:
-`انظر جيداً إلى محتوى هذه الصورة: إنها وجبة تُباع في مطعم. تعرّف بدقة على الطبق ومكوناته الظاهرة.
-أجب فقط بكائن JSON دون أي نص آخر ودون علامات Markdown:
-{"name_ar":"اسم الوجبة الحقيقي بالعربية (مثل: سلطة مغربية، طاجين لحم، كسكس بالخضار)","name_en":"the real dish name in English","category":"واحدة فقط من: ${CATS.map(c=>c.k).join('، ')}","desc_ar":"وصف شهي بالعربية من جملة إلى جملتين يذكر المكونات الظاهرة","desc_en":"an appetizing 1-2 sentence English description mentioning visible ingredients","price":سعر مقترح كرقم بالدرهم المغربي}`}
-        ]}]
-      })
-    });
-    const data = await res.json();
-    const text = (data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n');
-    const obj = JSON.parse(text.replace(/```json|```/g,'').trim());
-    if (!CATS.some(c=>c.k===obj.category)) obj.category = 'أخرى';
-    obj.price = Number(obj.price) || 0;
-    return obj;
   }
 
   /* ---------- التشغيل ---------- */
   async function boot(){
     S.lang = (await sGet('lang', false)) || 'ar';
-    applyDir();
-    const c = await sGet('config');
-    if (!c){ S.phase='setup'; render(); return; }
-    S.cfg = c;
-    // القائمة: المستودع أولاً (مصدر الحقيقة)، ثم النسخة الاحتياطية
+    S.ghToken = (await sGet('gh_token', false)) || '';
+    // الإعداد: من CONFIG داخل الملف أولاً، ثم من التخزين إن سبق حفظه
+    let cfg = CONFIG.repoUrl ? parseRepoUrl(CONFIG.repoUrl) : null;
+    if (!cfg) cfg = await sGet('config');
+    S.cfg = cfg;
+    render();
+    if (!S.cfg){ S.loadingList = false; render(); return; }
+    // القائمة المعدلة: من المستودع أولاً ثم النسخة المحلية
     const repoData = await loadRepoMenu();
     const backup = await sGet('data');
-    S.data = repoData || backup || S.data;
-    if (!S.data.settings) S.data.settings = { name:c.name||'', whatsapp:c.whatsapp||'', welcome_ar:'', welcome_en:'' };
+    S.data = repoData || backup || { items:{} };
     if (!S.data.items) S.data.items = {};
-    S.phase='shop'; render(); refresh();
-  }
-
-  function applyDir(){
-    ROOT.dir = S.lang==='ar' ? 'rtl' : 'ltr';
-    ROOT.lang = S.lang;
+    await refresh();
   }
 
   async function refresh(){
-    S.error=''; render();
-    let imgs;
+    S.error=''; S.loadingList = true; render();
+    let imgs = [];
+    // جرّب main ثم master
     try{ imgs = await listImages(S.cfg); }
-    catch(e){ S.error = e.message; render(); return; }
+    catch(e){
+      if (S.cfg.branch === 'main'){
+        try{ S.cfg.branch = 'master'; imgs = await listImages(S.cfg); }
+        catch(e2){ S.error = e.message; S.loadingList=false; render(); return; }
+      } else { S.error = e.message; S.loadingList=false; render(); return; }
+    }
     S.chefImgs = imgs.filter(f => CHEF_RE.test(f.name));
     S.files = imgs.filter(f => !CHEF_RE.test(f.name));
-    // لا نعرض اسم الملف أبداً: أي وجبة اسمها مطابق لاسم الصورة تُعتبر بلا اسم ويُعاد تصنيفها
-    S.files.forEach(f => {
-      const it = S.data.items[f.name];
-      if (!it) return;
-      const base = f.name.replace(IMG_EXT,'').trim();
-      if ([it.name_ar, it.name_en, it.name].some(n => n && n.trim() === base)){
-        it.name_ar=''; it.name_en=''; it.name=''; it.failed = true;
-      }
-    });
-    // الجديد + ما فشل تصنيفه سابقاً (يُصنَّف من جديد تلقائياً)
-    const fresh = S.files.filter(f => !S.data.items[f.name] || S.data.items[f.name].failed);
+    S.loadingList = false;
     render();
-    if (!fresh.length) return;
-    S.classifying = {done:0, total:fresh.length}; render();
-    let changed = false;
-    for (let i=0;i<fresh.length;i++){
-      let ok = false;
-      for (let attempt=0; attempt<2 && !ok; attempt++){   // محاولتان لكل صورة
-        try{
-          const info = await classifyImage(fresh[i].url);
-          S.data.items[fresh[i].name] = Object.assign({hidden:false}, info);
-          ok = true; changed = true;
-        }catch(e){ /* أعد المحاولة */ }
-      }
-      if (!ok){
-        S.data.items[fresh[i].name] = { name_ar:'', name_en:'', category:'أخرى', desc_ar:'', desc_en:'', price:0, hidden:false, failed:true };
-      }
-      await sSet('data', S.data);
-      S.classifying = {done:i+1, total:fresh.length}; render();
-    }
-    S.classifying = null;
-    if (changed){ S.dirty = true; const r = await pushRepoMenu(); if (r.ok) toast(t('pushed')); }
-    render();
-    toast(t('classified'));
   }
 
-  const items = () => S.data.items;
   const cartCount = () => Object.values(S.cart).reduce((a,b)=>a+b,0);
-  const cartTotal = () => Object.entries(S.cart).reduce((a,[k,q])=>a+(items()[k]?.price||0)*q,0);
+  const cartTotal = () => Object.entries(S.cart).reduce((a,[k,q])=>{
+    const f = S.files.find(x=>x.name===k); return a + (f?iprice(f):0)*q;
+  },0);
   const fileOf = k => S.files.find(f => f.name===k);
 
   /* ---------- طلب واتساب ---------- */
   function sendWhatsApp(c){
-    const num = String(S.data.settings.whatsapp || S.cfg.whatsapp || '').replace(/[^\d]/g,'');
-    const lines = Object.entries(S.cart).map(([k,q]) => `• ${iname(items()[k])} × ${q} = ${(items()[k]?.price||0)*q} ${t('dirham')}`);
+    const num = String(CONFIG.whatsapp||'').replace(/[^\d]/g,'');
+    if (!num){ toast('⚠️ ' + (S.lang==='ar'?'لم يُضبط رقم الواتساب في CONFIG':'WhatsApp number not set in CONFIG')); return; }
+    const lines = Object.entries(S.cart).map(([k,q]) => {
+      const f = fileOf(k);
+      return `• ${f?iname(f):k} × ${q} = ${(f?iprice(f):0)*q} ${t('dirham')}`;
+    });
     const msg = [
-      `${t('orderMsgTitle')} ${S.data.settings.name || S.cfg.name}:`,
+      `${t('orderMsgTitle')} ${S.lang==='ar'?CONFIG.restaurantName:CONFIG.restaurantNameEn}:`,
       ...lines,
-      `${t('total')}: *${cartTotal()} ${t('dirham')}* (${S.lang==='ar'?'الدفع عند الاستلام':'cash on delivery'})`,
+      `${t('total')}: *${cartTotal()} ${t('dirham')}* (${t('codShort')})`,
       '',
       `${t('customer')}:`,
-      `👤 ${c.name}`,
-      `📞 ${c.phone}`,
-      `📍 ${c.address}`,
+      `👤 ${c.name}`, `📞 ${c.phone}`, `📍 ${c.address}`,
       c.notes ? `📝 ${c.notes}` : ''
     ].filter(Boolean).join('\n');
     window.open('https://wa.me/' + num + '?text=' + encodeURIComponent(msg), '_blank');
@@ -441,84 +370,25 @@
 
   /* ---------- العرض ---------- */
   function render(){
-    applyDir();
-    if (S.phase==='loading'){
-      ROOT.innerHTML = '<div style="min-height:70vh;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;color:var(--ink-2)"><div class="spinner" style="width:34px;height:34px;border-width:4px"></div>…</div>';
-      return;
-    }
-    if (S.phase==='setup'){ renderSetup(); return; }
-    renderShop();
-  }
+    ROOT.dir = S.lang==='ar' ? 'rtl' : 'ltr';
+    ROOT.lang = S.lang;
+    const restName = S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn;
+    const welcome = S.lang==='ar' ? CONFIG.welcomeAr : CONFIG.welcomeEn;
+    const chef = S.chefImgs[0];
 
-  /* --- الإعداد --- */
-  function renderSetup(){
-    ROOT.innerHTML = `
-      <div class="hero"><div class="hero-in" style="padding-bottom:48px">
-        <span class="tag">✨ إعداد لمرة واحدة · One-time setup</span>
-        <h1>صفحة وجباتك الذكية</h1>
-        <p>اربطها بمجلد صورك في GitHub — كل وجبة جديدة تُصنَّف تلقائياً بالذكاء الاصطناعي، والطلبات تصلك على واتساب.</p>
-        <div class="gold-line"></div>
-      </div></div>
-      <div style="max-width:520px;margin:-24px auto 0;padding:0 18px 60px;position:relative">
-        <div style="background:var(--card);border-radius:22px;box-shadow:var(--sh-lg);padding:26px 22px;display:grid;gap:16px">
-          <div class="field"><label>رابط مجلد الصور في GitHub</label>
-            <input class="input" id="su-url" placeholder="https://github.com/user/repo/tree/main/meals" dir="ltr" style="text-align:left">
-            <span style="font-size:12px;color:var(--ink-3)">يجب أن يكون المستودع عاماً (Public) · ضع صورة باسم chef.jpg لتظهر في قسم الشيف</span></div>
-          <div class="field"><label>اسم المطعم / المطبخ</label>
-            <input class="input" id="su-name" placeholder="مثال: مطبخ لالة فاطمة"></div>
-          <div class="field"><label>رقم واتساب لاستقبال الطلبات (بالصيغة الدولية)</label>
-            <input class="input" id="su-wa" placeholder="212612345678" dir="ltr" style="text-align:left" inputmode="tel"></div>
-          <div class="field"><label>الرمز السري للمدير</label>
-            <input class="input" id="su-pin" type="password"></div>
-          <p id="su-err" style="color:var(--red);margin:0;font-size:14px"></p>
-          <button class="btn" id="su-go" style="padding:14px">ابدأ الآن 🚀</button>
-        </div>
-      </div>`;
-    document.getElementById('su-go').onclick = async function(){
-      const errEl = document.getElementById('su-err');
-      const p = parseRepoUrl(document.getElementById('su-url').value);
-      const name = document.getElementById('su-name').value.trim();
-      const wa = document.getElementById('su-wa').value.trim();
-      const pin = document.getElementById('su-pin').value.trim();
-      if (!p){ errEl.textContent='الرابط غير صالح — انسخه من شريط العنوان في المتصفح'; return; }
-      if (!wa){ errEl.textContent='أدخل رقم الواتساب الذي ستصلك عليه الطلبات'; return; }
-      if (!pin){ errEl.textContent='اختر رمزاً سرياً للمدير'; return; }
-      this.disabled=true; this.textContent='جارٍ التحقق…'; errEl.textContent='';
-      try{ await listImages(p); }
-      catch(e){
-        try{ p.branch='master'; await listImages(p); }
-        catch(e2){ errEl.textContent=e.message; this.disabled=false; this.textContent='ابدأ الآن 🚀'; return; }
-      }
-      S.cfg = Object.assign({}, p, {name, pin, whatsapp:wa});
-      S.data.settings = { name, whatsapp:wa, welcome_ar:'', welcome_en:'' };
-      await sSet('config', S.cfg);
-      await sSet('data', S.data);
-      S.phase='shop'; render(); refresh();
-    };
-  }
-
-  /* --- المتجر --- */
-  function renderShop(){
-    const st = S.data.settings;
     const query = S.q.trim().toLowerCase();
+    const cats = [...new Set(S.files.map(f => itemOf(f).category).filter(Boolean))];
     const match = f => {
-      const it = items()[f.name]; if (!it) return false;
-      const unnamed = it.failed || !(it.name_ar || it.name_en || it.name);
-      if (!S.admin && (it.hidden || unnamed)) return false;
+      const it = itemOf(f);
+      if (!S.admin && it.hidden) return false;
       if (S.cat!=='الكل' && it.category!==S.cat) return false;
       if (query){
-        const hay = [it.name_ar,it.name_en,it.desc_ar,it.desc_en,it.name,it.description].join(' ').toLowerCase();
+        const hay = [iname(f), it.name_ar, it.name_en, it.desc_ar, it.desc_en].join(' ').toLowerCase();
         if (!hay.includes(query)) return false;
       }
       return true;
     };
     const visible = S.files.filter(match);
-    const usedCats = ['الكل'].concat(CATS.map(c=>c.k).filter(k =>
-      S.files.some(f => items()[f.name]?.category===k && (S.admin || !items()[f.name].hidden))));
-    const pending = S.classifying ? S.classifying.total - S.classifying.done : 0;
-    const chef = S.chefImgs[0];
-    const welcome = S.lang==='ar' ? (st.welcome_ar || T.welcomeDefaultAr) : (st.welcome_en || T.welcomeDefaultEn);
-    const restName = st.name || S.cfg.name || (S.lang==='ar'?'مطبخنا':'Our Kitchen');
 
     ROOT.innerHTML = `
       <div class="topbar"><div class="topbar-in">
@@ -535,8 +405,8 @@
 
       ${S.admin ? `<div class="adminbar">${t('adminOn')}
         <button id="do-refresh2">${t('refresh')}</button>
-        <button id="push-now">${t('pushRepo')}</button>
-        <span class="sync">${S.saving ? '⏳…' : (S.dirty ? t('notSynced') : t('synced'))}</span>
+        ${S.dirty ? `<button id="push-now">${t('pushRepo')}</button>` : ''}
+        ${S.saving ? '⏳' : ''}
       </div>` : ''}
 
       <div class="hero"><div class="hero-in">
@@ -546,13 +416,12 @@
         <div class="gold-line"></div>
       </div></div>
 
-      <!-- قسم الشيف والكلمة الترحيبية -->
       <div class="chef"><div class="chef-card">
-        ${chef ? `<img src="${esc(chef.url)}" alt="Chef">` : `<div style="width:110px;height:110px;border-radius:50%;border:4px solid var(--gold);background:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-size:44px;flex-shrink:0">👨‍🍳</div>`}
+        ${chef ? `<img src="${esc(chef.url)}" alt="Chef" data-lb-chef="1">` : `<div style="width:104px;height:104px;border-radius:50%;border:4px solid var(--gold);background:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-size:42px;flex-shrink:0">👨‍🍳</div>`}
         <div class="chef-txt">
           <span class="role">${t('chefRole')}</span>
           <h2>${esc(restName)}</h2>
-          <p><span class="quote-mark">"</span> ${esc(welcome)}</p>
+          <p>${esc(welcome)}</p>
         </div>
       </div></div>
 
@@ -561,57 +430,54 @@
           <input id="search-in" placeholder="${t('search')}" value="${esc(S.q)}">
           ${query ? '<button class="xbtn" id="clear-q" style="width:30px;height:30px;font-size:13px">✕</button>' : ''}
         </div>
-        <div class="cats">
-          ${usedCats.map(k => `<button class="chip ${S.cat===k?'on':''}" data-cat="${esc(k)}">${esc(k==='الكل'?t('all'):catLabel(k))}</button>`).join('')}
-        </div>
+        ${cats.length ? `<div class="cats">
+          <button class="chip ${S.cat==='الكل'?'on':''}" data-cat="الكل">${t('all')}</button>
+          ${cats.map(c => `<button class="chip ${S.cat===c?'on':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('')}
+        </div>` : ''}
       </div></div>
 
-      ${S.classifying ? `<div class="notice info"><div class="spinner"></div> ${t('classifying')} (${S.classifying.done}/${S.classifying.total})</div>` : ''}
+      ${!S.cfg ? `<div class="notice err">${t('noRepo')}</div>` : ''}
       ${S.error ? `<div class="notice err">⚠️ ${esc(S.error)} <button class="btn ghost" id="retry" style="padding:6px 16px;font-size:13px">🔄</button></div>` : ''}
 
       <main class="grid">
+        ${S.loadingList ? `<div class="empty"><div class="spinner" style="margin:0 auto 14px"></div></div>` : ''}
         ${visible.map((f,i)=>dishHTML(f,i)).join('')}
-        ${pending>0 ? Array(pending).fill('<div class="skel"><div class="a"></div><div class="b"></div><div class="c"></div></div>').join('') : ''}
-        ${(!visible.length && !pending && !S.error) ? `
+        ${(!S.loadingList && !visible.length && !S.error && S.cfg) ? `
           <div class="empty">
-            <div class="big">${query||S.cat!=='الكل'?'🔍':'🍽️'}</div>
-            <h3 style="margin-bottom:6px">${query||S.cat!=='الكل'?t('noResults'):t('noDishes')}</h3>
-            <p>${query||S.cat!=='الكل'?t('tryOther'):t('addToRepo')}</p>
-            ${!query&&S.cat==='الكل'?`<button class="btn ghost" id="do-refresh3" style="margin-top:8px">${t('refresh')}</button>`:''}
+            <div class="big">${query?'🔍':'🍽️'}</div>
+            <h3 style="margin-bottom:6px">${query?t('noResults'):t('noDishes')}</h3>
+            <p>${query?t('tryOther'):t('addToRepo')}</p>
           </div>`:''}
       </main>
 
       <p class="foot">${t('footer')}</p>
-      ${modalHTML()}`;
+      ${modalHTML()}
+      ${lightboxHTML()}`;
 
     bind();
   }
 
   function dishHTML(f,i){
-    const it = items()[f.name];
+    const it = itemOf(f);
     const qty = S.cart[f.name] || 0;
     const editing = S.editing===f.name;
-    const unnamed = it.failed || !(it.name_ar || it.name_en || it.name);
+    const price = iprice(f);
 
     const action = editing ? `
       <div style="display:grid;gap:8px">
-        <div class="field"><label>${t('nameAr')}</label><input class="input" id="ed-name-ar" value="${esc(it.name_ar||it.name||'')}"></div>
+        <div class="field"><label>${t('nameAr')}</label><input class="input" id="ed-name-ar" value="${esc(it.name_ar||'')}" placeholder="${esc(prettyName(f.name))}"></div>
         <div class="field"><label>${t('nameEn')}</label><input class="input" id="ed-name-en" dir="ltr" style="text-align:left" value="${esc(it.name_en||'')}"></div>
-        <div class="field"><label>${t('category')}</label>
-          <select class="input" id="ed-cat">${CATS.map(c=>`<option value="${esc(c.k)}" ${c.k===it.category?'selected':''}>${esc(catLabel(c.k))}</option>`).join('')}</select></div>
-        <div class="field"><label>${t('descAr')}</label><textarea class="input" id="ed-desc-ar" rows="2">${esc(it.desc_ar||it.description||'')}</textarea></div>
+        <div class="field"><label>${t('descAr')}</label><textarea class="input" id="ed-desc-ar" rows="2">${esc(it.desc_ar||'')}</textarea></div>
         <div class="field"><label>${t('descEn')}</label><textarea class="input" id="ed-desc-en" dir="ltr" style="text-align:left" rows="2">${esc(it.desc_en||'')}</textarea></div>
-        <div class="field"><label>${t('price')}</label><input class="input" id="ed-price" type="number" value="${esc(it.price)}"></div>
+        <div class="field"><label>${t('price')} (${t('dirham')})</label><input class="input" id="ed-price" type="number" value="${esc(it.price||'')}"></div>
+        <div class="field"><label>${t('category')}</label><input class="input" id="ed-cat" value="${esc(it.category||'')}" placeholder="${S.lang==='ar'?'مثال: سلطات':'e.g. Salads'}"></div>
         <label style="font-size:14px;display:flex;gap:8px;align-items:center">
           <input type="checkbox" id="ed-hidden" ${it.hidden?'checked':''}> ${t('hide')}</label>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div style="display:flex;gap:8px">
           <button class="btn" style="flex:1" data-save="${esc(f.name)}">${t('save')}</button>
-          <button class="btn gold" data-reclass="${esc(f.name)}">${t('reclass')}</button>
           <button class="btn ghost" data-cancel="1">${t('cancel')}</button>
         </div>
       </div>`
-    : unnamed ? `
-      <button class="btn gold" data-edit="${esc(f.name)}" style="width:100%">✏️ ${S.lang==='ar'?'اكتب اسم الوجبة':'Set the dish name'}</button>`
     : qty===0 ? `
       <div style="display:flex;gap:8px">
         <button class="addbtn" data-add="${esc(f.name)}">${t('add')} <b>+</b></button>
@@ -627,18 +493,34 @@
       </div>`;
 
     return `
-      <article class="dish" style="animation-delay:${Math.min(i*40,320)}ms;${it.hidden?'opacity:.55':''}">
-        <div class="dish-img">
-          <img src="${esc(f.url)}" alt="${esc(iname(it))}" loading="lazy">
-          <span class="price-tag">${esc(it.price)} ${t('currency')}</span>
-          <span class="cat-tag">${esc(catLabel(it.category))}${it.hidden?' · '+t('hidden'):''}${unnamed?' · ⚠️':''}</span>
+      <article class="dish" style="animation-delay:${Math.min(i*35,300)}ms;${it.hidden?'opacity:.55':''}">
+        <div class="dish-img" data-lb="${esc(f.name)}" title="${S.lang==='ar'?'اضغط للتكبير':'Click to zoom'}">
+          <img src="${esc(f.url)}" alt="${esc(iname(f))}" loading="lazy">
+          <span class="zoom-hint">⤢</span>
+          ${price ? `<span class="price-tag">${price} ${t('dirham')}</span>` : ''}
         </div>
         <div class="dish-body">
-          <h3 style="${unnamed?'color:var(--red);font-size:15px;font-weight:500':''}">${unnamed ? t('needsName') : esc(iname(it))}</h3>
-          <p>${esc(idesc(it))}</p>
+          <h3>${esc(iname(f))}</h3>
+          ${idesc(f) ? `<p>${esc(idesc(f))}</p>` : '<p></p>'}
           ${action}
         </div>
       </article>`;
+  }
+
+  /* --- عارض الصور --- */
+  function lightboxHTML(){
+    if (!S.lightbox) return '';
+    const f = S.lightbox==='__chef__' ? S.chefImgs[0] : fileOf(S.lightbox);
+    if (!f) return '';
+    const isChef = S.lightbox==='__chef__';
+    const price = isChef ? 0 : iprice(f);
+    return `
+      <div class="lightbox" id="lb">
+        <button class="lb-x" id="lb-x">✕</button>
+        <img src="${esc(f.url)}" alt="">
+        <div class="lb-cap">${esc(isChef ? t('chefRole') : iname(f))}</div>
+        ${price ? `<div class="lb-price">${price} ${t('dirham')}</div>` : ''}
+      </div>`;
   }
 
   /* --- النوافذ --- */
@@ -648,13 +530,13 @@
     if (S.modal==='cart'){
       const entries = Object.entries(S.cart);
       const rows = entries.map(([k,q]) => {
-        const f = fileOf(k), it = items()[k] || {};
+        const f = fileOf(k);
         return `
         <div class="cart-row">
           ${f?`<img src="${esc(f.url)}" alt="">`:''}
           <div style="flex:1;min-width:0">
-            <b style="display:block;font-size:15px">${esc(iname(it))}</b>
-            <span style="color:var(--ink-2);font-size:13px">${esc(it.price||0)} × ${q} = <b>${(it.price||0)*q} ${t('currency')}</b></span>
+            <b style="display:block;font-size:15px">${esc(f?iname(f):k)}</b>
+            <span style="color:var(--ink-2);font-size:13px">${f?iprice(f):0} × ${q} = <b>${(f?iprice(f):0)*q} ${t('dirham')}</b></span>
           </div>
           <div class="stepper" style="padding:3px">
             <button class="stepbtn" style="width:32px;height:32px;font-size:16px" data-dec-m="${esc(k)}">−</button>
@@ -695,19 +577,17 @@
     }
 
     if (S.modal==='settings'){
-      const st = S.data.settings;
       return `
       <div class="overlay" data-close="1"><div class="sheet">
         <div class="sheet-head"><h2>${t('settings')}</h2><button class="xbtn" data-close="1">✕</button></div>
         <div style="display:grid;gap:12px">
-          <div class="field"><label>${t('stName')}</label><input class="input" id="st-name" value="${esc(st.name||'')}"></div>
-          <div class="field"><label>${t('stWa')}</label><input class="input" id="st-wa" dir="ltr" style="text-align:left" inputmode="tel" value="${esc(st.whatsapp||'')}"></div>
-          <div class="field"><label>${t('stWelAr')}</label><textarea class="input" id="st-wel-ar" rows="3" placeholder="${esc(T.welcomeDefaultAr)}">${esc(st.welcome_ar||'')}</textarea></div>
-          <div class="field"><label>${t('stWelEn')}</label><textarea class="input" id="st-wel-en" dir="ltr" style="text-align:left" rows="3" placeholder="${esc(T.welcomeDefaultEn)}">${esc(st.welcome_en||'')}</textarea></div>
+          <p style="margin:0;font-size:14px;color:var(--ink-2)">${S.lang==='ar'
+            ? 'اسم المطعم، الواتساب، الكلمة الترحيبية والرمز السري تُعدَّل داخل الملف في CONFIG أعلى الملف.'
+            : 'Restaurant name, WhatsApp, welcome message and PIN are edited inside the file in CONFIG at the top.'}</p>
           <div class="field"><label>${t('stToken')}</label>
-            <input class="input" id="st-token" type="password" dir="ltr" style="text-align:left" placeholder="github_pat_…">
+            <input class="input" id="st-token" type="password" dir="ltr" style="text-align:left" placeholder="github_pat_…" value="${esc(S.ghToken)}">
             <span style="font-size:12px;color:var(--ink-3)">${t('stTokenHint')}</span></div>
-          <button class="btn" id="st-save" style="width:100%">${t('saveSettings')}</button>
+          <button class="btn" id="st-save" style="width:100%">${t('save')}</button>
           <button class="btn gold" id="st-push" style="width:100%">${t('pushRepo')}</button>
         </div>
       </div></div>`;
@@ -730,7 +610,7 @@
     if (si){
       let tm;
       si.oninput = () => { clearTimeout(tm); tm = setTimeout(() => { S.q = si.value; render();
-        const n = $('search-in'); if(n){ n.focus(); n.setSelectionRange(n.value.length,n.value.length);} }, 350); };
+        const n=$('search-in'); if(n){ n.focus(); n.setSelectionRange(n.value.length,n.value.length);} }, 300); };
     }
     if ($('clear-q')) $('clear-q').onclick = () => { S.q=''; render(); };
 
@@ -741,13 +621,21 @@
     all('[data-edit]', b => b.onclick = () => { S.editing=b.dataset.edit; render(); });
     all('[data-cancel]', b => b.onclick = () => { S.editing=null; render(); });
 
+    /* تكبير الصور */
+    all('[data-lb]', el => el.onclick = () => { S.lightbox = el.dataset.lb; render(); });
+    all('[data-lb-chef]', el => el.onclick = () => { S.lightbox = '__chef__'; render(); });
+    if ($('lb')){
+      $('lb').onclick = () => { S.lightbox = null; render(); };
+      document.onkeydown = e => { if (e.key==='Escape' && S.lightbox){ S.lightbox=null; render(); } };
+    }
+
     all('[data-save]', b => b.onclick = async () => {
       const k = b.dataset.save;
       S.data.items[k] = {
-        name_ar:$('ed-name-ar').value, name_en:$('ed-name-en').value,
-        category:$('ed-cat').value,
-        desc_ar:$('ed-desc-ar').value, desc_en:$('ed-desc-en').value,
+        name_ar:$('ed-name-ar').value.trim(), name_en:$('ed-name-en').value.trim(),
+        desc_ar:$('ed-desc-ar').value.trim(), desc_en:$('ed-desc-en').value.trim(),
         price:Number($('ed-price').value)||0,
+        category:$('ed-cat').value.trim(),
         hidden:$('ed-hidden').checked,
       };
       S.editing=null;
@@ -755,19 +643,7 @@
       await persist();
     });
 
-    all('[data-reclass]', b => b.onclick = async () => {
-      const k = b.dataset.reclass, f = fileOf(k);
-      b.disabled=true; b.textContent=t('reclassing');
-      try{
-        const info = await classifyImage(f.url);
-        S.data.items[k] = Object.assign({hidden:items()[k]?.hidden||false}, info);
-        S.editing=null;
-        toast(t('reclassOk'));
-        await persist();
-      }catch(e){ toast(t('reclassFail')); S.editing=null; render(); }
-    });
-
-    ['do-refresh2','do-refresh3','retry'].forEach(id => { if ($(id)) $(id).onclick = refresh; });
+    ['do-refresh2','retry'].forEach(id => { if ($(id)) $(id).onclick = refresh; });
     if ($('push-now')) $('push-now').onclick = async () => {
       const r = await pushRepoMenu();
       toast(r.ok ? t('pushed') : (r.reason==='no_token' ? t('noToken') : t('pushFail')));
@@ -792,7 +668,7 @@
 
     if ($('pin-go')){
       const go = () => {
-        if ($('pin-in').value === S.cfg.pin){ S.admin=true; S.modal=null; render(); toast(t('adminOn')); }
+        if ($('pin-in').value === CONFIG.adminPin){ S.admin=true; S.modal=null; render(); toast('🛠️'); }
         else $('pin-err').textContent = t('wrongPin');
       };
       $('pin-go').onclick = go;
@@ -801,21 +677,13 @@
     }
 
     if ($('st-save')) $('st-save').onclick = async () => {
-      S.data.settings = Object.assign({}, S.data.settings, {
-        name:$('st-name').value.trim(),
-        whatsapp:$('st-wa').value.trim(),
-        welcome_ar:$('st-wel-ar').value.trim(),
-        welcome_en:$('st-wel-en').value.trim(),
-      });
-      const tok = $('st-token').value.trim();
-      if (tok) await sSet('gh_token', tok, false);   // شخصي فقط — لا يُشارك أبداً
-      S.modal=null;
-      toast(t('saved'));
-      await persist();
+      S.ghToken = $('st-token').value.trim();
+      if (S.ghToken) await sSet('gh_token', S.ghToken, false);
+      S.modal=null; render(); toast(t('saved'));
     };
     if ($('st-push')) $('st-push').onclick = async () => {
-      const tok = $('st-token').value.trim();
-      if (tok) await sSet('gh_token', tok, false);
+      S.ghToken = $('st-token').value.trim() || S.ghToken;
+      if (S.ghToken) await sSet('gh_token', S.ghToken, false);
       const r = await pushRepoMenu();
       toast(r.ok ? t('pushed') : (r.reason==='no_token' ? t('noToken') : t('pushFail')));
     };
