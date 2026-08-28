@@ -1,3 +1,4 @@
+
 <!-- مطبخنا — صفحة وجبات احترافية ثنائية اللغة | طلب عبر واتساب | حفظ في GitHub -->
 <div id="app-root" dir="rtl"></div>
 
@@ -197,6 +198,7 @@
     cancel:['إلغاء','Cancel'],
     hide:['إخفاء هذه الوجبة عن الزوار','Hide this dish from visitors'],
     hidden:['مخفية','hidden'],
+    needsName:['⚠️ بدون اسم — لن تظهر للزوار حتى تكتب اسمها','⚠️ Unnamed — hidden from visitors until you name it'],
     nameAr:['الاسم (عربي)','Name (Arabic)'],
     nameEn:['الاسم (إنجليزي)','Name (English)'],
     descAr:['الوصف (عربي)','Description (Arabic)'],
@@ -377,7 +379,16 @@
     catch(e){ S.error = e.message; render(); return; }
     S.chefImgs = imgs.filter(f => CHEF_RE.test(f.name));
     S.files = imgs.filter(f => !CHEF_RE.test(f.name));
-    // الجديد + ما فشل تصنيفه سابقاً
+    // لا نعرض اسم الملف أبداً: أي وجبة اسمها مطابق لاسم الصورة تُعتبر بلا اسم ويُعاد تصنيفها
+    S.files.forEach(f => {
+      const it = S.data.items[f.name];
+      if (!it) return;
+      const base = f.name.replace(IMG_EXT,'').trim();
+      if ([it.name_ar, it.name_en, it.name].some(n => n && n.trim() === base)){
+        it.name_ar=''; it.name_en=''; it.name=''; it.failed = true;
+      }
+    });
+    // الجديد + ما فشل تصنيفه سابقاً (يُصنَّف من جديد تلقائياً)
     const fresh = S.files.filter(f => !S.data.items[f.name] || S.data.items[f.name].failed);
     render();
     if (!fresh.length) return;
@@ -393,7 +404,7 @@
         }catch(e){ /* أعد المحاولة */ }
       }
       if (!ok){
-        S.data.items[fresh[i].name] = { name_ar:'وجبة', name_en:'Dish', category:'أخرى', desc_ar:'', desc_en:'', price:0, hidden:false, failed:true };
+        S.data.items[fresh[i].name] = { name_ar:'', name_en:'', category:'أخرى', desc_ar:'', desc_en:'', price:0, hidden:false, failed:true };
       }
       await sSet('data', S.data);
       S.classifying = {done:i+1, total:fresh.length}; render();
@@ -492,7 +503,8 @@
     const query = S.q.trim().toLowerCase();
     const match = f => {
       const it = items()[f.name]; if (!it) return false;
-      if (!S.admin && it.hidden) return false;
+      const unnamed = it.failed || !(it.name_ar || it.name_en || it.name);
+      if (!S.admin && (it.hidden || unnamed)) return false;
       if (S.cat!=='الكل' && it.category!==S.cat) return false;
       if (query){
         const hay = [it.name_ar,it.name_en,it.desc_ar,it.desc_en,it.name,it.description].join(' ').toLowerCase();
@@ -579,6 +591,7 @@
     const it = items()[f.name];
     const qty = S.cart[f.name] || 0;
     const editing = S.editing===f.name;
+    const unnamed = it.failed || !(it.name_ar || it.name_en || it.name);
 
     const action = editing ? `
       <div style="display:grid;gap:8px">
@@ -597,6 +610,8 @@
           <button class="btn ghost" data-cancel="1">${t('cancel')}</button>
         </div>
       </div>`
+    : unnamed ? `
+      <button class="btn gold" data-edit="${esc(f.name)}" style="width:100%">✏️ ${S.lang==='ar'?'اكتب اسم الوجبة':'Set the dish name'}</button>`
     : qty===0 ? `
       <div style="display:flex;gap:8px">
         <button class="addbtn" data-add="${esc(f.name)}">${t('add')} <b>+</b></button>
@@ -616,10 +631,10 @@
         <div class="dish-img">
           <img src="${esc(f.url)}" alt="${esc(iname(it))}" loading="lazy">
           <span class="price-tag">${esc(it.price)} ${t('currency')}</span>
-          <span class="cat-tag">${esc(catLabel(it.category))}${it.hidden?' · '+t('hidden'):''}${it.failed?' · ⚠️':''}</span>
+          <span class="cat-tag">${esc(catLabel(it.category))}${it.hidden?' · '+t('hidden'):''}${unnamed?' · ⚠️':''}</span>
         </div>
         <div class="dish-body">
-          <h3>${esc(iname(it))}</h3>
+          <h3 style="${unnamed?'color:var(--red);font-size:15px;font-weight:500':''}">${unnamed ? t('needsName') : esc(iname(it))}</h3>
           <p>${esc(idesc(it))}</p>
           ${action}
         </div>
