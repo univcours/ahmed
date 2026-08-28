@@ -7,12 +7,15 @@
 <script>
 /* ⚙️⚙️⚙️ الإعدادات — عدّلها هنا مرة واحدة ⚙️⚙️⚙️ */
 const CONFIG = {
-  // رابط مجلد الصور في GitHub (مستودع عام Public)
-  repoUrl: "https://github.com/univcours/ahmed",                          // مثال: "https://github.com/user/repo/tree/main/meals"
-  restaurantName: "الشيف أحمد",             // اسم المطعم
-  restaurantNameEn: "Chef AHMED",      // الاسم بالإنجليزية
-  whatsapp: "5646546646",                         // رقم واتساب الطلبات بالصيغة الدولية، مثال: "212612345678"
-  adminPin: "1980",                     // الرمز السري للمدير
+  // (اختياري) رابط مجلد الصور في GitHub — اتركه فارغاً إذا رفعت هذه الصفحة
+  // داخل مستودعك ونشرتها عبر GitHub Pages: ستكتشف المستودع وكل الصور تلقائياً
+  repoUrl: "",                          // مثال: "https://github.com/user/repo/tree/main/meals"
+  restaurantName: "مطبخنا",             // اسم المطعم
+  restaurantNameEn: "Our Kitchen",      // الاسم بالإنجليزية
+  whatsapp: "",                         // رقم واتساب الطلبات بالصيغة الدولية، مثال: "212612345678"
+  // 🔒 الرمز السري للمدير — لا يُكتب هنا أبداً، بل نضع "بصمته" المشفرة (SHA-256)
+  // لتوليد البصمة: افتح الصفحة → «دخول المدير» → «توليد بصمة رمز سري» → الصق الناتج هنا
+  adminPinHash: "",
   welcomeAr: "مرحباً بكم في مطبخنا! كل طبق نحضّره بمكونات طازجة وبكل حب، كما لو كنا نطبخ لعائلتنا.",
   welcomeEn: "Welcome to our kitchen! Every dish is made with fresh ingredients and lots of love.",
   currency: "د.م",                      // العملة
@@ -182,6 +185,11 @@ const CONFIG = {
     fillAll:['⚠️ املأ الاسم والهاتف والعنوان','⚠️ Please fill name, phone and address'],
     admin:['👤 المدير','👤 Admin'], adminLogin:['👤 دخول المدير','👤 Admin login'],
     pin:['الرمز السري','PIN code'], login:['دخول','Log in'], wrongPin:['الرمز غير صحيح','Wrong PIN'],
+    noHashMsg:['لم تُضبط بصمة الرمز السري بعد. ولّد بصمة بالأسفل ثم الصقها في CONFIG.adminPinHash داخل الملف.','No PIN hash is set yet. Generate one below then paste it into CONFIG.adminPinHash inside the file.'],
+    genTitle:['🔑 توليد بصمة رمز سري','🔑 Generate a PIN hash'],
+    genPh:['اكتب الرمز السري الذي تريده','Type the PIN you want'],
+    genBtn:['ولّد البصمة','Generate hash'],
+    genHint:['انسخ السطر الناتج وضعه مكان adminPinHash في أول الملف. البصمة لا يمكن عكسها لمعرفة الرمز.','Copy the resulting line and paste it as adminPinHash at the top of the file. The hash cannot be reversed to reveal the PIN.'],
     adminOn:['🛠️ وضع المدير مفعّل — اضغط ✏️ على أي وجبة لتعديلها','🛠️ Admin mode — press ✏️ on any dish to edit'],
     logout:['خروج','Log out'], refresh:['🔄 تحديث الصور','🔄 Refresh photos'],
     save:['💾 حفظ','💾 Save'], saved:['💾 تم الحفظ','💾 Saved'], cancel:['إلغاء','Cancel'],
@@ -230,13 +238,18 @@ const CONFIG = {
   }
 
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  async function sha256(s){
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+  }
   function toast(msg){ const el=document.createElement('div'); el.className='toast'; el.textContent=msg; document.body.appendChild(el); setTimeout(()=>el.remove(),2500); }
   const b64enc = s => btoa(unescape(encodeURIComponent(s)));
   const b64dec = s => decodeURIComponent(escape(atob(s.replace(/\n/g,''))));
 
-  /* اسم افتراضي جميل من اسم الملف: tajine-lham_2.jpg → Tajine lham 2 */
+  /* اسم افتراضي جميل من اسم الملف: meals/tajine-lham_2.jpg → Tajine lham */
+  const baseName = p => String(p).split('/').pop();
   function prettyName(file){
-    let n = file.replace(IMG_EXT,'').replace(/[-_]+/g,' ').replace(/\s+\d+$/,'').trim();
+    let n = baseName(file).replace(IMG_EXT,'').replace(/[-_]+/g,' ').replace(/\s+\d+$/,'').trim();
     return n.charAt(0).toUpperCase() + n.slice(1);
   }
   const itemOf = f => S.data.items[f.name] || {};
@@ -567,12 +580,24 @@ const CONFIG = {
     }
 
     if (S.modal==='login'){
+      const noHash = !CONFIG.adminPinHash;
       return `
-      <div class="overlay" data-close="1"><div class="sheet" style="max-width:400px">
+      <div class="overlay" data-close="1"><div class="sheet" style="max-width:420px">
         <div class="sheet-head"><h2>${t('adminLogin')}</h2><button class="xbtn" data-close="1">✕</button></div>
-        <div class="field"><label>${t('pin')}</label><input class="input" id="pin-in" type="password"></div>
-        <p id="pin-err" style="color:var(--red);font-size:14px;margin:8px 0 0"></p>
-        <button class="btn" id="pin-go" style="width:100%;margin-top:14px">${t('login')}</button>
+        ${noHash
+          ? `<p style="margin:0 0 6px;font-size:14px;color:var(--red);background:var(--red-soft);border-radius:12px;padding:10px 14px">${t('noHashMsg')}</p>`
+          : `<div class="field"><label>${t('pin')}</label><input class="input" id="pin-in" type="password"></div>
+             <p id="pin-err" style="color:var(--red);font-size:14px;margin:8px 0 0"></p>
+             <button class="btn" id="pin-go" style="width:100%;margin-top:14px">${t('login')}</button>`}
+        <details style="margin-top:14px" ${noHash?'open':''}>
+          <summary style="cursor:pointer;font-size:14px;font-weight:700;color:var(--green)">${t('genTitle')}</summary>
+          <div style="display:grid;gap:8px;margin-top:10px">
+            <input class="input" id="gen-pin" type="password" placeholder="${t('genPh')}">
+            <button class="btn gold" id="gen-go">${t('genBtn')}</button>
+            <textarea class="input" id="gen-out" rows="2" readonly dir="ltr" style="text-align:left;font-size:12px;font-family:monospace" onclick="this.select()"></textarea>
+            <span style="font-size:12px;color:var(--ink-3)">${t('genHint')}</span>
+          </div>
+        </details>
       </div></div>`;
     }
 
@@ -667,14 +692,21 @@ const CONFIG = {
     };
 
     if ($('pin-go')){
-      const go = () => {
-        if ($('pin-in').value === CONFIG.adminPin){ S.admin=true; S.modal=null; render(); toast('🛠️'); }
+      const go = async () => {
+        const h = await sha256($('pin-in').value);
+        if (h === CONFIG.adminPinHash){ S.admin=true; S.modal=null; render(); toast('🛠️'); }
         else $('pin-err').textContent = t('wrongPin');
       };
       $('pin-go').onclick = go;
       $('pin-in').onkeydown = e => { if (e.key==='Enter') go(); };
       setTimeout(() => { const p=$('pin-in'); if(p) p.focus(); }, 50);
     }
+    if ($('gen-go')) $('gen-go').onclick = async () => {
+      const v = $('gen-pin').value.trim();
+      if (!v) return;
+      $('gen-out').value = 'adminPinHash: "' + await sha256(v) + '",';
+      $('gen-out').select();
+    };
 
     if ($('st-save')) $('st-save').onclick = async () => {
       S.ghToken = $('st-token').value.trim();
