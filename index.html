@@ -464,25 +464,44 @@ const CONFIG = {
     return await sGet('config');
   }
 
+  /* رابط raw مباشر — بلا حدود طلبات مثل API */
+  const rawUrl = (path) => `https://raw.githubusercontent.com/${S.cfg.owner}/${S.cfg.repo}/${S.cfg.branch}/${path.split('/').map(encodeURIComponent).join('/')}`;
+
   async function listImages(cfg){
-    // نمسح المستودع كاملاً دفعة واحدة ونلتقط كل الصور أينما كانت
+    const CACHE_KEY = 'imgs_cache_v1';
+    const CACHE_MS  = 5 * 60 * 1000;   // كاش 5 دقائق
+    // 1) كاش حديث؟ استعمله مباشرة (0 طلبات API)
+    try{
+      const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+      if (c && Date.now() - c.t < CACHE_MS && Array.isArray(c.imgs) && c.imgs.length) return c.imgs;
+    }catch(e){}
+    // 2) طلب API واحد لجلب القائمة
     const res = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/git/trees/${encodeURIComponent(cfg.branch)}?recursive=1`);
-    if (!res.ok) throw new Error(S.lang==='ar'
-      ? 'تعذر جلب الصور — تأكد أن المستودع عام (Public)'
-      : 'Could not load photos — check that the repo is Public');
+    if (!res.ok){
+      // 3) فشل (403 حد الطلبات؟) → آخر كاش محفوظ ولو قديم
+      try{
+        const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+        if (c && Array.isArray(c.imgs) && c.imgs.length) return c.imgs;
+      }catch(e){}
+      throw new Error(S.lang==='ar'
+        ? 'تعذر جلب الصور مؤقتاً (حد GitHub) — أعد المحاولة بعد دقائق'
+        : 'Temporarily could not load photos (GitHub limit) — retry in a few minutes');
+    }
     const j = await res.json();
     const inPath = p => !cfg.path || p === cfg.path || p.startsWith(cfg.path + '/');
-    return (j.tree || [])
+    const imgs = (j.tree || [])
       .filter(n => n.type==='blob' && IMG_EXT.test(n.path) && inPath(n.path))
       .map(n => ({ name:n.path, url:`https://raw.githubusercontent.com/${cfg.owner}/${cfg.repo}/${cfg.branch}/${n.path.split('/').map(encodeURIComponent).join('/')}` }));
+    try{ localStorage.setItem(CACHE_KEY, JSON.stringify({t:Date.now(), imgs})); }catch(e){}
+    return imgs;
   }
 
   async function loadRepoMenu(){
     try{
-      const res = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${menuPath()}?ref=${S.cfg.branch}`);
+      // raw مباشرة — بلا استهلاك حد API (كاش CDN حتى ~5 دقائق مقبول)
+      const res = await fetch(rawUrl(menuPath()) + '?t=' + Math.floor(Date.now()/300000));
       if (!res.ok) return null;
-      const j = await res.json();
-      return JSON.parse(b64dec(j.content));
+      return await res.json();
     }catch(e){ return null; }
   }
 
@@ -490,10 +509,10 @@ const CONFIG = {
   const pinPath = () => (S.cfg.path ? S.cfg.path + '/' : '') + 'pin.json';
   async function loadRepoPin(){
     try{
-      const res = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${pinPath()}?ref=${S.cfg.branch}`);
+      const res = await fetch(rawUrl(pinPath()) + '?t=' + Math.floor(Date.now()/300000));
       if (!res.ok) return null;
       const j = await res.json();
-      return JSON.parse(b64dec(j.content)).pinHash || null;
+      return j.pinHash || null;
     }catch(e){ return null; }
   }
   async function pushRepoPin(newHash){
@@ -1036,7 +1055,10 @@ const CONFIG = {
       await persist();
     });
 
-    ['do-refresh2','retry'].forEach(id => { if ($(id)) $(id).onclick = refresh; });
+    ['do-refresh2','retry'].forEach(id => { if ($(id)) $(id).onclick = () => {
+      try{ localStorage.removeItem('imgs_cache_v1'); }catch(e){}
+      refresh();
+    }; });
     if ($('open-cart')) $('open-cart').onclick = () => { S.modal='cart'; render(); };
     if ($('open-login')) $('open-login').onclick = () => { S.modal='login'; render(); };
     if ($('logout')) $('logout').onclick = () => { S.admin=false; S.editing=null; S.view='home'; render(); };
