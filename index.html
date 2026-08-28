@@ -506,8 +506,8 @@ const CONFIG = {
 
   async function loadRepoMenu(){
     try{
-      // raw مباشرة — بلا استهلاك حد API (كاش CDN حتى ~5 دقائق مقبول)
-      const res = await fetch(rawUrl(menuPath()) + '?t=' + Math.floor(Date.now()/300000));
+      // raw مباشرة مع كسر الكاش — نقرأ دائماً أحدث نسخة من المستودع
+      const res = await fetch(rawUrl(menuPath()) + '?v=' + Date.now());
       if (!res.ok) return null;
       return await res.json();
     }catch(e){ return null; }
@@ -517,7 +517,7 @@ const CONFIG = {
   const pinPath = () => (S.cfg.path ? S.cfg.path + '/' : '') + 'pin.json';
   async function loadRepoPin(){
     try{
-      const res = await fetch(rawUrl(pinPath()) + '?t=' + Math.floor(Date.now()/300000));
+      const res = await fetch(rawUrl(pinPath()) + '?v=' + Date.now());
       if (!res.ok) return null;
       const j = await res.json();
       return j.pinHash || null;
@@ -560,12 +560,13 @@ const CONFIG = {
   }
 
   async function persist(){
-    S.data._updated = Date.now();          // طابع زمني: النسخة الأحدث تفوز دائماً
+    // الحفظ في المستودع فقط — لا حفظ محلي
     S.dirty = true;
-    await sSet('data', S.data);            // حفظ محلي فوري — الصفحة تتذكر حتى بلا رمز
-    const r = await pushRepoMenu();        // ثم حفظ في المستودع
-    if (r.ok) toast(t('pushed'));
-    else if (r.reason==='no_token') toast(t('noToken'));
+    const r = await pushRepoMenu();
+    if (r.ok){ S.dirty = false; toast(t('pushed')); }
+    else if (r.reason==='no_token') toast('🚫 ' + (S.lang==='ar'
+      ? 'لن يُحفظ التغيير! أضف رمز GitHub في الإعدادات أولاً'
+      : 'Change NOT saved! Add a GitHub token in settings first'));
     else toast(t('pushFail'));
     render();
   }
@@ -577,20 +578,10 @@ const CONFIG = {
     S.cfg = await detectRepo();
     render();
     if (!S.cfg){ S.loadingList = false; render(); return; }
-    await sSet('config', S.cfg);
     S.pinHash = (await loadRepoPin()) || CONFIG.adminPinHash || '';
-    const repoData = await loadRepoMenu();
-    const backup   = await sGet('data');
-    // «الأحدث يفوز»: إن كانت التعديلات المحلية أحدث من نسخة المستودع، لا نفقدها أبداً
-    const rT = (repoData && repoData._updated) || 0;
-    const bT = (backup   && backup._updated)   || 0;
-    S.data = (bT > rT ? backup : repoData) || repoData || backup || { items:{} };
+    // المصدر الوحيد للبيانات: menu.json في المستودع
+    S.data = (await loadRepoMenu()) || { items:{} };
     if (!S.data.items) S.data.items = {};
-    // إن كانت المحلية أحدث ولدينا رمز — ادفعها للمستودع تلقائياً لتُحفظ نهائياً
-    if (bT > rT){
-      S.dirty = true;
-      pushRepoMenu().then(r => { if (r.ok) toast(t('pushed')); });
-    }
     await refresh();
   }
 
