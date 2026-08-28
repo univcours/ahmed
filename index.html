@@ -230,10 +230,23 @@ const CONFIG = {
   const CHEF_RE = /^chef/i;
   const MENU_FILE = 'menu.json';
 
+  /* ---------- تصنيفات الأكلة المغربية (ثابتة، تظهر كلها في الواجهة) ---------- */
+  const CATS = [
+    {k:'بسطيلة', en:'Pastilla'},
+    {k:'مأكولات بحرية', en:'Seafood'},
+    {k:'لحوم ومشوي', en:'Meat & Mechoui'},
+    {k:'كسكس وسفة', en:'Couscous & Seffa'},
+    {k:'سلطات', en:'Salads'},
+    {k:'خضار', en:'Vegetables'},
+    {k:'مقبلات', en:'Appetizers'},
+    {k:'أجواء المطبخ', en:'Behind the scenes'},
+  ];
+  const catLabel = k => !k ? '' : (S.lang==='ar' ? k : ((CATS.find(c=>c.k===k)||{}).en || k));
+
   /* ---------- نصوص الواجهة ---------- */
   const T = {
-    slogan:['🛵 توصيل سريع · 💵 الدفع عند الاستلام','🛵 Fast delivery · 💵 Cash on delivery'],
-    heroSub:['وجبات طازجة محضّرة بحب. اختر، اطلب عبر واتساب، ونوصلها إلى بابك.','Fresh meals made with love. Choose, order on WhatsApp, delivered to your door.'],
+    slogan:['🎉 الطبخ لكل المناسبات · 🛵 توصيل · 💵 الدفع عند الاستلام','🎉 Catering for all occasions · 🛵 Delivery · 💵 Cash on delivery'],
+    heroSub:['أعراس، عقيقة، حفلات ومناسبات — وأيضاً وجباتكم اليومية. اختر، اطلب عبر واتساب، ونوصلها إلى بابك.','Weddings, celebrations and events — plus your everyday meals. Choose, order on WhatsApp, delivered to your door.'],
     chefRole:['الشيف','THE CHEF'],
     home:['الرئيسية','Home'],
     search:['ابحث عن وجبة…','Search for a dish…'],
@@ -539,7 +552,6 @@ const CONFIG = {
     const welcome = S.lang==='ar' ? CONFIG.welcomeAr : CONFIG.welcomeEn;
     const chef = S.chefImgs[0];
     const query = S.q.trim().toLowerCase();
-    const cats = [...new Set(S.files.map(f => itemOf(f).category).filter(Boolean))];
     const match = f => {
       const it = itemOf(f);
       if (it.hidden) return false;
@@ -579,10 +591,10 @@ const CONFIG = {
           <input id="search-in" placeholder="${t('search')}" value="${esc(S.q)}">
           ${query ? '<button class="xbtn" id="clear-q" style="width:30px;height:30px;font-size:13px">✕</button>' : ''}
         </div>
-        ${cats.length ? `<div class="cats">
+        <div class="cats">
           <button class="chip ${S.cat==='الكل'?'on':''}" data-cat="الكل">${t('all')}</button>
-          ${cats.map(c => `<button class="chip ${S.cat===c?'on':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('')}
-        </div>` : ''}
+          ${CATS.map(c => `<button class="chip ${S.cat===c.k?'on':''}" data-cat="${esc(c.k)}">${esc(catLabel(c.k))}</button>`).join('')}
+        </div>
       </div></div>
 
       ${!S.cfg ? `<div class="notice err">${t('noRepo')}</div>` : ''}
@@ -593,9 +605,9 @@ const CONFIG = {
         ${visible.map((f,i)=>dishHTML(f,i,false)).join('')}
         ${(!S.loadingList && !visible.length && !S.error && S.cfg) ? `
           <div class="empty">
-            <div class="big">${query?'🔍':'🍽️'}</div>
-            <h3 style="margin-bottom:6px">${query?t('noResults'):t('noDishes')}</h3>
-            <p>${query?t('tryOther'):t('addToRepo')}</p>
+            <div class="big">${(query||S.cat!=='الكل')?'🔍':'🍽️'}</div>
+            <h3 style="margin-bottom:6px">${(query||S.cat!=='الكل')?t('noResults'):t('noDishes')}</h3>
+            <p>${(query||S.cat!=='الكل')?t('tryOther'):t('addToRepo')}</p>
           </div>`:''}
       </main>
 
@@ -661,7 +673,11 @@ const CONFIG = {
         <div class="field"><label>${t('descAr')}</label><textarea class="input" id="ed-desc-ar" rows="2">${esc(it.desc_ar||'')}</textarea></div>
         <div class="field"><label>${t('descEn')}</label><textarea class="input" id="ed-desc-en" dir="ltr" style="text-align:left" rows="2">${esc(it.desc_en||'')}</textarea></div>
         <div class="field"><label>${t('price')} (${t('dirham')})</label><input class="input" id="ed-price" type="number" inputmode="numeric" value="${esc(it.price||'')}"></div>
-        <div class="field"><label>${t('category')}</label><input class="input" id="ed-cat" value="${esc(it.category||'')}" placeholder="${S.lang==='ar'?'مثال: سلطات':'e.g. Salads'}"></div>
+        <div class="field"><label>${t('category')}</label>
+          <select class="input" id="ed-cat">
+            <option value="">${S.lang==='ar'?'— بدون تصنيف —':'— No category —'}</option>
+            ${CATS.map(c=>`<option value="${esc(c.k)}" ${c.k===it.category?'selected':''}>${esc(catLabel(c.k))}</option>`).join('')}
+          </select></div>
         <label style="font-size:14px;display:flex;gap:8px;align-items:center">
           <input type="checkbox" id="ed-hidden" ${it.hidden?'checked':''}> ${t('hide')}</label>
         <div style="display:flex;gap:8px">
@@ -692,6 +708,7 @@ const CONFIG = {
         </div>
         <div class="dish-body">
           <h3>${esc(iname(f))}</h3>
+          ${it.category ? `<span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:.3px">${esc(catLabel(it.category))}</span>` : ''}
           ${idesc(f) ? `<p>${esc(idesc(f))}</p>` : (adminCard?'':'<p></p>')}
           ${action}
         </div>
