@@ -552,9 +552,10 @@ const CONFIG = {
   }
 
   async function persist(){
+    S.data._updated = Date.now();          // طابع زمني: النسخة الأحدث تفوز دائماً
     S.dirty = true;
-    await sSet('data', S.data);
-    const r = await pushRepoMenu();
+    await sSet('data', S.data);            // حفظ محلي فوري — الصفحة تتذكر حتى بلا رمز
+    const r = await pushRepoMenu();        // ثم حفظ في المستودع
     if (r.ok) toast(t('pushed'));
     else if (r.reason==='no_token') toast(t('noToken'));
     else toast(t('pushFail'));
@@ -571,9 +572,17 @@ const CONFIG = {
     await sSet('config', S.cfg);
     S.pinHash = (await loadRepoPin()) || CONFIG.adminPinHash || '';
     const repoData = await loadRepoMenu();
-    const backup = await sGet('data');
-    S.data = repoData || backup || { items:{} };
+    const backup   = await sGet('data');
+    // «الأحدث يفوز»: إن كانت التعديلات المحلية أحدث من نسخة المستودع، لا نفقدها أبداً
+    const rT = (repoData && repoData._updated) || 0;
+    const bT = (backup   && backup._updated)   || 0;
+    S.data = (bT > rT ? backup : repoData) || repoData || backup || { items:{} };
     if (!S.data.items) S.data.items = {};
+    // إن كانت المحلية أحدث ولدينا رمز — ادفعها للمستودع تلقائياً لتُحفظ نهائياً
+    if (bT > rT){
+      S.dirty = true;
+      pushRepoMenu().then(r => { if (r.ok) toast(t('pushed')); });
+    }
     await refresh();
   }
 
