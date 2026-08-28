@@ -117,6 +117,8 @@ const CONFIG = {
     width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;backdrop-filter:blur(4px)}
   .price-tag{position:absolute;bottom:8px;inset-inline-start:8px;background:rgba(255,255,255,.92);color:var(--green);
     font-weight:700;font-family:'Alexandria',sans-serif;font-size:11px;border-radius:8px;padding:2px 8px;box-shadow:var(--sh-sm);backdrop-filter:blur(3px)}
+  .price-tag s{opacity:.5;font-weight:500;margin-inline-end:2px}
+  .price-tag .off{color:var(--red);font-size:9px;vertical-align:1px;letter-spacing:.3px}
   .hid-tag{position:absolute;top:10px;inset-inline-end:10px;background:var(--red);color:#fff;
     font-size:11px;font-weight:700;border-radius:999px;padding:3px 10px}
   .dish-body{padding:13px 15px 15px;display:flex;flex-direction:column;gap:7px;flex:1}
@@ -288,6 +290,9 @@ const CONFIG = {
     nameAr:['اسم الوجبة (عربي)','Dish name (Arabic)'], nameEn:['اسم الوجبة (إنجليزي)','Dish name (English)'],
     descAr:['الوصف (عربي)','Description (Arabic)'], descEn:['الوصف (إنجليزي)','Description (English)'],
     price:['السعر','Price'], category:['التصنيف (اختياري)','Category (optional)'],
+    oldPrice:['السعر قبل التخفيض (اختياري — يظهر مشطوباً)','Old price (optional — shown crossed out)'],
+    saleChk:['إظهار شارة «خصم» على الوجبة','Show a "SALE" badge on the dish'],
+    saleTag:['خصم','SALE'],
     noResults:['لا نتائج مطابقة','No matching results'],
     tryOther:['جرّب كلمة أخرى.','Try another word.'],
     noDishes:['لا توجد وجبات بعد','No dishes yet'],
@@ -352,7 +357,9 @@ const CONFIG = {
   const itemOf = f => S.data.items[f.name] || {};
   const iname = f => { const it=itemOf(f); return (S.lang==='ar' ? (it.name_ar||it.name_en) : (it.name_en||it.name_ar)) || prettyName(f.name); };
   const idesc = f => { const it=itemOf(f); return (S.lang==='ar' ? (it.desc_ar||'') : (it.desc_en||'')); };
-  const iprice = f => Number(itemOf(f).price) || 0;
+  const iprice = f => { const p = Number(itemOf(f).price); return p > 0 ? p : 10; };   // السعر الافتراضي: 10 دراهم
+  const iold = f => Number(itemOf(f).old_price) || 0;
+  const isale = f => itemOf(f).sale !== false;   // شارة الخصم مفعّلة افتراضياً
 
   function parseRepoUrl(url){
     try{
@@ -708,7 +715,10 @@ const CONFIG = {
         <div class="field"><label>${t('nameEn')}</label><input class="input" id="ed-name-en" dir="ltr" style="text-align:left" value="${esc(it.name_en||'')}"></div>
         <div class="field"><label>${t('descAr')}</label><textarea class="input" id="ed-desc-ar" rows="2">${esc(it.desc_ar||'')}</textarea></div>
         <div class="field"><label>${t('descEn')}</label><textarea class="input" id="ed-desc-en" dir="ltr" style="text-align:left" rows="2">${esc(it.desc_en||'')}</textarea></div>
-        <div class="field"><label>${t('price')} (${t('dirham')})</label><input class="input" id="ed-price" type="number" inputmode="numeric" value="${esc(it.price||'')}"></div>
+        <div class="field"><label>${t('price')} (${t('dirham')})</label><input class="input" id="ed-price" type="number" inputmode="numeric" value="${esc(it.price||'')}" placeholder="10"></div>
+        <div class="field"><label>${t('oldPrice')}</label><input class="input" id="ed-oldprice" type="number" inputmode="numeric" value="${esc(it.old_price||'')}"></div>
+        <label style="font-size:14px;display:flex;gap:8px;align-items:center">
+          <input type="checkbox" id="ed-sale" ${it.sale!==false?'checked':''}> ${t('saleChk')}</label>
         <div class="field"><label>${t('category')}</label>
           <select class="input" id="ed-cat">
             <option value="">${S.lang==='ar'?'— بدون تصنيف —':'— No category —'}</option>
@@ -739,7 +749,7 @@ const CONFIG = {
         <div class="dish-img" data-lb="${esc(f.name)}" title="${S.lang==='ar'?'اضغط للتكبير':'Click to zoom'}">
           <img src="${esc(f.url)}" alt="${esc(iname(f))}" loading="lazy">
           <span class="zoom-hint">⤢</span>
-          ${price ? `<span class="price-tag">${price} ${t('dirham')}</span>` : ''}
+          <span class="price-tag">${iold(f)?`<s>${iold(f)}</s> `:''}${price} ${t('dirham')}${isale(f)?` <b class="off">${t('saleTag')}</b>`:''}</span>
           ${it.hidden && adminCard ? `<span class="hid-tag">${t('hidden')}</span>` : ''}
         </div>
         <div class="dish-body">
@@ -757,13 +767,12 @@ const CONFIG = {
     const f = S.lightbox==='__chef__' ? S.chefImgs[0] : fileOf(S.lightbox);
     if (!f) return '';
     const isChef = S.lightbox==='__chef__';
-    const price = isChef ? 0 : iprice(f);
     return `
       <div class="lightbox" id="lb">
         <button class="lb-x" id="lb-x">✕</button>
         <img src="${esc(f.url)}" alt="">
         <div class="lb-cap">${esc(isChef ? t('chefRole') : iname(f))}</div>
-        ${price ? `<div class="lb-price">${price} ${t('dirham')}</div>` : ''}
+        ${!isChef ? `<div class="lb-price">${iold(f)?`<s style="opacity:.6">${iold(f)}</s> `:''}${iprice(f)} ${t('dirham')}${isale(f)?' · '+t('saleTag'):''}</div>` : ''}
       </div>`;
   }
 
@@ -887,6 +896,8 @@ const CONFIG = {
         name_ar:$('ed-name-ar').value.trim(), name_en:$('ed-name-en').value.trim(),
         desc_ar:$('ed-desc-ar').value.trim(), desc_en:$('ed-desc-en').value.trim(),
         price:Number($('ed-price').value)||0,
+        old_price:Number($('ed-oldprice').value)||0,
+        sale:$('ed-sale').checked,
         category:$('ed-cat').value.trim(),
         hidden:$('ed-hidden').checked,
       };
