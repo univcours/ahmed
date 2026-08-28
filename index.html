@@ -270,6 +270,11 @@ const CONFIG = {
     genPh:['اكتب الرمز السري الذي تريده','Type the PIN you want'],
     genBtn:['ولّد البصمة','Generate hash'],
     genHint:['انسخ السطر الناتج وضعه مكان adminPinHash في أول الملف. البصمة لا يمكن عكسها لمعرفة الرمز.','Copy the resulting line and paste it as adminPinHash at the top of the file. The hash cannot be reversed.'],
+    newPin:['🔑 تغيير الرمز السري','🔑 Change admin PIN'],
+    newPinPh:['اكتب الرمز الجديد (اجعله طويلاً وصعباً)','Type the new PIN (make it long and hard)'],
+    newPinHint:['تُحفظ بصمته المشفرة فقط في ملف pin.json بالمستودع — الرمز نفسه لا يُكتب في أي مكان.','Only its encrypted hash is saved in pin.json in the repo — the PIN itself is never written anywhere.'],
+    changePin:['🔑 غيّر الرمز واحفظه في المستودع','🔑 Change PIN & save to repo'],
+    pinChanged:['🔑 تم تغيير الرمز وحفظه في المستودع','🔑 PIN changed and saved to repo'],
     dashboard:['🛠️ لوحة التحكم','🛠️ Dashboard'],
     dashSub:['كل الصور تظهر هنا — حتى المخفية. اضغط ✏️ على أي وجبة لتعديل اسمها ووصفها وسعرها.','All photos appear here — even hidden ones. Press ✏️ on any dish to edit its name, description and price.'],
     statAll:['كل الصور','All photos'], statVisible:['ظاهرة للزوار','Visible'], statHidden:['مخفية','Hidden'], statPriced:['لها سعر','Priced'],
@@ -311,7 +316,7 @@ const CONFIG = {
     data:{ items:{} },
     files:[], chefImgs:[], error:'', loadingList:true,
     cat:'الكل', q:'', cart:{}, admin:false, editing:null, modal:null, lightbox:null,
-    dirty:false, saving:false, ghToken:'',
+    dirty:false, saving:false, ghToken:'', pinHash:'',
   };
 
   /* ---------- تخزين آمن (يعمل حتى بدون window.storage) ---------- */
@@ -421,6 +426,32 @@ const CONFIG = {
     }catch(e){ return null; }
   }
 
+  /* الرمز السري: بصمته المشفرة فقط تُحفظ في ملف pin.json داخل المستودع */
+  const pinPath = () => (S.cfg.path ? S.cfg.path + '/' : '') + 'pin.json';
+  async function loadRepoPin(){
+    try{
+      const res = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${pinPath()}?ref=${S.cfg.branch}`);
+      if (!res.ok) return null;
+      const j = await res.json();
+      return JSON.parse(b64dec(j.content)).pinHash || null;
+    }catch(e){ return null; }
+  }
+  async function pushRepoPin(newHash){
+    const token = S.ghToken || await sGet('gh_token', false);
+    if (!token) return {ok:false, reason:'no_token'};
+    try{
+      const head = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${pinPath()}?ref=${S.cfg.branch}`,
+        { headers:{ Authorization:'Bearer '+token } });
+      let sha = null;
+      if (head.ok) sha = (await head.json()).sha;
+      const body = { message:'Update admin PIN (hashed)', branch:S.cfg.branch, content:b64enc(JSON.stringify({pinHash:newHash},null,2)) };
+      if (sha) body.sha = sha;
+      const res = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${pinPath()}`,
+        { method:'PUT', headers:{ Authorization:'Bearer '+token, 'Content-Type':'application/json' }, body:JSON.stringify(body) });
+      return {ok:res.ok};
+    }catch(e){ return {ok:false}; }
+  }
+
   async function pushRepoMenu(){
     const token = S.ghToken || await sGet('gh_token', false);
     if (!token) return {ok:false, reason:'no_token'};
@@ -459,6 +490,7 @@ const CONFIG = {
     render();
     if (!S.cfg){ S.loadingList = false; render(); return; }
     await sSet('config', S.cfg);
+    S.pinHash = (await loadRepoPin()) || CONFIG.adminPinHash || '';
     const repoData = await loadRepoMenu();
     const backup = await sGet('data');
     S.data = repoData || backup || { items:{} };
@@ -647,6 +679,10 @@ const CONFIG = {
             <button class="btn gold" id="st-push" style="flex:1;min-width:140px">${t('pushRepo')}</button>
             <button class="btn ghost" id="do-refresh2" style="flex:1;min-width:140px">${t('refresh')}</button>
           </div>
+          <div class="field" style="margin-top:4px"><label>${t('newPin')}</label>
+            <input class="input" id="new-pin" type="password" placeholder="${t('newPinPh')}">
+            <span style="font-size:12px;color:var(--ink-3)">${t('newPinHint')}</span></div>
+          <button class="btn ghost" id="change-pin" style="width:100%">${t('changePin')}</button>
         </div>
 
         <div class="grid" style="padding:0 0 40px">
@@ -775,7 +811,7 @@ const CONFIG = {
     }
 
     if (S.modal==='login'){
-      const noHash = !CONFIG.adminPinHash;
+      const noHash = !S.pinHash;
       return `
       <div class="overlay" data-close="1"><div class="sheet" style="max-width:420px">
         <div class="sheet-head"><h2>${t('adminLogin')}</h2><button class="xbtn" data-close="1">✕</button></div>
@@ -879,7 +915,7 @@ const CONFIG = {
     if ($('pin-go')){
       const go = async () => {
         const h = await sha256($('pin-in').value);
-        if (h === CONFIG.adminPinHash){
+        if (h === S.pinHash){
           S.admin=true; S.modal=null; S.view='admin';   // مباشرة إلى لوحة التحكم بكل الصور
           render(); window.scrollTo(0,0);
         }
@@ -906,6 +942,16 @@ const CONFIG = {
       if (S.ghToken) await sSet('gh_token', S.ghToken, false);
       const r = await pushRepoMenu();
       toast(r.ok ? t('pushed') : (r.reason==='no_token' ? t('noToken') : t('pushFail')));
+    };
+    if ($('change-pin')) $('change-pin').onclick = async () => {
+      const v = $('new-pin').value.trim();
+      if (!v) return;
+      S.ghToken = ($('st-token') ? $('st-token').value.trim() : '') || S.ghToken;
+      if (S.ghToken) await sSet('gh_token', S.ghToken, false);
+      const h = await sha256(v);
+      const r = await pushRepoPin(h);
+      if (r.ok){ S.pinHash = h; $('new-pin').value=''; toast(t('pinChanged')); }
+      else toast(r.reason==='no_token' ? t('noToken') : t('pushFail'));
     };
   }
 
