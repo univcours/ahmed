@@ -291,8 +291,13 @@ const CONFIG = {
     descAr:['الوصف (عربي)','Description (Arabic)'], descEn:['الوصف (إنجليزي)','Description (English)'],
     price:['السعر','Price'], category:['التصنيف (اختياري)','Category (optional)'],
     oldPrice:['السعر قبل التخفيض (اختياري — يظهر مشطوباً)','Old price (optional — shown crossed out)'],
-    saleChk:['إظهار شارة «خصم» على الوجبة','Show a "SALE" badge on the dish'],
-    saleTag:['خصم','SALE'],
+    saleChk:['إظهار شارة «مخفض» على الوجبة','Show a "SALE" badge on the dish'],
+    saleTag:['مخفض','SALE'],
+    waNumbers:['أرقام واتساب لاستقبال الطلبات (رقم في كل سطر — الأول هو الرئيسي)','WhatsApp numbers receiving orders (one per line — first is primary)'],
+    waHint:['بالصيغة الدولية بدون + مثل 212612345678. الطلب يُفتح على الرقم الأول، وتظهر للزبون أزرار لإرسال نسخة للأرقام الأخرى.','International format without +, e.g. 212612345678. The order opens on the first number; buttons let the customer send a copy to the others.'],
+    waExtraTitle:['📩 أرسل نسخة من الطلب','📩 Send a copy of the order'],
+    waExtraSub:['تم فتح الطلب على الرقم الرئيسي. اضغط على كل رقم لإرسال نفس الطلب إليه أيضاً.','The order opened on the main number. Tap each number to also send it there.'],
+    sendTo:['أرسل إلى','Send to'],
     noResults:['لا نتائج مطابقة','No matching results'],
     tryOther:['جرّب كلمة أخرى.','Try another word.'],
     noDishes:['لا توجد وجبات بعد','No dishes yet'],
@@ -359,7 +364,17 @@ const CONFIG = {
   const idesc = f => { const it=itemOf(f); return (S.lang==='ar' ? (it.desc_ar||'') : (it.desc_en||'')); };
   const iprice = f => { const p = Number(itemOf(f).price); return p > 0 ? p : 10; };   // السعر الافتراضي: 10 دراهم
   const iold = f => Number(itemOf(f).old_price) || 0;
-  const isale = f => itemOf(f).sale !== false;   // شارة الخصم مفعّلة افتراضياً
+  const isale = f => itemOf(f).sale !== false;   // شارة «مخفض» مفعّلة افتراضياً
+
+  /* أرقام الواتساب: من إعدادات المستودع (menu.json) أولاً، ثم CONFIG */
+  const waNums = () => {
+    const arr = (S.data.settings && Array.isArray(S.data.settings.whatsapp) ? S.data.settings.whatsapp : [])
+      .map(n => String(n).replace(/[^\d]/g,'')).filter(Boolean);
+    if (arr.length) return arr;
+    const c = String(CONFIG.whatsapp||'').replace(/[^\d]/g,'');
+    return c ? [c] : [];
+  };
+  const waLink = (num, msg) => 'https://wa.me/' + num + '?text=' + encodeURIComponent(msg);
 
   function parseRepoUrl(url){
     try{
@@ -534,8 +549,8 @@ const CONFIG = {
 
   /* ---------- طلب واتساب ---------- */
   function sendWhatsApp(c){
-    const num = String(CONFIG.whatsapp||'').replace(/[^\d]/g,'');
-    if (!num){ toast('⚠️ ' + (S.lang==='ar'?'لم يُضبط رقم الواتساب في CONFIG':'WhatsApp number not set in CONFIG')); return; }
+    const nums = waNums();
+    if (!nums.length){ toast('⚠️ ' + (S.lang==='ar'?'لم تُضبط أرقام الواتساب — أضفها من لوحة التحكم':'WhatsApp numbers not set — add them in the dashboard')); return; }
     const lines = Object.entries(S.cart).map(([k,q]) => {
       const f = fileOf(k);
       return `• ${f?iname(f):k} × ${q} = ${(f?iprice(f):0)*q} ${t('dirham')}`;
@@ -549,8 +564,10 @@ const CONFIG = {
       `👤 ${c.name}`, `📞 ${c.phone}`, `📍 ${c.address}`,
       c.notes ? `📝 ${c.notes}` : ''
     ].filter(Boolean).join('\n');
-    window.open('https://wa.me/' + num + '?text=' + encodeURIComponent(msg), '_blank');
-    S.cart = {}; S.modal = null; render(); toast('✅ ' + t('thanks'));
+    window.open(waLink(nums[0], msg), '_blank');
+    S.cart = {};
+    S.modal = nums.length > 1 ? { type:'wa-extra', msg, nums:nums.slice(1) } : null;
+    render(); toast('✅ ' + t('thanks'));
   }
 
   /* ---------- العرض ---------- */
@@ -678,6 +695,9 @@ const CONFIG = {
 
         <div class="panel">
           <h2>${t('settings')}</h2>
+          <div class="field"><label>${t('waNumbers')}</label>
+            <textarea class="input" id="st-wa" rows="3" dir="ltr" style="text-align:left" placeholder="212612345678&#10;212698765432">${esc(waNums().join('\n'))}</textarea>
+            <span style="font-size:12px;color:var(--ink-3)">${t('waHint')}</span></div>
           <div class="field"><label>${t('stToken')}</label>
             <input class="input" id="st-token" type="password" dir="ltr" style="text-align:left" placeholder="github_pat_…" value="${esc(S.ghToken)}">
             <span style="font-size:12px;color:var(--ink-3)">${t('stTokenHint')}</span></div>
@@ -840,6 +860,15 @@ const CONFIG = {
         </details>
       </div></div>`;
     }
+    if (S.modal && S.modal.type==='wa-extra'){
+      return `<div class="overlay" data-close="1"><div class="sheet" style="max-width:420px">
+        <div class="sheet-head"><h2>${t('waExtraTitle')}</h2><button class="xbtn" data-close="1">✕</button></div>
+        <p style="margin:0 0 12px;color:var(--ink-2);font-size:14px">${t('waExtraSub')}</p>
+        <div style="display:grid;gap:8px">
+          ${S.modal.nums.map(n => `<a class="btn wa" style="text-decoration:none" target="_blank" rel="noopener" href="${esc(waLink(n, S.modal.msg))}">${t('sendTo')} <span dir="ltr">+${esc(n)}</span></a>`).join('')}
+        </div>
+      </div></div>`;
+    }
     return '';
   }
 
@@ -946,7 +975,14 @@ const CONFIG = {
     if ($('st-save')) $('st-save').onclick = async () => {
       S.ghToken = $('st-token').value.trim();
       if (S.ghToken) await sSet('gh_token', S.ghToken, false);
-      toast(t('saved'));
+      if ($('st-wa')){
+        const nums = $('st-wa').value.split(/[\n,;،]+/).map(s => s.replace(/[^\d]/g,'')).filter(Boolean);
+        if (!S.data.settings) S.data.settings = {};
+        S.data.settings.whatsapp = nums;
+        await persist();          // يحفظ الأرقام في menu.json داخل المستودع
+      } else {
+        toast(t('saved'));
+      }
     };
     if ($('st-push')) $('st-push').onclick = async () => {
       S.ghToken = $('st-token').value.trim() || S.ghToken;
