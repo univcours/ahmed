@@ -316,7 +316,10 @@ const CONFIG = {
   const baseName = p => String(p).split('/').pop();
   function prettyName(file){
     let n = baseName(file).replace(IMG_EXT,'').replace(/[-_]+/g,' ').replace(/\s+\d+$/,'').trim();
-    return n ? n.charAt(0).toUpperCase() + n.slice(1) : '—';
+    // أسماء عامة (WhatsApp Image…، IMG_1234…) لا تصلح كاسم وجبة — نعرض اسماً محايداً حتى يعدّله المدير
+    if (!n || /whatsapp|^img\b|^image\b|^photo\b|^screenshot|^\d[\d\s.()-]*$/i.test(n))
+      return S.lang==='ar' ? 'وجبة شهية' : 'Delicious dish';
+    return n.charAt(0).toUpperCase() + n.slice(1);
   }
   const itemOf = f => S.data.items[f.name] || {};
   const iname = f => { const it=itemOf(f); return (S.lang==='ar' ? (it.name_ar||it.name_en) : (it.name_en||it.name_ar)) || prettyName(f.name); };
@@ -383,7 +386,7 @@ const CONFIG = {
     const inPath = p => !cfg.path || p === cfg.path || p.startsWith(cfg.path + '/');
     return (j.tree || [])
       .filter(n => n.type==='blob' && IMG_EXT.test(n.path) && inPath(n.path))
-      .map(n => ({ name:n.path, url:`https://raw.githubusercontent.com/${cfg.owner}/${cfg.repo}/${cfg.branch}/${n.path}` }));
+      .map(n => ({ name:n.path, url:`https://raw.githubusercontent.com/${cfg.owner}/${cfg.repo}/${cfg.branch}/${n.path.split('/').map(encodeURIComponent).join('/')}` }));
   }
 
   async function loadRepoMenu(){
