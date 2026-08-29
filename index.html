@@ -1116,7 +1116,7 @@ const CONFIG = {
       const nm = f ? iname(f) : '';
       const siteUrl = 'https://univcours.github.io/ahmed/';
       /* رابط مشاركة خاص بالوجبة: معاينته صورة الوجبة نفسها، ويحوّل الزائر للموقع */
-      const shareUrl = f ? (siteUrl + 'share/' + dishSlug(f.name) + '.html') : siteUrl;
+      const shareUrl = f ? (siteUrl + 'share/' + dishSlug(f.name) + '.html?v=2') : siteUrl;
       const msg = '🍽️ ' + nm + ' - ' + (f ? iprice(f) : '') + ' ' + t('dirham') + '\n'
                 + '👨‍🍳 ' + (S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn) + '\n'
                 + shareUrl;
