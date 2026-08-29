@@ -5,9 +5,10 @@
       "name_en": "Event platters in the making",
       "desc_ar": "الشيف أثناء تحضير أطباق مناسبة كبيرة.",
       "desc_en": "The chef preparing platters for a big event.",
-      "price": 1000,
+      "price": 0,
       "category": "أجواء المطبخ",
-      "hidden": true
+      "hidden": true,
+      "old_price": 0
     },
     "WhatsApp Image 2026-08-28 at 12.17.47 (1).jpeg": {
       "name_ar": "بسطيلة الحوت",
@@ -23,9 +24,10 @@
       "name_en": "Mixed salad platter",
       "desc_ar": "تشكيلة سلطات طازجة ملونة بالخضار والبيض وأصابع السلطعون.",
       "desc_en": "Fresh colorful salad medley with vegetables, eggs and crab sticks.",
-      "price": 1000,
+      "price": 0,
       "category": "سلطات",
-      "hidden": false
+      "hidden": false,
+      "old_price": 0
     },
     "WhatsApp Image 2026-08-28 at 12.17.47 (3).jpeg": {
       "name_ar": "صينية مأكولات بحرية ملكية",
@@ -244,23 +246,28 @@
       "hidden": false
     },
     "WhatsApp Image 2026-08-28 at 22.03.51 (2).jpeg": {
-      "hidden": true
+      "hidden": true,
+      "price": 0
     },
     "og-image.jpg": {
-      "hidden": true
+      "hidden": true,
+      "price": 0
     },
     "WhatsApp Image 2026-08-28 at 22.03.52 (2).jpeg": {
-      "hidden": true
+      "hidden": true,
+      "price": 0
     },
     "WhatsApp Image 2026-08-28 at 12.17.49 (1).jpeg": {
       "name_ar": "دجاج محمر",
       "name_en": "",
-      "category": "دجاج محمر"
+      "category": "دجاج محمر",
+      "price": 0
     },
     "WhatsApp Image 2026-08-28 at 12.17.50 (1).jpeg": {
       "name_ar": "دجاج محمر",
       "name_en": "",
-      "category": "دجاج محمر"
+      "category": "دجاج محمر",
+      "price": 0
     },
     "تحضير المناسبات.png": {
       "price": 0
