@@ -21,8 +21,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.47 (2).jpeg": {
       "name_ar": "سلطة مشكلة",
       "name_en": "Mixed salad platter",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "تشكيلة سلطات طازجة ملونة بالخضار والبيض وأصابع السلطعون.",
+      "desc_en": "Fresh colorful salad medley with vegetables, eggs and crab sticks.",
       "price": 1000,
       "category": "سلطات",
       "hidden": false
@@ -39,8 +39,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.47 (4).jpeg": {
       "name_ar": "صينية السمك بالمأكولات البحرية",
       "name_en": "Fish & seafood platter",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "سمك طازج محمر مع أطباق القمرون بالصلصة والخضار المزينة.",
+      "desc_en": "Fresh baked fish with saucy shrimp bowls and garnished vegetables.",
       "price": 0,
       "category": "مأكولات بحرية",
       "hidden": false
@@ -48,8 +48,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.47 (5).jpeg": {
       "name_ar": "صينية السمك المعمر",
       "name_en": "Stuffed fish platter",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "سمك معمر بالحشوة البحرية الغنية، يقدم مزيناً للمناسبات.",
+      "desc_en": "Stuffed fish with rich seafood filling, beautifully presented.",
       "price": 0,
       "category": "مأكولات بحرية",
       "hidden": false
@@ -57,8 +57,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.47 (6).jpeg": {
       "name_ar": "تحضير أطباق المناسبات",
       "name_en": "Event platters in the making",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "لمحة من كواليس مطبخنا وتحضيراتنا.",
+      "desc_en": "A glimpse behind our kitchen scenes.",
       "price": 0,
       "category": "أجواء المطبخ",
       "hidden": true
@@ -66,8 +66,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.47.jpeg": {
       "name_ar": "لحم محمر",
       "name_en": "Slow-braised meat",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "لحم محمر على الطريقة المغربية، طري يذوب في الفم.",
+      "desc_en": "Moroccan slow-braised meat, tender and melt-in-the-mouth.",
       "price": 0,
       "category": "لحوم ومشوي",
       "hidden": false
@@ -75,8 +75,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.48 (1).jpeg": {
       "name_ar": "بسطيلة المأكولات البحرية",
       "name_en": "Seafood pastilla",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "بسطيلة ذهبية مقرمشة محشوة بخيرات البحر ومزينة بالقمرون.",
+      "desc_en": "Golden crispy pastilla stuffed with seafood, topped with shrimp.",
       "price": 0,
       "category": "بسطيلة",
       "hidden": false
@@ -84,8 +84,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.48 (2).jpeg": {
       "name_ar": "سلطة ملكية بالقمرون",
       "name_en": "Royal shrimp salad",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "سلطة فاخرة بالقمرون الطازج والخضار المقطعة بعناية.",
+      "desc_en": "Lavish salad with fresh shrimp and finely cut vegetables.",
       "price": 0,
       "category": "سلطات",
       "hidden": false
@@ -93,8 +93,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.48 (3).jpeg": {
       "name_ar": "بسطيلة بالقمرون",
       "name_en": "Shrimp pastilla",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "بسطيلة مقرمشة بحشوة القمرون والشعرية الصينية الشهية.",
+      "desc_en": "Crispy pastilla with shrimp and vermicelli filling.",
       "price": 0,
       "category": "بسطيلة",
       "hidden": false
@@ -102,8 +102,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.48 (4).jpeg": {
       "name_ar": "مقبلات وكاناپي",
       "name_en": "Mini canapés",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "تشكيلة مقبلات صغيرة أنيقة مثالية لاستقبال الضيوف.",
+      "desc_en": "Elegant assorted mini canapés, perfect for welcoming guests.",
       "price": 0,
       "category": "مقبلات",
       "hidden": false
@@ -120,8 +120,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.48.jpeg": {
       "name_ar": "رولي معمر",
       "name_en": "Stuffed roulade",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "رولي معمر بحشوة غنية، مقطع ومزين بالخضار الطازجة.",
+      "desc_en": "Stuffed roulade slices garnished with fresh vegetables.",
       "price": 0,
       "category": "لحوم ومشوي",
       "hidden": false
@@ -138,8 +138,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.49 (3).jpeg": {
       "name_ar": "خضار مبخرة",
       "name_en": "Steamed vegetables",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "أطباق خضار مبخرة طازجة وصحية بألوان زاهية.",
+      "desc_en": "Fresh healthy steamed vegetable plates in vivid colors.",
       "price": 0,
       "category": "خضار",
       "hidden": false
@@ -156,8 +156,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.50 (2).jpeg": {
       "name_ar": "بسطيلة الحوت",
       "name_en": "Seafood Pastilla",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "بسطيلة بحرية مقرمشة مزينة بالقمرون والشعرية الصينية.",
+      "desc_en": "Crispy seafood pastilla topped with shrimp and vermicelli.",
       "price": 0,
       "category": "بسطيلة",
       "hidden": false
@@ -165,8 +165,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.50 (3).jpeg": {
       "name_ar": "تحضير صواني المأكولات البحرية",
       "name_en": "Preparing seafood trays",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "خلف الكواليس: صواني فواكه البحر تُحضَّر بإتقان.",
+      "desc_en": "Behind the scenes: seafood trays prepared with care.",
       "price": 0,
       "category": "أجواء المطبخ",
       "hidden": false
@@ -174,8 +174,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.50 (4).jpeg": {
       "name_ar": "السفة المدفونة",
       "name_en": "Sweet seffa",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "سفة ذهبية بالقرفة واللوز تخفي حشوة لحم شهية.",
+      "desc_en": "Golden seffa with cinnamon and almonds hiding savory meat.",
       "price": 0,
       "category": "كسكس وسفة",
       "hidden": false
@@ -183,8 +183,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.50 (5).jpeg": {
       "name_ar": "تشكيلة فواكه البحر",
       "name_en": "Seafood medley platter",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "تشكيلة سخية من فواكه البحر الطازجة ببلح البحر والقمرون.",
+      "desc_en": "Generous fresh seafood medley with mussels and shrimp.",
       "price": 0,
       "category": "مأكولات بحرية",
       "hidden": false
@@ -192,8 +192,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.50.jpeg": {
       "name_ar": "طبق السلمون المدخن",
       "name_en": "Smoked salmon platter",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "شرائح سلمون مدخن فاخرة مرتبة بلمسة فنية.",
+      "desc_en": "Premium smoked salmon slices arranged artfully.",
       "price": 0,
       "category": "مأكولات بحرية",
       "hidden": false
@@ -201,8 +201,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.51 (1).jpeg": {
       "name_ar": "بسطيلة فواكه البحر",
       "name_en": "Seafood pastilla with mussels",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "بسطيلة فاخرة مغطاة ببلح البحر والقمرون الطازج.",
+      "desc_en": "Deluxe pastilla topped with mussels and fresh shrimp.",
       "price": 0,
       "category": "بسطيلة",
       "hidden": false
@@ -219,8 +219,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.51 (3).jpeg": {
       "name_ar": "بسطيلة بالقمرون",
       "name_en": "Shrimp pastilla",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "بسطيلة مقرمشة بحشوة القمرون والشعرية الصينية الشهية.",
+      "desc_en": "Crispy pastilla with shrimp and vermicelli filling.",
       "price": 0,
       "category": "بسطيلة",
       "hidden": false
@@ -228,8 +228,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.51 (4).jpeg": {
       "name_ar": "سلطة ملكية مشكلة",
       "name_en": "Grand mixed salad",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "سلطة ملكية كبيرة بالخضار والذرة والفواكه الموسمية.",
+      "desc_en": "Grand royal salad with vegetables, corn and seasonal fruits.",
       "price": 0,
       "category": "سلطات",
       "hidden": false
@@ -237,8 +237,8 @@
     "WhatsApp Image 2026-08-28 at 12.17.51.jpeg": {
       "name_ar": "بسطيلة فواكه البحر",
       "name_en": "Seafood pastilla with mussels",
-      "desc_ar": "",
-      "desc_en": "",
+      "desc_ar": "بسطيلة فاخرة مغطاة ببلح البحر والقمرون الطازج.",
+      "desc_en": "Deluxe pastilla topped with mussels and fresh shrimp.",
       "price": 0,
       "category": "بسطيلة",
       "hidden": false
