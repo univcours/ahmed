@@ -581,8 +581,8 @@ const CONFIG = {
       const ct   = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, new TextEncoder().encode(token)));
       const b64  = a => btoa(String.fromCharCode.apply(null, a));
       const payload = JSON.stringify({v:1, kdf:'PBKDF2-SHA256', iter:150000, salt:b64(salt), iv:b64(iv), ct:b64(ct)}, null, 2);
-      const head = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${tokPath()}?ref=${S.cfg.branch}`,
-        { headers:{ Authorization:'Bearer '+token } });
+      const head = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${tokPath()}?ref=${S.cfg.branch}&t=${Date.now()}`,
+        { headers:{ Authorization:'Bearer '+token }, cache:'no-store' });
       let sha = null; if (head.ok) sha = (await head.json()).sha;
       const body = { message:'Update encrypted admin token', branch:S.cfg.branch, content:b64enc(payload) };
       if (sha) body.sha = sha;
@@ -615,8 +615,8 @@ const CONFIG = {
     const token = S.ghToken || await sGet('gh_token', false);
     if (!token) return {ok:false, reason:'no_token'};
     try{
-      const head = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${pinPath()}?ref=${S.cfg.branch}`,
-        { headers:{ Authorization:'Bearer '+token } });
+      const head = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${pinPath()}?ref=${S.cfg.branch}&t=${Date.now()}`,
+        { headers:{ Authorization:'Bearer '+token }, cache:'no-store' });
       let sha = null;
       if (head.ok) sha = (await head.json()).sha;
       const body = { message:'Update admin PIN (hashed)', branch:S.cfg.branch, content:b64enc(JSON.stringify({pinHash:newHash},null,2)) };
@@ -631,15 +631,22 @@ const CONFIG = {
     const token = S.ghToken || await sGet('gh_token', false);
     if (!token) return {ok:false, reason:'no_token'};
     S.saving = true; render();
-    try{
-      const head = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${menuPath()}?ref=${S.cfg.branch}`,
-        { headers:{ Authorization:'Bearer '+token } });
-      let sha = null;
-      if (head.ok) sha = (await head.json()).sha;
+    const freshSha = async () => {
+      const h = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${menuPath()}?ref=${S.cfg.branch}&t=${Date.now()}`,
+        { headers:{ Authorization:'Bearer '+token }, cache:'no-store' });
+      return h.ok ? (await h.json()).sha : null;
+    };
+    const put = async (sha) => {
       const body = { message:'Update menu from website', branch:S.cfg.branch, content:b64enc(JSON.stringify(S.data,null,2)) };
       if (sha) body.sha = sha;
-      const res = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${menuPath()}`,
+      return fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${menuPath()}`,
         { method:'PUT', headers:{ Authorization:'Bearer '+token, 'Content-Type':'application/json' }, body:JSON.stringify(body) });
+    };
+    try{
+      let res = await put(await freshSha());
+      if (res.status === 409){                     // تعارض بصمة ← أعد الجلب والمحاولة مرة
+        res = await put(await freshSha());
+      }
       S.saving = false;
       if (!res.ok){ render(); return {ok:false, status:res.status}; }
       S.dirty = false; render();
@@ -878,7 +885,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.0</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.1</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
