@@ -829,7 +829,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.7</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.8</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
@@ -1215,7 +1215,7 @@ const CONFIG = {
       const msg = '🍽️ ' + nm + ' - ' + price + ' ' + t('dirham') + '\n'
                 + (dsc ? dsc + '\n' : '')
                 + '👨‍🍳 ' + (S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn) + '\n'
-                + shareUrl;
+                + siteUrl;
 
       /* الهاتف فقط: الزران يشاركان الصورة المركّبة عبر قائمة مشاركة الهاتف.
          الحاسوب: روابط عادية — نافذة مشاركة ويندوز/ماك مربكة وغير عملية */
@@ -1237,14 +1237,14 @@ const CONFIG = {
       }
       /* احتياط (حاسوب/متصفح قديم) */
       if (b.dataset.share === 'fb'){
-        /* ننسخ النص للحافظة — يلصقه في المنشور، والمعاينة تُظهر الصورة + الاسم + الوصف */
+        /* صورة الوجبة المباشرة = معاينة مضمونة. النص (بالوصف) يُنسخ — الصقه بـ Ctrl+V */
         try{
           if (navigator.clipboard && navigator.clipboard.writeText){
             await navigator.clipboard.writeText(msg);
-            toast('📋 ' + (S.lang==='ar' ? 'نُسخ النص — الصقه في منشورك (Ctrl+V)' : 'Text copied — paste it into your post'));
+            toast('📋 ' + (S.lang==='ar' ? 'نُسخ الوصف — الصقه في منشورك (Ctrl+V)' : 'Description copied — paste it (Ctrl+V)'));
           }
         }catch(e){}
-        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl), '_blank');
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(f ? f.url : siteUrl), '_blank');
       } else {
         window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
       }
