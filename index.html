@@ -823,7 +823,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.2</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.3</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
@@ -1140,7 +1140,7 @@ const CONFIG = {
             try{
               const d = x.getImageData(0, 0, W, H);
               const s = d.data, out = new Uint8ClampedArray(s);
-              const a = 0.45, ctr = 1 + 4*a;
+              const a = 0.15, ctr = 1 + 4*a;   // توضيح ناعم — القوي يضخّم ضجيج الضغط
               for (let y = 1; y < H-1; y++){
                 let i = (y*W + 1) * 4;
                 for (let xx = 1; xx < W-1; xx++, i += 4){
@@ -1190,7 +1190,7 @@ const CONFIG = {
             x.fillText('📞 +212 689-199142  •  univcours.github.io/ahmed', W - pad,
                        H - Math.round(barH * (hasDsc ? .08 : .12)));
 
-            c.toBlob(b => resolve(b), 'image/jpeg', .97);
+            c.toBlob(b => resolve(b), 'image/jpeg', .95);
           }catch(e){ resolve(null); }
         };
         img.onerror = () => resolve(null);
