@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📣 منشورات فيسبوك — محتوى الموقع كاملاً</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,sans-serif}
+  body{background:#F0F2F5;color:#1C1E21;padding:14px;max-width:680px;margin:0 auto}
+  h1{font-size:19px;text-align:center;margin:8px 0 4px}
+  .sub{text-align:center;color:#65676B;font-size:13px;margin-bottom:6px;line-height:1.7}
+  .counter{text-align:center;font-size:12px;color:#1877F2;font-weight:700;margin-bottom:14px}
+  .post{background:#fff;border-radius:14px;margin-bottom:16px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .post img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+  .post .body{padding:12px 14px 14px}
+  .post h3{font-size:15px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .post h3 .cat{font-size:11px;color:#E0A63C;font-weight:700;white-space:nowrap}
+  .txt{background:#F0F2F5;border-radius:10px;padding:10px;font-size:13px;white-space:pre-wrap;
+    max-height:180px;overflow-y:auto;line-height:1.7;margin-bottom:10px}
+  .row{display:flex;gap:8px}
+  .btn{flex:1;border:none;border-radius:9px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;
+    text-align:center;text-decoration:none;color:#fff}
+  .btn.copy{background:#1877F2}
+  .btn.copy.ok{background:#31A24C}
+  .btn.img{background:#E0A63C;color:#221F1C}
+  .loading{text-align:center;padding:40px;color:#65676B}
+  .spin{width:34px;height:34px;border:3px solid #ddd;border-top-color:#1877F2;border-radius:50%;
+    margin:0 auto 12px;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<h1>📣 محتوى الموقع — منشورات جاهزة</h1>
+<p class="sub">كل وجبة في الموقع = منشور فيسبوك جاهز.<br>
+📋 انسخ النص ← 🖼️ احفظ الصورة (ضغطة مطولة) ← أرفقهما معاً في منشور واحد.</p>
+<p class="counter" id="counter"></p>
+
+<div id="list"><div class="loading"><div class="spin"></div>جارٍ تحميل وجبات الموقع…</div></div>
+
+<script>
+(function(){
+  var OWNER='univcours', REPO='ahmed', BRANCH='main';
+  var SITE='https://univcours.github.io/ahmed/';
+  var PHONE='+212 689-199142';
+  var RAW='https://raw.githubusercontent.com/'+OWNER+'/'+REPO+'/'+BRANCH+'/';
+
+  var HASH={'بسطيلة':'#بسطيلة #بسطيلة_الحوت','مأكولات بحرية':'#مأكولات_بحرية #فواكه_البحر',
+    'لحوم ومشوي':'#مشوي #لحم_محمر','دجاج محمر':'#دجاج_محمر','لحم بالبرقوق':'#لحم_بالبرقوق',
+    'كسكس وسفة':'#كسكس #سفة','سلطات':'#سلطات','خضار':'#خضار_مبخرة','مقبلات':'#مقبلات',
+    'حلويات مغربية':'#حلويات_مغربية','عصائر':'#عصائر','أجواء المطبخ':'#أجواء_المطبخ'};
+
+  function enc(p){ return p.split('/').map(encodeURIComponent).join('/'); }
+  function esc(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+
+  function postText(it){
+    var name = it.name_ar || 'وجبة شهية';
+    var lines = ['🍽️ ' + name];
+    if (it.desc_ar) lines.push('', it.desc_ar);
+    var price = Number(it.price) > 0 ? it.price : 10;
+    lines.push('', '💰 الثمن: ' + price + ' درهم' + (it.sale !== false ? ' (مخفض 🔥)' : ''));
+    lines.push('🎉 متوفر لكل مناسباتكم — أعراس، عقيقة، حفلات');
+    lines.push('🛵 توصيل — 💵 الدفع عند الاستلام');
+    lines.push('', '📞 للطلب: ' + PHONE);
+    lines.push('🌐 القائمة الكاملة: ' + SITE);
+    lines.push('', (HASH[it.category] || '') + ' #الشيف_أحمد #طبخ_مغربي #مناسبات');
+    return lines.join('\n');
+  }
+
+  fetch(RAW + 'menu.json?v=' + Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var items = data.items || {};
+      var keys = Object.keys(items).filter(function(k){
+        var it = items[k];
+        return !it.hidden && it.name_ar && it.category !== 'أجواء المطبخ';
+      });
+      document.getElementById('counter').textContent = '✨ ' + keys.length + ' منشوراً جاهزاً من وجبات موقعك';
+      var html = '';
+      keys.forEach(function(k, i){
+        var it = items[k];
+        var img = RAW + enc(k);
+        var txt = postText(it);
+        html += '<div class="post">'
+          + '<img src="' + img + '" loading="lazy" alt="">'
+          + '<div class="body">'
+          + '<h3>' + esc(it.name_ar) + '<span class="cat">' + esc(it.category || '') + '</span></h3>'
+          + '<div class="txt" id="t' + i + '">' + esc(txt) + '</div>'
+          + '<div class="row">'
+          + '<button class="btn copy" data-t="t' + i + '">📋 نسخ المنشور</button>'
+          + '<a class="btn img" href="' + img + '" target="_blank">🖼️ فتح الصورة</a>'
+          + '</div></div></div>';
+      });
+      document.getElementById('list').innerHTML = html || '<div class="loading">لا توجد وجبات مسماة بعد.</div>';
+
+      document.querySelectorAll('.btn.copy').forEach(function(btn){
+        btn.onclick = function(){
+          var txt = document.getElementById(btn.dataset.t).innerText;
+          function ok(){ btn.textContent='✅ تم النسخ'; btn.classList.add('ok');
+            setTimeout(function(){ btn.textContent='📋 نسخ المنشور'; btn.classList.remove('ok'); }, 1800); }
+          if (navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(txt).then(ok).catch(fb);
+          } else fb();
+          function fb(){ var ta=document.createElement('textarea'); ta.value=txt;
+            document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+            document.body.removeChild(ta); ok(); }
+        };
+      });
+    })
+    .catch(function(){
+      document.getElementById('list').innerHTML =
+        '<div class="loading">⚠️ تعذر التحميل — أعد المحاولة بعد لحظات.</div>';
+    });
+})();
+</script>
+</body>
+</html>
