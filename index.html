@@ -1122,7 +1122,7 @@ const CONFIG = {
     const dishSlug = n => n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
     /* نرسم المعلومات على الصورة + نوضّحها لتعويض ضغط واتساب */
-    function composeShareImage(f, nm, price){
+    function composeShareImage(f, nm, price, dsc){
       return new Promise(resolve => {
         const img = new Image();
         img.crossOrigin = 'anonymous';
@@ -1154,20 +1154,42 @@ const CONFIG = {
               x.putImageData(d, 0, 0);
             }catch(e){ /* إن فشل التوضيح نكمل بالصورة كما هي */ }
 
-            const barH = Math.round(H * 0.17);
+            /* شريط المعلومات — أعلى قليلاً إذا كان هناك وصف */
+            const hasDsc = !!(dsc && dsc.trim());
+            const barH = Math.round(H * (hasDsc ? 0.24 : 0.17));
             const g = x.createLinearGradient(0, H - barH, 0, H);
             g.addColorStop(0, 'rgba(15,8,4,0)');
-            g.addColorStop(.35, 'rgba(15,8,4,.78)');
-            g.addColorStop(1, 'rgba(15,8,4,.94)');
+            g.addColorStop(.3, 'rgba(15,8,4,.80)');
+            g.addColorStop(1, 'rgba(15,8,4,.95)');
             x.fillStyle = g; x.fillRect(0, H - barH, W, barH);
             x.direction = 'rtl'; x.textAlign = 'right';
             const pad = Math.round(W * .04);
+            const maxW = W - pad * 2;
+
+            /* اسم + ثمن */
             x.fillStyle = '#FFFFFF';
             x.font = 'bold ' + Math.round(W * .046) + 'px Arial, sans-serif';
-            x.fillText(nm + '  •  ' + price + ' درهم', W - pad, H - Math.round(barH * .44));
+            x.fillText(nm + '  •  ' + price + ' درهم', W - pad,
+                       H - Math.round(barH * (hasDsc ? .62 : .44)));
+
+            /* الوصف — سطر واحد يُقصّ بأناقة إن طال */
+            if (hasDsc){
+              x.fillStyle = 'rgba(255,255,255,.92)';
+              x.font = Math.round(W * .032) + 'px Arial, sans-serif';
+              let line = dsc.trim();
+              while (line.length > 4 && x.measureText(line + '…').width > maxW){
+                line = line.slice(0, -2);
+              }
+              if (line !== dsc.trim()) line += '…';
+              x.fillText(line, W - pad, H - Math.round(barH * .36));
+            }
+
+            /* الهاتف + الموقع */
             x.fillStyle = '#F2B84B';
             x.font = 'bold ' + Math.round(W * .031) + 'px Arial, sans-serif';
-            x.fillText('📞 +212 689-199142  •  univcours.github.io/ahmed', W - pad, H - Math.round(barH * .12));
+            x.fillText('📞 +212 689-199142  •  univcours.github.io/ahmed', W - pad,
+                       H - Math.round(barH * (hasDsc ? .08 : .12)));
+
             c.toBlob(b => resolve(b), 'image/jpeg', .97);
           }catch(e){ resolve(null); }
         };
@@ -1181,9 +1203,11 @@ const CONFIG = {
       const f = fileOf(b.dataset.key);
       const nm = f ? iname(f) : '';
       const price = f ? iprice(f) : '';
+      const dsc = f ? idesc(f) : '';
       const siteUrl = 'https://univcours.github.io/ahmed/';
       const shareUrl = f ? (siteUrl + 'share/' + dishSlug(f.name) + '.html?v=2') : siteUrl;
       const msg = '🍽️ ' + nm + ' - ' + price + ' ' + t('dirham') + '\n'
+                + (dsc ? dsc + '\n' : '')
                 + '👨‍🍳 ' + (S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn) + '\n'
                 + shareUrl;
 
@@ -1197,7 +1221,7 @@ const CONFIG = {
       if (f && navigator.share && navigator.canShare && window.File){
         try{
           toast('⏳ ' + (S.lang==='ar' ? 'جارٍ تجهيز الصورة…' : 'Preparing…'));
-          const blob = await composeShareImage(f, nm, price);
+          const blob = await composeShareImage(f, nm, price, dsc);
           if (blob && blob.size > 5000){
             const file = new File([blob], 'meal.jpg', { type: 'image/jpeg' });
             if (navigator.canShare({ files:[file] })){
