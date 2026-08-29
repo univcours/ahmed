@@ -36,8 +36,34 @@
 📋 انسخ النص ← 🖼️ احفظ الصورة (ضغطة مطولة) ← أرفقهما معاً في منشور واحد.</p>
 <p class="counter" id="counter"></p>
 
+<div class="step" style="background:#fff;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.08)">
+  <h2 style="font-size:15px;margin-bottom:8px">🚀 النشر التلقائي المباشر (اختياري)</h2>
+  <p style="font-size:12px;color:#65676B;line-height:1.7;margin-bottom:8px">
+    الصق <b>مفتاح الصفحة (Page Access Token)</b> وسيظهر زر «نشر مباشرة» على كل وجبة —
+    ينشر الصورة + النص كاملاً في صفحتك بضغطة، بلا نسخ ولا لصق.
+    <a href="#guide" style="color:#1877F2">كيف أحصل على المفتاح؟ ⬇</a></p>
+  <div style="display:flex;gap:8px">
+    <input id="fb-token" type="password" placeholder="الصق المفتاح هنا EAAG..." style="flex:1;border:1.5px solid #ddd;border-radius:9px;padding:10px;font-size:13px" dir="ltr">
+    <button id="fb-connect" style="background:#1877F2;color:#fff;border:none;border-radius:9px;padding:10px 16px;font-weight:700;cursor:pointer">ربط</button>
+  </div>
+  <p id="fb-status" style="font-size:12px;margin-top:6px;color:#65676B"></p>
+</div>
+
 <div id="list"><div class="loading"><div class="spin"></div>جارٍ تحميل وجبات الموقع…</div></div>
 
+
+<div class="step" id="guide" style="background:#fff;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.08)">
+  <h2 style="font-size:15px;margin-bottom:8px">🔑 كيف تحصل على مفتاح الصفحة (مرة واحدة، 5 دقائق)</h2>
+  <ol style="font-size:13px;line-height:2;padding-inline-start:18px;color:#333">
+    <li>افتح <b dir="ltr">developers.facebook.com</b> وسجل الدخول بحسابك ← <b>My Apps</b> ← <b>Create App</b> ← اختر <b>Other</b> ثم <b>Business</b> ← أي اسم (مثل ChefTools) ← إنشاء.</li>
+    <li>من القائمة: <b>Tools</b> ← <b>Graph API Explorer</b>.</li>
+    <li>في اليمين: اختر تطبيقك، ثم <b>Add Permissions</b> وأضف: <b dir="ltr">pages_show_list</b> و <b dir="ltr">pages_manage_posts</b>.</li>
+    <li>اضغط <b>Generate Access Token</b> ← وافق واختر صفحة «الشيف أحمد».</li>
+    <li>في خانة الاستعلام اكتب <b dir="ltr">me/accounts</b> واضغط Submit ← في النتيجة ابحث عن صفحتك وانسخ قيمة <b dir="ltr">access_token</b> الخاصة بها (يبدأ بـ EAAG…).</li>
+    <li>الصقه في الخانة أعلاه واضغط «ربط». ✅</li>
+  </ol>
+  <p style="font-size:12px;color:#B3202C;line-height:1.7">⚠️ المفتاح سرّي مثل كلمة المرور — لا ترسله لأحد أبداً (ولا لي أنا). يبقى محفوظاً في متصفحك فقط. ينتهي مفعوله بعد ساعات — إن توقف النشر، أعد الخطوتين 4 و5 لمفتاح جديد.</p>
+</div>
 <script>
 (function(){
   var OWNER='univcours', REPO='ahmed', BRANCH='main';
@@ -45,6 +71,47 @@
   var PHONE='+212 689-199142';
   var RAW='https://raw.githubusercontent.com/'+OWNER+'/'+REPO+'/'+BRANCH+'/';
 
+
+  /* ====== النشر التلقائي عبر Graph API ====== */
+  var PAGE = { token: localStorage.getItem('fb_page_token') || '', id: localStorage.getItem('fb_page_id') || '', name: localStorage.getItem('fb_page_name') || '' };
+  function fbStatus(msg, ok){ var el=document.getElementById('fb-status'); if(el){ el.textContent=msg; el.style.color = ok?'#31A24C':'#65676B'; } }
+  function fbConnect(){
+    var tk = document.getElementById('fb-token').value.trim();
+    if(!tk){ fbStatus('الصق المفتاح أولاً'); return; }
+    fbStatus('جارٍ التحقق…');
+    fetch('https://graph.facebook.com/v19.0/me?fields=id,name&access_token='+encodeURIComponent(tk))
+      .then(function(r){return r.json();})
+      .then(function(j){
+        if(j.error){ fbStatus('❌ مفتاح غير صالح: '+(j.error.message||'')); return; }
+        PAGE={token:tk,id:j.id,name:j.name};
+        localStorage.setItem('fb_page_token',tk);
+        localStorage.setItem('fb_page_id',j.id);
+        localStorage.setItem('fb_page_name',j.name);
+        fbStatus('✅ مرتبط بصفحة: '+j.name+' — أزرار النشر مفعّلة', true);
+        document.querySelectorAll('.btn.pub').forEach(function(b){ b.style.display='block'; });
+      })
+      .catch(function(){ fbStatus('❌ تعذر الاتصال'); });
+  }
+  function fbPublish(btn, imgUrl, text){
+    if(!PAGE.token){ fbStatus('اربط المفتاح أولاً ⬆'); window.scrollTo({top:0,behavior:'smooth'}); return; }
+    btn.textContent='⏳ جارٍ النشر…'; btn.disabled=true;
+    var fd=new FormData();
+    fd.append('url', imgUrl);
+    fd.append('message', text);
+    fd.append('access_token', PAGE.token);
+    fetch('https://graph.facebook.com/v19.0/'+PAGE.id+'/photos',{method:'POST',body:fd})
+      .then(function(r){return r.json();})
+      .then(function(j){
+        if(j.error){ btn.textContent='❌ '+(j.error.code===190?'المفتاح انتهى — جدّده':'فشل'); btn.disabled=false; fbStatus('❌ '+(j.error.message||'').slice(0,120)); }
+        else { btn.textContent='✅ نُشر في الصفحة!'; btn.style.background='#31A24C'; }
+      })
+      .catch(function(){ btn.textContent='❌ تعذر النشر'; btn.disabled=false; });
+  }
+  setTimeout(function(){
+    var bc=document.getElementById('fb-connect');
+    if(bc) bc.onclick=fbConnect;
+    if(PAGE.token){ var ti=document.getElementById('fb-token'); if(ti) ti.value=PAGE.token; fbStatus('✅ مرتبط بصفحة: '+PAGE.name, true); }
+  }, 100);
   var HASH={'بسطيلة':'#بسطيلة #بسطيلة_الحوت','مأكولات بحرية':'#مأكولات_بحرية #فواكه_البحر',
     'لحوم ومشوي':'#مشوي #لحم_محمر','دجاج محمر':'#دجاج_محمر','لحم بالبرقوق':'#لحم_بالبرقوق',
     'كسكس وسفة':'#كسكس #سفة','سلطات':'#سلطات','خضار':'#خضار_مبخرة','مقبلات':'#مقبلات',
@@ -89,10 +156,15 @@
           + '<div class="row">'
           + '<button class="btn copy" data-t="t' + i + '">📋 نسخ المنشور</button>'
           + '<a class="btn img" href="' + img + '" target="_blank">🖼️ فتح الصورة</a>'
+          + '</div><div class="row" style="margin-top:8px">'
+          + '<button class="btn pub" data-img="' + img + '" data-i="' + i + '" style="background:#31A24C;display:' + (PAGE.token?'block':'none') + '">🚀 نشر مباشرة في الصفحة</button>'
           + '</div></div></div>';
       });
       document.getElementById('list').innerHTML = html || '<div class="loading">لا توجد وجبات مسماة بعد.</div>';
 
+      document.querySelectorAll('.btn.pub').forEach(function(btn){
+        btn.onclick=function(){ fbPublish(btn, btn.dataset.img, document.getElementById('t'+btn.dataset.i).innerText); };
+      });
       document.querySelectorAll('.btn.copy').forEach(function(btn){
         btn.onclick = function(){
           var txt = document.getElementById(btn.dataset.t).innerText;
