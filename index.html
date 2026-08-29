@@ -60,6 +60,15 @@ const CONFIG = {
   h1,h2,h3{font-family:'Alexandria',sans-serif;font-weight:700;margin:0}
   img{display:block} button{font-family:'Rubik',sans-serif;cursor:pointer}
 
+  /* ---------- زر الحفظ العائم للمدير ---------- */
+  .save-fab{position:fixed;bottom:86px;inset-inline-end:16px;z-index:60;
+    background:var(--red);color:#fff;border:none;border-radius:999px;
+    padding:14px 22px;font-size:14px;font-weight:800;font-family:'Alexandria',sans-serif;
+    box-shadow:0 8px 26px rgba(179,32,44,.5);cursor:pointer;
+    animation:fab-pulse 1.6s ease infinite}
+  @keyframes fab-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+  .save-fab:active{transform:scale(.95)}
+
   /* ---------- شريط الاتصال ---------- */
   .callbar{background:var(--gold);text-align:center;padding:8px 12px;font-size:13px;font-weight:700}
   .callbar a{color:#221F1C;text-decoration:none;display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
@@ -673,7 +682,8 @@ const CONFIG = {
       ${S.view==='admin' && S.admin ? adminHTML() : homeHTML(restName)}
       ${modalHTML()}
       ${lightboxHTML()}
-      ${videoOverlayHTML()}`;
+      ${videoOverlayHTML()}
+      ${S.admin && S.dirty ? `<button class="save-fab" id="save-now">💾 ${S.lang==='ar'?'احفظ التغييرات':'Save changes'}</button>` : ''}`;
     bind();
   }
 
@@ -1121,9 +1131,9 @@ const CONFIG = {
                 + '👨‍🍳 ' + (S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn) + '\n'
                 + shareUrl;
 
-      /* فيسبوك: مشاركة رابط الوجبة — المعاينة تُظهر صورة هذه الوجبة */
+      /* فيسبوك: نشارك رابط صورة الوجبة المباشر — فيسبوك يعرض الصورة نفسها دائماً */
       if (b.dataset.share === 'fb'){
-        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl), '_blank');
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(f ? f.url : siteUrl), '_blank');
         return;
       }
 
@@ -1159,6 +1169,15 @@ const CONFIG = {
       const vx = document.getElementById('vx');
       if (vx) vx.onclick = () => { S.lightbox=null; render(); };
     }
+    if ($('save-now')) $('save-now').onclick = async () => {
+      const r = await pushRepoMenu();
+      if (r.ok){ S.dirty = false; toast(t('pushed')); }
+      else if (r.reason==='no_token') toast('🚫 ' + (S.lang==='ar'
+        ? 'أضف رمز GitHub في الإعدادات أولاً'
+        : 'Add a GitHub token in settings first'));
+      else toast(t('pushFail'));
+      render();
+    };
     ['go-home','brand-home'].forEach(id => { if ($(id)) $(id).onclick = goHome; });
     if ($('go-dash')) $('go-dash').onclick = () => { S.view='admin'; render(); window.scrollTo(0,0); };
 
