@@ -823,7 +823,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.3</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.4</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
@@ -1211,8 +1211,10 @@ const CONFIG = {
                 + '👨‍🍳 ' + (S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn) + '\n'
                 + shareUrl;
 
-      /* الهاتف: الزران معاً يشاركان الصورة المركّبة (بالاسم والوصف والثمن) عبر قائمة النظام */
-      if (f && navigator.share && navigator.canShare && window.File){
+      /* الهاتف فقط: الزران يشاركان الصورة المركّبة عبر قائمة مشاركة الهاتف.
+         الحاسوب: روابط عادية — نافذة مشاركة ويندوز/ماك مربكة وغير عملية */
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (f && isMobile && navigator.share && navigator.canShare && window.File){
         try{
           toast('⏳ ' + (S.lang==='ar' ? 'جارٍ تجهيز الصورة…' : 'Preparing…'));
           const blob = await composeShareImage(f, nm, price, dsc);
