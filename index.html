@@ -442,7 +442,7 @@ const CONFIG = {
   const itemOf = f => S.data.items[f.name] || {};
   const iname = f => { const it=itemOf(f); return (S.lang==='ar' ? (it.name_ar||it.name_en) : (it.name_en||it.name_ar)) || prettyName(f.name); };
   const idesc = f => { const it=itemOf(f); return (S.lang==='ar' ? (it.desc_ar||'') : (it.desc_en||'')); };
-  const iprice = f => { const p = Number(itemOf(f).price); return p > 0 ? p : 10; };   // السعر الافتراضي: 10 دراهم
+  const iprice = f => Number(itemOf(f).price) || 0;   // الثمن الحقيقي — 0 يظهر حتى يضبطه المدير
   const iold = f => Number(itemOf(f).old_price) || 0;
   const isale = f => itemOf(f).sale !== false;   // شارة «مخفض» مفعّلة افتراضياً
 
@@ -823,7 +823,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.5</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.6</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
