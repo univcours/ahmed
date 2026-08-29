@@ -320,6 +320,9 @@ const CONFIG = {
     fillAll:['⚠️ املأ الاسم والهاتف والعنوان وعدد الأشخاص','⚠️ Please fill name, phone, address and number of persons'],
     admin:['👤 المدير','👤 Admin'], adminLogin:['👤 دخول المدير','👤 Admin login'],
     pin:['الرمز السري','PIN code'], login:['دخول','Log in'], wrongPin:['الرمز غير صحيح','Wrong PIN'],
+    quickPinTitle:['🔑 تعديل السعر — أدخل الرمز السري','🔑 Edit price — enter PIN'],
+    quickEditTitle:['💰 السعر الجديد','💰 New price'],
+    quickSave:['💾 حفظ السعر في المستودع','💾 Save price to repo'],
     noHashMsg:['لم تُضبط بصمة الرمز السري بعد. ولّد بصمة بالأسفل ثم الصقها في CONFIG.adminPinHash داخل الملف.','No PIN hash is set yet. Generate one below then paste it into CONFIG.adminPinHash inside the file.'],
     genTitle:['🔑 توليد بصمة رمز سري','🔑 Generate a PIN hash'],
     genPh:['اكتب الرمز السري الذي تريده','Type the PIN you want'],
@@ -897,7 +900,7 @@ const CONFIG = {
         <div class="dish-img" data-lb="${esc(f.name)}" title="${S.lang==='ar'?'اضغط للتكبير':'Click to zoom'}">
           <img src="${esc(f.url)}" alt="${esc(iname(f))}" loading="lazy">
           <span class="zoom-hint">⤢</span>
-          <span class="price-tag">${iold(f)?`<s>${iold(f)}</s> `:''}${price} ${t('dirham')}${isale(f)?` <b class="off">${t('saleTag')}</b>`:''}</span>
+          <span class="price-tag" data-pclick="${esc(f.name)}" title="">${iold(f)?`<s>${iold(f)}</s> `:''}${price} ${t('dirham')}${isale(f)?` <b class="off">${t('saleTag')}</b>`:''}</span>
           ${it.hidden && adminCard ? `<span class="hid-tag">${t('hidden')}</span>` : ''}
         </div>
         <div class="dish-body">
@@ -991,6 +994,25 @@ const CONFIG = {
         </details>
       </div></div>`;
     }
+    if (S.modal && S.modal.type==='price-pin'){
+      return `<div class="overlay" data-close="1"><div class="sheet" style="max-width:380px">
+        <div class="sheet-head"><h2>${t('quickPinTitle')}</h2><button class="xbtn" data-close="1">✕</button></div>
+        <div class="field"><input class="input" id="pp-in" type="password" inputmode="numeric" placeholder="••••"></div>
+        <p id="pp-err" style="color:var(--red);font-size:13px;min-height:18px;margin:4px 0 8px"></p>
+        <button class="btn" id="pp-go" style="width:100%">${t('login')}</button>
+      </div></div>`;
+    }
+    if (S.modal && S.modal.type==='price-edit'){
+      const f = fileOf(S.modal.key);
+      const cur = f ? iprice(f) : 10;
+      return `<div class="overlay" data-close="1"><div class="sheet" style="max-width:380px">
+        <div class="sheet-head"><h2>${t('quickEditTitle')}</h2><button class="xbtn" data-close="1">✕</button></div>
+        <p style="margin:0 0 10px;color:var(--ink-2);font-size:14px">${esc(f ? iname(f) : '')}</p>
+        <div class="field"><label>${t('price')} (${t('dirham')})</label>
+          <input class="input" id="pe-in" type="number" inputmode="numeric" min="0" value="${cur}"></div>
+        <button class="btn" id="pe-save" style="width:100%;margin-top:8px">${t('quickSave')}</button>
+      </div></div>`;
+    }
     if (S.modal && S.modal.type==='wa-extra'){
       return `<div class="overlay" data-close="1"><div class="sheet" style="max-width:420px">
         <div class="sheet-head"><h2>${t('waExtraTitle')}</h2><button class="xbtn" data-close="1">✕</button></div>
@@ -1050,6 +1072,43 @@ const CONFIG = {
     });
 
     /* تكبير الصور */
+    /* 4 نقرات على السعر ← رمز سري ← تعديل وحفظ في المستودع */
+    all('[data-pclick]', el => el.onclick = e => {
+      e.stopPropagation();
+      const k = el.dataset.pclick;
+      const now = Date.now();
+      if (!S._pc || S._pc.k !== k || now - S._pc.t > 3000) S._pc = { k, n:0 };
+      S._pc.n++; S._pc.t = now;
+      if (S._pc.n >= 4){
+        S._pc = null;
+        S.modal = S.admin ? { type:'price-edit', key:k } : { type:'price-pin', key:k };
+        render();
+      }
+    });
+    if ($('pp-go')){
+      const ppGo = async () => {
+        const h = await sha256($('pp-in').value);
+        if (h === S.pinHash){ S.modal = { type:'price-edit', key:S.modal.key }; render(); }
+        else $('pp-err').textContent = t('wrongPin');
+      };
+      $('pp-go').onclick = ppGo;
+      $('pp-in').onkeydown = e => { if (e.key==='Enter') ppGo(); };
+      setTimeout(() => { const p=$('pp-in'); if(p) p.focus(); }, 50);
+    }
+    if ($('pe-save')){
+      const peSave = async () => {
+        const k = S.modal.key;
+        const v = Number($('pe-in').value) || 0;
+        const it = S.data.items[k] || {};
+        S.data.items[k] = Object.assign({}, it, { price: v });
+        S.modal = null;
+        await persist();   // يُحفظ في menu.json بالمستودع — يظهر للزوار كافة
+      };
+      $('pe-save').onclick = peSave;
+      $('pe-in').onkeydown = e => { if (e.key==='Enter') peSave(); };
+      setTimeout(() => { const p=$('pe-in'); if(p){ p.focus(); p.select(); } }, 50);
+    }
+
     all('[data-lb]', el => el.onclick = e => {
       if (e.target.closest('button')) return;   // لا تفتح المكبّر عند الضغط على زر داخل الصورة
       S.lightbox = el.dataset.lb; render();
