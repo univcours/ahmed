@@ -1120,42 +1120,75 @@ const CONFIG = {
 
     /* أزرار المشاركة */
     const dishSlug = n => n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+
+    /* نرسم المعلومات (الاسم + الثمن + الهاتف + الموقع) على الصورة نفسها قبل مشاركتها */
+    function composeShareImage(f, nm, price){
+      return new Promise(resolve => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          try{
+            const W = img.naturalWidth, H = img.naturalHeight;
+            const c = document.createElement('canvas');
+            c.width = W; c.height = H;
+            const x = c.getContext('2d');
+            x.drawImage(img, 0, 0);
+            const barH = Math.round(H * 0.17);
+            const g = x.createLinearGradient(0, H - barH, 0, H);
+            g.addColorStop(0, 'rgba(15,8,4,0)');
+            g.addColorStop(.35, 'rgba(15,8,4,.78)');
+            g.addColorStop(1, 'rgba(15,8,4,.94)');
+            x.fillStyle = g; x.fillRect(0, H - barH, W, barH);
+            x.direction = 'rtl'; x.textAlign = 'right';
+            const pad = Math.round(W * .04);
+            x.fillStyle = '#FFFFFF';
+            x.font = 'bold ' + Math.round(W * .046) + 'px Arial, sans-serif';
+            x.fillText(nm + '  •  ' + price + ' درهم', W - pad, H - Math.round(barH * .44));
+            x.fillStyle = '#F2B84B';
+            x.font = 'bold ' + Math.round(W * .031) + 'px Arial, sans-serif';
+            x.fillText('📞 +212 689-199142  •  univcours.github.io/ahmed', W - pad, H - Math.round(barH * .12));
+            c.toBlob(b => resolve(b), 'image/jpeg', .92);
+          }catch(e){ resolve(null); }
+        };
+        img.onerror = () => resolve(null);
+        img.src = f.url;
+      });
+    }
+
     all('[data-share]', b => b.onclick = async e => {
       e.stopPropagation();
       const f = fileOf(b.dataset.key);
       const nm = f ? iname(f) : '';
+      const price = f ? iprice(f) : '';
       const siteUrl = 'https://univcours.github.io/ahmed/';
-      /* رابط مشاركة خاص بالوجبة: معاينته صورة الوجبة نفسها، ويحوّل الزائر للموقع */
       const shareUrl = f ? (siteUrl + 'share/' + dishSlug(f.name) + '.html?v=2') : siteUrl;
-      const msg = '🍽️ ' + nm + ' - ' + (f ? iprice(f) : '') + ' ' + t('dirham') + '\n'
+      const msg = '🍽️ ' + nm + ' - ' + price + ' ' + t('dirham') + '\n'
                 + '👨‍🍳 ' + (S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn) + '\n'
                 + shareUrl;
 
-      /* فيسبوك: نشارك رابط صورة الوجبة المباشر — فيسبوك يعرض الصورة نفسها دائماً */
+      /* فيسبوك: رابط صورة الوجبة المباشر — المعاينة الصورة نفسها */
       if (b.dataset.share === 'fb'){
         window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(f ? f.url : siteUrl), '_blank');
         return;
       }
 
-      /* واتساب على الهاتف: نجرب مشاركة الصورة الحقيقية مع تحقق صارم */
+      /* واتساب على الهاتف: صورة عليها المعلومات مكتوبة — تصل كاملة دائماً */
       if (f && navigator.share && navigator.canShare && window.File){
         try{
-          const res = await fetch(f.url, { mode:'cors' });
-          if (res.ok){
-            const blob = await res.blob();
-            if (blob.type && blob.type.indexOf('image/') === 0 && blob.size > 5000){
-              const file = new File([blob], 'meal.jpg', { type: blob.type });
-              if (navigator.canShare({ files:[file] })){
-                await navigator.share({ files:[file], text: msg });
-                return;
-              }
+          toast('⏳ ' + (S.lang==='ar' ? 'جارٍ تجهيز الصورة…' : 'Preparing…'));
+          const blob = await composeShareImage(f, nm, price);
+          if (blob && blob.size > 5000){
+            const file = new File([blob], 'meal.jpg', { type: 'image/jpeg' });
+            if (navigator.canShare({ files:[file] })){
+              await navigator.share({ files:[file], text: msg });
+              return;
             }
           }
         }catch(err){
           if (err && err.name === 'AbortError') return;
         }
       }
-      /* احتياط: واتساب بالنص — معاينة الرابط تُظهر صورة الوجبة */
+      /* احتياط: واتساب بالنص والرابط */
       window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     });
 
