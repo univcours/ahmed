@@ -823,7 +823,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.1</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.2</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
@@ -1211,13 +1211,7 @@ const CONFIG = {
                 + '👨‍🍳 ' + (S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn) + '\n'
                 + shareUrl;
 
-      /* فيسبوك: رابط صورة الوجبة المباشر — المعاينة الصورة نفسها */
-      if (b.dataset.share === 'fb'){
-        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(f ? f.url : siteUrl), '_blank');
-        return;
-      }
-
-      /* واتساب على الهاتف: صورة عليها المعلومات مكتوبة — تصل كاملة دائماً */
+      /* الهاتف: الزران معاً يشاركان الصورة المركّبة (بالاسم والوصف والثمن) عبر قائمة النظام */
       if (f && navigator.share && navigator.canShare && window.File){
         try{
           toast('⏳ ' + (S.lang==='ar' ? 'جارٍ تجهيز الصورة…' : 'Preparing…'));
@@ -1233,8 +1227,12 @@ const CONFIG = {
           if (err && err.name === 'AbortError') return;
         }
       }
-      /* احتياط: واتساب بالنص والرابط */
-      window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+      /* احتياط (حاسوب/متصفح قديم) */
+      if (b.dataset.share === 'fb'){
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(f ? f.url : siteUrl), '_blank');
+      } else {
+        window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+      }
     });
 
     /* بطاقات الفيديو */
