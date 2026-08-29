@@ -5,7 +5,7 @@
       "name_en": "Event platters in the making",
       "desc_ar": "الشيف أثناء تحضير أطباق مناسبة كبيرة.",
       "desc_en": "The chef preparing platters for a big event.",
-      "price": 0,
+      "price": 1000,
       "category": "أجواء المطبخ",
       "hidden": false
     },
@@ -14,7 +14,7 @@
       "name_en": "Seafood Pastilla",
       "desc_ar": "بسطيلة بحرية مقرمشة مزينة بالقمرون والشعرية الصينية.",
       "desc_en": "Crispy seafood pastilla topped with shrimp and vermicelli.",
-      "price": 0,
+      "price": 1000,
       "category": "بسطيلة",
       "hidden": false
     },
@@ -32,7 +32,7 @@
       "name_en": "Royal seafood platter",
       "desc_ar": "صينية فاخرة بجراد البحر والقمرون الملكي، مثالية للمناسبات.",
       "desc_en": "A luxurious platter with lobster and king prawns, perfect for events.",
-      "price": 0,
+      "price": 1000,
       "category": "مأكولات بحرية",
       "hidden": false
     },
@@ -41,7 +41,7 @@
       "name_en": "Fish & seafood platter",
       "desc_ar": "",
       "desc_en": "",
-      "price": 0,
+      "price": 1000,
       "category": "مأكولات بحرية",
       "hidden": false
     },
@@ -50,7 +50,7 @@
       "name_en": "Stuffed fish platter",
       "desc_ar": "",
       "desc_en": "",
-      "price": 0,
+      "price": 1000,
       "category": "مأكولات بحرية",
       "hidden": false
     },
@@ -59,7 +59,7 @@
       "name_en": "Event platters in the making",
       "desc_ar": "",
       "desc_en": "",
-      "price": 0,
+      "price": 1000,
       "category": "أجواء المطبخ",
       "hidden": false
     },
@@ -68,7 +68,7 @@
       "name_en": "Slow-braised meat",
       "desc_ar": "",
       "desc_en": "",
-      "price": 0,
+      "price": 1000,
       "category": "لحوم ومشوي",
       "hidden": false
     },
