@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚀 معمّر صفحة الفيسبوك — الشيف أحمد</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,sans-serif}
+  body{background:#F0F2F5;color:#1C1E21;padding:14px;max-width:640px;margin:0 auto}
+  h1{font-size:20px;text-align:center;margin:10px 0 4px}
+  .sub{text-align:center;color:#65676B;font-size:13px;margin-bottom:18px}
+  .step{background:#fff;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .step h2{font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .num{background:#1877F2;color:#fff;width:26px;height:26px;border-radius:50%;display:inline-flex;
+    align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+  .field{background:#F0F2F5;border-radius:10px;padding:10px 12px;margin-bottom:8px;position:relative}
+  .field label{font-size:11px;color:#65676B;display:block;margin-bottom:4px;font-weight:700}
+  .field .val{font-size:13px;white-space:pre-wrap;word-break:break-word;padding-inline-end:70px;max-height:150px;overflow-y:auto}
+  .copy{position:absolute;top:8px;inset-inline-start:auto;inset-inline-end:8px;background:#1877F2;color:#fff;
+    border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer}
+  .copy.ok{background:#31A24C}
+  a.go{display:block;text-align:center;background:#1877F2;color:#fff;text-decoration:none;
+    border-radius:10px;padding:13px;font-weight:700;font-size:14px;margin-top:8px}
+  a.go.wa{background:#25D366}
+  a.go.img{background:#E0A63C;color:#221F1C}
+  .hint{font-size:12px;color:#65676B;margin-top:8px;line-height:1.6}
+  .done-bar{position:sticky;bottom:10px;background:#31A24C;color:#fff;border-radius:12px;
+    padding:12px;text-align:center;font-weight:700;font-size:14px;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+</style>
+</head>
+<body>
+
+<h1>🚀 معمّر صفحة الفيسبوك</h1>
+<p class="sub">اضغط «نسخ» ← الصق في فيسبوك ← التالي. كل شيء جاهز.</p>
+
+<div class="step">
+  <h2><span class="num">1</span> افتح شاشة إنشاء الصفحة</h2>
+  <a class="go" href="https://www.facebook.com/pages/create" target="_blank">📘 افتح فيسبوك — إنشاء صفحة جديدة</a>
+  <p class="hint">سيطلب منك فيسبوك تسجيل الدخول بحسابك أولاً — هذا طبيعي وآمن لأنك أنت من يدخل.</p>
+</div>
+
+<div class="step">
+  <h2><span class="num">2</span> اسم الصفحة</h2>
+  <div class="field">
+    <label>الصق في خانة «اسم الصفحة»</label>
+    <div class="val" id="v1">الشيف أحمد — Chef Ahmed</div>
+    <button class="copy" data-t="v1">📋 نسخ</button>
+  </div>
+</div>
+
+<div class="step">
+  <h2><span class="num">3</span> الفئة</h2>
+  <div class="field">
+    <label>اكتب في خانة «الفئة» واختر من الاقتراحات</label>
+    <div class="val" id="v2">Chef</div>
+    <button class="copy" data-t="v2">📋 نسخ</button>
+  </div>
+</div>
+
+<div class="step">
+  <h2><span class="num">4</span> الوصف المختصر (Bio)</h2>
+  <div class="field">
+    <label>الصق في خانة «السيرة الذاتية»</label>
+    <div class="val" id="v3">🍽️ الطبخ لكل المناسبات: أعراس، عقيقة، حفلات 🎉 بسطيلة • مأكولات بحرية • مشوي 📞 اطلب الآن</div>
+    <button class="copy" data-t="v3">📋 نسخ</button>
+  </div>
+</div>
+
+<div class="step">
+  <h2><span class="num">5</span> الصور</h2>
+  <a class="go img" href="https://raw.githubusercontent.com/univcours/ahmed/main/chef.jpg" target="_blank">👨‍🍳 افتح صورة البروفايل — اضغط مطولاً واحفظها</a>
+  <a class="go img" href="https://raw.githubusercontent.com/univcours/ahmed/main/og-image.jpg" target="_blank">🖼️ افتح صورة الغلاف — اضغط مطولاً واحفظها</a>
+  <p class="hint">بعد الحفظ: في فيسبوك اضغط دائرة البروفايل ← رفع صورة، ثم مستطيل الغلاف ← رفع صورة.</p>
+</div>
+
+<div class="step">
+  <h2><span class="num">6</span> معلومات الاتصال</h2>
+  <div class="field">
+    <label>رقم الهاتف</label>
+    <div class="val" id="v4">+212689199142</div>
+    <button class="copy" data-t="v4">📋 نسخ</button>
+  </div>
+  <div class="field">
+    <label>الموقع الإلكتروني</label>
+    <div class="val" id="v5">https://univcours.github.io/ahmed/</div>
+    <button class="copy" data-t="v5">📋 نسخ</button>
+  </div>
+  <div class="field">
+    <label>الوصف الكامل (قسم «حول / About»)</label>
+    <div class="val" id="v6">👨‍🍳 الشيف أحمد — خبرة في الطبخ المغربي الأصيل لكل المناسبات
+
+🎉 أعراس • عقيقة • حفلات • مناسبات عائلية — ووجباتكم اليومية أيضاً
+
+🍽️ تخصصاتنا:
+🥟 بسطيلة الحوت والدجاج
+🦞 صواني المأكولات البحرية الملكية
+🥩 المشوي واللحم المحمر بالبرقوق
+🍗 دجاج محمر
+🍲 كسكس وسفة
+🥗 سلطات مشكلة وملكية
+🍯 حلويات مغربية
+
+🛵 توصيل — 💵 الدفع عند الاستلام
+
+📞 للطلب: +212 689-199142
+🌐 شاهد القائمة الكاملة واطلب مباشرة:
+https://univcours.github.io/ahmed/</div>
+    <button class="copy" data-t="v6">📋 نسخ</button>
+  </div>
+</div>
+
+<div class="step">
+  <h2><span class="num">7</span> زر الواتساب</h2>
+  <p class="hint">في صفحتك: <b>إضافة زر</b> ← اختر <b>واتساب</b> ← الصق الرقم:</p>
+  <div class="field">
+    <label>رقم الواتساب (بدون +)</label>
+    <div class="val" id="v7">212689199142</div>
+    <button class="copy" data-t="v7">📋 نسخ</button>
+  </div>
+</div>
+
+<div class="step">
+  <h2><span class="num">8</span> منشور الافتتاح — انشره وثبّته 📌</h2>
+  <div class="field">
+    <label>الصق في «ماذا يخطر ببالك؟» ← نشر ← ⋯ ← تثبيت أعلى الصفحة</label>
+    <div class="val" id="v8">بسم الله نبدأ 🌟
+
+مرحباً بكم في الصفحة الرسمية للشيف أحمد 👨‍🍳
+
+من اليوم، قائمة وجباتنا كاملة بين يديكم — بالصور والأسعار — واطلبوا مباشرة عبر واتساب من موقعنا:
+
+🌐 https://univcours.github.io/ahmed/
+
+🎉 نطبخ لكل مناسباتكم: أعراس، عقيقة، حفلات
+🥟 بسطيلة الحوت • 🦞 مأكولات بحرية ملكية • 🥩 مشوي • 🍲 كسكس
+
+🛵 توصيل حتى باب الدار — 💵 الدفع عند الاستلام
+📞 +212 689-199142
+
+شاركوا الصفحة مع أحبابكم ❤️
+#الشيف_أحمد #طبخ_مغربي #بسطيلة #مأكولات_بحرية #مناسبات</div>
+    <button class="copy" data-t="v8">📋 نسخ</button>
+  </div>
+</div>
+
+<div class="step">
+  <h2><span class="num">9</span> منشورات الأسبوع الأول (واحد كل يومين)</h2>
+  <div class="field">
+    <label>🥟 منشور بسطيلة الحوت</label>
+    <div class="val" id="v9">🥟 بسطيلة الحوت الملكية — نجمة كل مناسبة
+
+ورقة مقرمشة ذهبية، حشوة بحرية غنية، وتزيين بالقمرون والشعرية الصينية 😍
+
+اطلبها الآن من موقعنا واستلمها ساخنة عند بابك:
+🌐 https://univcours.github.io/ahmed/
+📞 +212 689-199142
+
+#بسطيلة #بسطيلة_الحوت #طبخ_مغربي #الشيف_أحمد</div>
+    <button class="copy" data-t="v9">📋 نسخ</button>
+  </div>
+  <div class="field">
+    <label>🦞 منشور المأكولات البحرية</label>
+    <div class="val" id="v10">🦞 صينية المأكولات البحرية الملكية
+
+جراد البحر، القمرون الملكي، بلح البحر — كل خيرات البحر في صينية واحدة فاخرة، تليق بأرقى المناسبات 👑
+
+شاهدوا الصور الحقيقية في موقعنا:
+🌐 https://univcours.github.io/ahmed/
+📞 +212 689-199142
+
+#مأكولات_بحرية #فواكه_البحر #أعراس #الشيف_أحمد</div>
+    <button class="copy" data-t="v10">📋 نسخ</button>
+  </div>
+  <div class="field">
+    <label>🥩 منشور المشوي</label>
+    <div class="val" id="v11">🥩 المشوي — خروف محمر كامل على الطريقة التقليدية
+
+لعرسك، لعقيقتك، لمناسبتك الكبيرة — مشوي محمر بإتقان وتزيين يليق بالضيوف 🎉
+
+احجز مبكراً:
+📞 +212 689-199142
+🌐 https://univcours.github.io/ahmed/
+
+#مشوي #خروف_محمر #أعراس_مغربية #الشيف_أحمد</div>
+    <button class="copy" data-t="v11">📋 نسخ</button>
+  </div>
+  <div class="field">
+    <label>🍖 منشور لحم بالبرقوق</label>
+    <div class="val" id="v12">🍖 لحم محمر بالبرقوق والمشمش — طبق الأعراس بامتياز
+
+لحم يذوب في الفم، برقوق ومشمش مكرمل، ولوز محمر... الوصفة المغربية الأصيلة كما يجب أن تكون 😋
+
+🌐 https://univcours.github.io/ahmed/
+📞 +212 689-199142
+
+#لحم_بالبرقوق #طبخ_مغربي #أعراس #الشيف_أحمد</div>
+    <button class="copy" data-t="v12">📋 نسخ</button>
+  </div>
+</div>
+
+<div class="done-bar">✅ سالينا؟ صفحتك جاهزة — بالتوفيق يا شيف! 🎉</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function(btn){
+  btn.onclick = function(){
+    var txt = document.getElementById(btn.dataset.t).innerText;
+    function ok(){ btn.textContent='✅ تم النسخ'; btn.classList.add('ok');
+      setTimeout(function(){ btn.textContent='📋 نسخ'; btn.classList.remove('ok'); }, 1800); }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(ok).catch(function(){ fallback(); });
+    } else { fallback(); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy'); document.body.removeChild(ta); ok();
+    }
+  };
+});
+</script>
+</body>
+</html>
