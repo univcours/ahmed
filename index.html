@@ -591,15 +591,16 @@ const CONFIG = {
       return res.ok;
     }catch(e){ return false; }
   }
-  /* عند إدخال رمز سري صحيح: نحاول فك رمز GitHub تلقائياً */
+  /* عند إدخال رمز سري صحيح: نفك رمز GitHub من المستودع ونعتمده (يطغى على أي قديم مخزن) */
   async function unlockToken(pin){
     S.pinPlain = pin;
-    if (S.ghToken) return;
     const tk = await loadEncToken(pin);
     if (tk){
       S.ghToken = tk;
       await sSet('gh_token', tk, false);
       toast('🔑 ' + (S.lang==='ar' ? 'مفتاح الحفظ جاهز — تعديلاتك ستُحفظ في المستودع' : 'Save key ready — edits will sync to the repo'));
+    } else if (!S.ghToken){
+      toast('⚠️ ' + (S.lang==='ar' ? 'تعذر فك مفتاح الحفظ' : 'Could not unlock save key'));
     }
   }
   async function loadRepoPin(){
@@ -640,10 +641,10 @@ const CONFIG = {
       const res = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${menuPath()}`,
         { method:'PUT', headers:{ Authorization:'Bearer '+token, 'Content-Type':'application/json' }, body:JSON.stringify(body) });
       S.saving = false;
-      if (!res.ok){ render(); return {ok:false}; }
+      if (!res.ok){ render(); return {ok:false, status:res.status}; }
       S.dirty = false; render();
       return {ok:true};
-    }catch(e){ S.saving=false; render(); return {ok:false}; }
+    }catch(e){ S.saving=false; render(); return {ok:false, status:'شبكة'}; }
   }
 
   async function persist(){
@@ -654,7 +655,7 @@ const CONFIG = {
     else if (r.reason==='no_token') toast('🚫 ' + (S.lang==='ar'
       ? 'لن يُحفظ التغيير! أضف رمز GitHub في الإعدادات أولاً'
       : 'Change NOT saved! Add a GitHub token in settings first'));
-    else toast(t('pushFail'));
+    else toast(t('pushFail') + (r.status ? ' (' + r.status + ')' : ''));
     render();
   }
 
@@ -877,7 +878,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.9</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.0</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
