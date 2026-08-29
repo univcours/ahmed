@@ -126,10 +126,11 @@ const CONFIG = {
   .search{display:flex;align-items:center;gap:10px;background:var(--bg);border:1.5px solid var(--line);border-radius:13px;padding:10px 14px}
   .search:focus-within{border-color:var(--gold)}
   .search input{border:none;background:transparent;outline:none;flex:1;font-family:'Rubik',sans-serif;font-size:16px;color:var(--ink);min-width:0}
-  .cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+  .cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;
+    scroll-behavior:auto;position:relative;-webkit-overflow-scrolling:touch}
   .cats::-webkit-scrollbar{display:none}
   .chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink-2);white-space:nowrap;
-    padding:7px 16px;border-radius:999px;font-size:13px;font-weight:500}
+    padding:7px 16px;border-radius:999px;font-size:13px;font-weight:500;flex:0 0 auto}
   .chip.on{background:var(--green);color:#fff;border-color:var(--green)}
 
   /* ---------- الشبكة (متجاوبة) ---------- */
@@ -141,7 +142,8 @@ const CONFIG = {
   @keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
   @media (prefers-reduced-motion:reduce){.dish{animation:none;transition:none}}
   .dish-img{position:relative;aspect-ratio:4/3;background:#EDE7D8;cursor:zoom-in;overflow:hidden}
-  .dish-img img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+  .dish-img img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease;
+    user-select:none;-webkit-user-select:none;-webkit-user-drag:none;pointer-events:none}
   .dish:hover .dish-img img{transform:scale(1.05)}
   .zoom-hint{position:absolute;top:10px;inset-inline-start:10px;background:rgba(20,50,46,.7);color:#fff;pointer-events:none;
     width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;backdrop-filter:blur(4px)}
@@ -1273,6 +1275,41 @@ const CONFIG = {
       else toast(r.reason==='no_token' ? t('noToken') : t('pushFail'));
     };
   }
+
+  /* ---------- حماية الصور (ردع التحميل) ---------- */
+  const protMsg = () => toast('🔒 ' + (S.lang==='ar' ? 'محمي من طرف المطور' : 'Protected by the developer'));
+  document.addEventListener('contextmenu', e => {
+    if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO' ||
+        e.target.closest('.dish-img') || e.target.closest('.lightbox') ||
+        e.target.closest('.voverlay') || e.target.closest('.chef-card')){
+      e.preventDefault(); protMsg();
+    }
+  });
+  document.addEventListener('dragstart', e => {
+    if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO'){ e.preventDefault(); }
+  });
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && ['s','u'].includes(e.key.toLowerCase())){
+      e.preventDefault(); protMsg();
+    }
+  });
+
+  /* ---------- شريط التصنيفات يتحرك تلقائياً ذهاباً وإياباً ---------- */
+  let catsPause = 0, catsDir = 1;
+  setInterval(() => {
+    const el = document.querySelector('.cats');
+    if (!el || Date.now() < catsPause) return;
+    const max = el.scrollWidth - el.clientWidth;
+    if (max <= 4) return;                              // كل التصنيفات ظاهرة — لا حاجة للحركة
+    el.scrollLeft += catsDir * (ROOT.dir === 'rtl' ? -1 : 1);
+    const pos = Math.abs(el.scrollLeft);
+    if (pos >= max - 2) catsDir = -1;                  // وصلنا النهاية ← ارجع
+    else if (pos <= 2)  catsDir = 1;                   // وصلنا البداية ← تقدّم
+  }, 40);
+  ['pointerdown','wheel','touchstart'].forEach(ev =>
+    document.addEventListener(ev, e => {
+      if (e.target.closest && e.target.closest('.cats')) catsPause = Date.now() + 5000;
+    }, {passive:true}));
 
   boot();
 })();
