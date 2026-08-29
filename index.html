@@ -554,6 +554,54 @@ const CONFIG = {
 
   /* الرمز السري: بصمته المشفرة فقط تُحفظ في ملف pin.json داخل المستودع */
   const pinPath = () => (S.cfg.path ? S.cfg.path + '/' : '') + 'pin.json';
+
+  /* ===== رمز GitHub المشفر في المستودع (token.enc) — يُفك بالرمز السري فقط ===== */
+  const tokPath = () => (S.cfg.path ? S.cfg.path + '/' : '') + 'token.enc';
+  const b64arr = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  async function pinKey(pin, salt, iter){
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:iter||150000, hash:'SHA-256'},
+      base, {name:'AES-GCM', length:256}, false, ['decrypt','encrypt']);
+  }
+  async function loadEncToken(pin){
+    try{
+      const res = await fetch(rawUrl(tokPath()) + '?v=' + Date.now());
+      if (!res.ok) return null;
+      const o = await res.json();
+      const key = await pinKey(pin, b64arr(o.salt), o.iter);
+      const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64arr(o.iv)}, key, b64arr(o.ct));
+      return new TextDecoder().decode(pt);
+    }catch(e){ return null; }   // رمز سري خاطئ أو ملف غائب
+  }
+  async function pushEncToken(pin, token){
+    try{
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv   = crypto.getRandomValues(new Uint8Array(12));
+      const key  = await pinKey(pin, salt, 150000);
+      const ct   = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, new TextEncoder().encode(token)));
+      const b64  = a => btoa(String.fromCharCode.apply(null, a));
+      const payload = JSON.stringify({v:1, kdf:'PBKDF2-SHA256', iter:150000, salt:b64(salt), iv:b64(iv), ct:b64(ct)}, null, 2);
+      const head = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${tokPath()}?ref=${S.cfg.branch}`,
+        { headers:{ Authorization:'Bearer '+token } });
+      let sha = null; if (head.ok) sha = (await head.json()).sha;
+      const body = { message:'Update encrypted admin token', branch:S.cfg.branch, content:b64enc(payload) };
+      if (sha) body.sha = sha;
+      const res = await fetch(`https://api.github.com/repos/${S.cfg.owner}/${S.cfg.repo}/contents/${tokPath()}`,
+        { method:'PUT', headers:{ Authorization:'Bearer '+token, 'Content-Type':'application/json' }, body:JSON.stringify(body) });
+      return res.ok;
+    }catch(e){ return false; }
+  }
+  /* عند إدخال رمز سري صحيح: نحاول فك رمز GitHub تلقائياً */
+  async function unlockToken(pin){
+    S.pinPlain = pin;
+    if (S.ghToken) return;
+    const tk = await loadEncToken(pin);
+    if (tk){
+      S.ghToken = tk;
+      await sSet('gh_token', tk, false);
+      toast('🔑 ' + (S.lang==='ar' ? 'مفتاح الحفظ جاهز — تعديلاتك ستُحفظ في المستودع' : 'Save key ready — edits will sync to the repo'));
+    }
+  }
   async function loadRepoPin(){
     try{
       const res = await fetch(rawUrl(pinPath()) + '?v=' + Date.now());
@@ -829,7 +877,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.8</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.9</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
@@ -1318,7 +1366,7 @@ const CONFIG = {
     if ($('pp-go')){
       const ppGo = async () => {
         const h = await sha256($('pp-in').value);
-        if (h === S.pinHash){ S.modal = { type:'price-edit', key:S.modal.key, field:S.modal.field }; render(); }
+        if (h === S.pinHash){ await unlockToken($('pp-in').value); S.modal = { type:'price-edit', key:S.modal.key, field:S.modal.field }; render(); }
         else $('pp-err').textContent = t('wrongPin');
       };
       $('pp-go').onclick = ppGo;
@@ -1401,6 +1449,7 @@ const CONFIG = {
       const go = async () => {
         const h = await sha256($('pin-in').value);
         if (h === S.pinHash){
+          await unlockToken($('pin-in').value);          // فك رمز GitHub المشفر تلقائياً
           S.admin=true; S.modal=null; S.view='admin';   // مباشرة إلى لوحة التحكم بكل الصور
           render(); window.scrollTo(0,0);
         }
@@ -1419,7 +1468,15 @@ const CONFIG = {
 
     if ($('st-save')) $('st-save').onclick = async () => {
       S.ghToken = $('st-token').value.trim();
-      if (S.ghToken) await sSet('gh_token', S.ghToken, false);
+      if (S.ghToken){
+        await sSet('gh_token', S.ghToken, false);
+        /* نشفّر الرمز بالرمز السري ونرفعه — ليعمل من أي جهاز بمجرد الدخول */
+        if (S.pinPlain){
+          const ok = await pushEncToken(S.pinPlain, S.ghToken);
+          toast(ok ? '🔐 ' + (S.lang==='ar'?'الرمز مشفّر ومحفوظ — سيعمل من أي جهاز بالدخول فقط':'Token encrypted & synced — works from any device')
+                   : t('saved'));
+        } else toast(t('saved'));
+      }
       if ($('st-wa')){
         const nums = $('st-wa').value.split(/[\n,;،]+/).map(s => s.replace(/[^\d]/g,'')).filter(Boolean);
         if (!S.data.settings) S.data.settings = {};
@@ -1442,7 +1499,13 @@ const CONFIG = {
       if (S.ghToken) await sSet('gh_token', S.ghToken, false);
       const h = await sha256(v);
       const r = await pushRepoPin(h);
-      if (r.ok){ S.pinHash = h; $('new-pin').value=''; toast(t('pinChanged')); }
+      if (r.ok){
+        S.pinHash = h;
+        /* أعد تشفير رمز GitHub بالرمز السري الجديد */
+        if (S.ghToken) await pushEncToken(v, S.ghToken);
+        S.pinPlain = v;
+        $('new-pin').value=''; toast(t('pinChanged'));
+      }
       else toast(r.reason==='no_token' ? t('noToken') : t('pushFail'));
     };
   }
