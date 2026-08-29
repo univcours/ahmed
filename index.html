@@ -283,6 +283,8 @@ const CONFIG = {
     {k:'بسطيلة', en:'Pastilla'},
     {k:'مأكولات بحرية', en:'Seafood'},
     {k:'لحوم ومشوي', en:'Meat & Mechoui'},
+    {k:'دجاج محمر', en:'Roasted Chicken'},
+    {k:'لحم بالبرقوق', en:'Meat with Prunes'},
     {k:'كسكس وسفة', en:'Couscous & Seffa'},
     {k:'سلطات', en:'Salads'},
     {k:'خضار', en:'Vegetables'},
@@ -292,7 +294,7 @@ const CONFIG = {
     {k:'أجواء المطبخ', en:'Behind the scenes'},
   ];
   const catLabel = k => !k ? '' : (S.lang==='ar' ? k : ((CATS.find(c=>c.k===k)||{}).en || k));
-  const CAT_ICONS = {'بسطيلة':'🥟','مأكولات بحرية':'🦞','لحوم ومشوي':'🥩','كسكس وسفة':'🍲',
+  const CAT_ICONS = {'بسطيلة':'🥟','مأكولات بحرية':'🦞','لحوم ومشوي':'🥩','دجاج محمر':'🍗','لحم بالبرقوق':'🍖','كسكس وسفة':'🍲',
     'سلطات':'🥗','خضار':'🥦','مقبلات':'🧆','حلويات مغربية':'🍯','عصائر':'🧃','أجواء المطبخ':'👨‍🍳'};
   const catIcon = k => CAT_ICONS[k] ? CAT_ICONS[k] + ' ' : '';
 
