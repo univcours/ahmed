@@ -120,10 +120,11 @@ const CONFIG = {
   /* ---------- قسم الشيف ---------- */
   .chef{max-width:1140px;margin:-54px auto 0;padding:0 16px;position:relative;z-index:5}
   .chef-card{background:var(--card);border-radius:22px;box-shadow:var(--sh-lg);padding:18px;
-    display:flex;gap:18px;align-items:center;flex-wrap:wrap}
-  .chef-card img{width:150px;height:150px;object-fit:cover;object-position:center 10%;
+    display:flex;gap:18px;align-items:center;flex-wrap:wrap;direction:ltr}
+  [dir="rtl"] .chef-card .chef-txt{direction:rtl;text-align:right}
+  .chef-card img{width:185px;height:185px;object-fit:cover;object-position:center 10%;
     border-radius:50%;border:5px solid var(--gold);flex-shrink:0;cursor:zoom-in;
-    margin-top:-70px;box-shadow:var(--sh-lg);background:var(--card)}
+    margin-top:-85px;box-shadow:var(--sh-lg);background:var(--card)}
   .chef-txt{flex:1;min-width:220px}
   .chef-txt .role{color:var(--gold);font-size:12px;font-weight:700;letter-spacing:1px}
   .chef-txt h2{font-size:19px;margin:2px 0 5px}
@@ -135,9 +136,13 @@ const CONFIG = {
   .search{display:flex;align-items:center;gap:10px;background:var(--bg);border:1.5px solid var(--line);border-radius:13px;padding:10px 14px}
   .search:focus-within{border-color:var(--gold)}
   .search input{border:none;background:transparent;outline:none;flex:1;font-family:'Rubik',sans-serif;font-size:16px;color:var(--ink);min-width:0}
-  .cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;
-    scroll-behavior:auto;position:relative;-webkit-overflow-scrolling:touch}
-  .cats::-webkit-scrollbar{display:none}
+  .cats{overflow:hidden;padding-bottom:2px;position:relative}
+  .cats-track{display:flex;gap:8px;width:max-content;animation:cats-loop 34s linear infinite}
+  .cats:hover .cats-track,.cats.paused .cats-track{animation-play-state:paused}
+  @keyframes cats-loop{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  [dir="rtl"] .cats-track{animation-name:cats-loop-rtl}
+  @keyframes cats-loop-rtl{from{transform:translateX(0)}to{transform:translateX(50%)}}
+  @media (prefers-reduced-motion:reduce){.cats-track{animation:none}}
   .chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink-2);white-space:nowrap;
     padding:7px 16px;border-radius:999px;font-size:13px;font-weight:500;flex:0 0 auto}
   .chip.on{background:var(--green);color:#fff;border-color:var(--green)}
@@ -199,7 +204,7 @@ const CONFIG = {
     .hero-in{padding:24px 14px 68px}
     .chef{padding:0 12px;margin-top:-46px}
     .chef-card{padding:14px;gap:12px}
-    .chef-card img{width:112px;height:112px;margin-top:-48px;border-width:4px}
+    .chef-card img{width:135px;height:135px;margin-top:-58px;border-width:4px}
     .chef-txt h2{font-size:17px}
     .chef-txt p{font-size:13px}
     .toolbar{padding:0 12px}
@@ -801,10 +806,11 @@ const CONFIG = {
           <input id="search-in" placeholder="${t('search')}" value="${esc(S.q)}">
           ${query ? '<button class="xbtn" id="clear-q" style="width:30px;height:30px;font-size:13px">✕</button>' : ''}
         </div>
-        <div class="cats">
-          <button class="chip ${S.cat==='الكل'?'on':''}" data-cat="الكل">${t('all')}</button>
-          ${CATS.map(c => `<button class="chip ${S.cat===c.k?'on':''}" data-cat="${esc(c.k)}">${catIcon(c.k)}${esc(catLabel(c.k))}</button>`).join('')}
-        </div>
+        <div class="cats"><div class="cats-track">${(() => {
+          const chips = `<button class="chip ${S.cat==='الكل'?'on':''}" data-cat="الكل">${t('all')}</button>`
+            + CATS.map(c => `<button class="chip ${S.cat===c.k?'on':''}" data-cat="${esc(c.k)}">${catIcon(c.k)}${esc(catLabel(c.k))}</button>`).join('');
+          return chips + chips;   /* نسختان متتاليتان = دوران لا نهائي سلس */
+        })()}</div></div>
       </div></div>
 
       ${!S.cfg ? `<div class="notice err">${t('noRepo')}</div>` : ''}
@@ -823,7 +829,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.6</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.7</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
@@ -1459,21 +1465,15 @@ const CONFIG = {
     }
   });
 
-  /* ---------- شريط التصنيفات يتحرك تلقائياً ذهاباً وإياباً ---------- */
-  let catsPause = 0, catsDir = 1;
-  setInterval(() => {
-    const el = document.querySelector('.cats');
-    if (!el || Date.now() < catsPause) return;
-    const max = el.scrollWidth - el.clientWidth;
-    if (max <= 4) return;                              // كل التصنيفات ظاهرة — لا حاجة للحركة
-    el.scrollLeft += catsDir * (ROOT.dir === 'rtl' ? -1 : 1);
-    const pos = Math.abs(el.scrollLeft);
-    if (pos >= max - 2) catsDir = -1;                  // وصلنا النهاية ← ارجع
-    else if (pos <= 2)  catsDir = 1;                   // وصلنا البداية ← تقدّم
-  }, 40);
-  ['pointerdown','wheel','touchstart'].forEach(ev =>
+  /* ---------- إيقاف مؤقت لشريط الأصناف عند اللمس (يستأنف بعد 4 ثوانٍ) ---------- */
+  let catsResume = null;
+  ['pointerdown','touchstart'].forEach(ev =>
     document.addEventListener(ev, e => {
-      if (e.target.closest && e.target.closest('.cats')) catsPause = Date.now() + 5000;
+      const cats = e.target.closest && e.target.closest('.cats');
+      if (!cats) return;
+      cats.classList.add('paused');
+      clearTimeout(catsResume);
+      catsResume = setTimeout(() => cats.classList.remove('paused'), 4000);
     }, {passive:true}));
 
   boot();
