@@ -270,14 +270,12 @@
       "price": 0
     },
     "تحضير المناسبات.png": {
-      "price": 0
+      "price": 0,
+      "category": "أجواء المطبخ"
     },
     "WhatsApp Image 2026-08-28 at 22.03.53.jpeg": {
       "name_ar": "سلطة منوعة",
       "name_en": ""
-    },
-    "طبخ الفنادق.png": {
-      "category": "أجواء المطبخ"
     }
   },
   "settings": {
