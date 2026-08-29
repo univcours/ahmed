@@ -1109,18 +1109,21 @@ const CONFIG = {
     const all = (sel,fn) => ROOT.querySelectorAll(sel).forEach(fn);
 
     /* أزرار المشاركة */
+    const dishSlug = n => n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
     all('[data-share]', b => b.onclick = async e => {
       e.stopPropagation();
       const f = fileOf(b.dataset.key);
       const nm = f ? iname(f) : '';
       const siteUrl = 'https://univcours.github.io/ahmed/';
+      /* رابط مشاركة خاص بالوجبة: معاينته صورة الوجبة نفسها، ويحوّل الزائر للموقع */
+      const shareUrl = f ? (siteUrl + 'share/' + dishSlug(f.name) + '.html') : siteUrl;
       const msg = '🍽️ ' + nm + ' - ' + (f ? iprice(f) : '') + ' ' + t('dirham') + '\n'
                 + '👨‍🍳 ' + (S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn) + '\n'
-                + siteUrl;
+                + shareUrl;
 
-      /* فيسبوك: مشاركة الرابط فقط — فيسبوك لا يقبل إرفاق صور من المتصفح */
+      /* فيسبوك: مشاركة رابط الوجبة — المعاينة تُظهر صورة هذه الوجبة */
       if (b.dataset.share === 'fb'){
-        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(siteUrl), '_blank');
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl), '_blank');
         return;
       }
 
@@ -1130,7 +1133,6 @@ const CONFIG = {
           const res = await fetch(f.url, { mode:'cors' });
           if (res.ok){
             const blob = await res.blob();
-            /* نتأكد أنها صورة فعلاً — وإلا نتجاهل ونمرر للنص */
             if (blob.type && blob.type.indexOf('image/') === 0 && blob.size > 5000){
               const file = new File([blob], 'meal.jpg', { type: blob.type });
               if (navigator.canShare({ files:[file] })){
@@ -1143,7 +1145,7 @@ const CONFIG = {
           if (err && err.name === 'AbortError') return;
         }
       }
-      /* احتياط: واتساب بالنص والرابط (يعمل في كل الأجهزة) */
+      /* احتياط: واتساب بالنص — معاينة الرابط تُظهر صورة الوجبة */
       window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     });
 
