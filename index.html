@@ -1108,14 +1108,32 @@ const CONFIG = {
     const $ = id => document.getElementById(id);
     const all = (sel,fn) => ROOT.querySelectorAll(sel).forEach(fn);
 
-    /* أزرار المشاركة */
-    all('[data-share]', b => b.onclick = e => {
+    /* أزرار المشاركة — تشارك صورة الوجبة نفسها عبر قائمة النظام */
+    all('[data-share]', b => b.onclick = async e => {
       e.stopPropagation();
       const f = fileOf(b.dataset.key);
       const nm = f ? iname(f) : '';
       const siteUrl = 'https://univcours.github.io/ahmed/';
+      const msg = `🍽️ ${nm} — ${f ? iprice(f) : ''} ${t('dirham')}\n👨‍🍳 ${S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn}\n${siteUrl}`;
+      /* 1) الهاتف: نجلب الصورة ونشاركها كملف حقيقي مرفق */
+      if (f && navigator.share){
+        try{
+          toast('⏳ ' + (S.lang==='ar' ? 'جارٍ تجهيز الصورة…' : 'Preparing photo…'));
+          const res = await fetch(f.url);
+          const blob = await res.blob();
+          const file = new File([blob], 'dish.jpg', { type: blob.type || 'image/jpeg' });
+          if (navigator.canShare && navigator.canShare({ files:[file] })){
+            await navigator.share({ files:[file], text: msg });
+            return;
+          }
+          await navigator.share({ text: msg, url: siteUrl });
+          return;
+        }catch(err){
+          if (err && err.name === 'AbortError') return;   // المستخدم أغلق قائمة المشاركة
+        }
+      }
+      /* 2) الحاسوب أو متصفح قديم: روابط المشاركة التقليدية (نص + رابط) */
       if (b.dataset.share === 'wa'){
-        const msg = `🍽️ ${nm} — ${f ? iprice(f) : ''} ${t('dirham')}\n👨‍🍳 ${S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn}\n${siteUrl}`;
         window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
       } else {
         window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(siteUrl), '_blank');
