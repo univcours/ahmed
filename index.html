@@ -1121,7 +1121,7 @@ const CONFIG = {
     /* أزرار المشاركة */
     const dishSlug = n => n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
-    /* نرسم المعلومات (الاسم + الثمن + الهاتف + الموقع) على الصورة نفسها قبل مشاركتها */
+    /* نرسم المعلومات على الصورة + نوضّحها لتعويض ضغط واتساب */
     function composeShareImage(f, nm, price){
       return new Promise(resolve => {
         const img = new Image();
@@ -1132,7 +1132,28 @@ const CONFIG = {
             const c = document.createElement('canvas');
             c.width = W; c.height = H;
             const x = c.getContext('2d');
+            x.imageSmoothingEnabled = true;
+            x.imageSmoothingQuality = 'high';
             x.drawImage(img, 0, 0);
+
+            /* توضيح (unsharp): يعوّض التنعيم الذي سيسببه ضغط واتساب */
+            try{
+              const d = x.getImageData(0, 0, W, H);
+              const s = d.data, out = new Uint8ClampedArray(s);
+              const a = 0.45, ctr = 1 + 4*a;
+              for (let y = 1; y < H-1; y++){
+                let i = (y*W + 1) * 4;
+                for (let xx = 1; xx < W-1; xx++, i += 4){
+                  for (let ch = 0; ch < 3; ch++){
+                    const p = i + ch;
+                    out[p] = ctr*s[p] - a*(s[p-4] + s[p+4] + s[p - W*4] + s[p + W*4]);
+                  }
+                }
+              }
+              d.data.set(out);
+              x.putImageData(d, 0, 0);
+            }catch(e){ /* إن فشل التوضيح نكمل بالصورة كما هي */ }
+
             const barH = Math.round(H * 0.17);
             const g = x.createLinearGradient(0, H - barH, 0, H);
             g.addColorStop(0, 'rgba(15,8,4,0)');
@@ -1147,7 +1168,7 @@ const CONFIG = {
             x.fillStyle = '#F2B84B';
             x.font = 'bold ' + Math.round(W * .031) + 'px Arial, sans-serif';
             x.fillText('📞 +212 689-199142  •  univcours.github.io/ahmed', W - pad, H - Math.round(barH * .12));
-            c.toBlob(b => resolve(b), 'image/jpeg', .92);
+            c.toBlob(b => resolve(b), 'image/jpeg', .97);
           }catch(e){ resolve(null); }
         };
         img.onerror = () => resolve(null);
