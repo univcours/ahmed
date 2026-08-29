@@ -905,8 +905,8 @@ const CONFIG = {
           ${it.hidden && adminCard ? `<span class="hid-tag">${t('hidden')}</span>` : ''}
         </div>
         <div class="dish-body">
-          <h3>${esc(iname(f))}</h3>
-          ${it.category ? `<span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:.3px">${esc(catLabel(it.category))}</span>` : ''}
+          <h3 data-pclick="${esc(f.name)}" data-pfield="name" style="user-select:none">${esc(iname(f))}</h3>
+          <span data-pclick="${esc(f.name)}" data-pfield="cat" style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:.3px;user-select:none">${it.category ? catIcon(it.category)+esc(catLabel(it.category)) : (S.lang==='ar'?'· · ·':'· · ·')}</span>
           ${idesc(f) ? `<p>${esc(idesc(f))}</p>` : (adminCard?'':'<p></p>')}
           ${action}
         </div>
@@ -1005,13 +1005,66 @@ const CONFIG = {
     }
     if (S.modal && S.modal.type==='price-edit'){
       const f = fileOf(S.modal.key);
+      const it = itemOf(f || {name:S.modal.key});
+      const fld = S.modal.field || 'price';
       const cur = f ? iprice(f) : 10;
+      let body = '';
+      if (fld === 'name'){
+        body = `
+        <div class="field"><label>${t('nameAr')}</label>
+          <input class="input" id="pe-nar" value="${esc(it.name_ar||'')}" placeholder="${S.lang==='ar'?'اسم الوجبة بالعربية':'Arabic name'}"></div>
+        <div class="field"><label>${t('nameEn')}</label>
+          <input class="input" id="pe-nen" dir="ltr" value="${esc(it.name_en||'')}" placeholder="Dish name in English"></div>`;
+      } else if (fld === 'cat'){
+        body = `
+        <div class="field"><label>${t('category')}</label>
+          <select class="input" id="pe-cat">
+            <option value="">${S.lang==='ar'?'— بدون تصنيف —':'— No category —'}</option>
+            ${CATS.map(c=>`<option value="${esc(c.k)}" ${c.k===it.category?'selected':''}>${catIcon(c.k)}${esc(catLabel(c.k))}</option>`).join('')}
+          </select></div>`;
+      } else {
+        body = `
+        <div class="field"><label>${t('price')} (${t('dirham')})</label>
+          <input class="input" id="pe-in" type="number" inputmode="numeric" min="0" value="${cur}"></div>`;
+      }
       return `<div class="overlay" data-close="1"><div class="sheet" style="max-width:380px">
         <div class="sheet-head"><h2>${t('quickEditTitle')}</h2><button class="xbtn" data-close="1">✕</button></div>
         <p style="margin:0 0 10px;color:var(--ink-2);font-size:14px">${esc(f ? iname(f) : '')}</p>
-        <div class="field"><label>${t('price')} (${t('dirham')})</label>
-          <input class="input" id="pe-in" type="number" inputmode="numeric" min="0" value="${cur}"></div>
+        ${body}
         <button class="btn" id="pe-save" style="width:100%;margin-top:8px">${t('quickSave')}</button>
+      </div></div>`;
+    }
+    if (S.modal && S.modal.type==='item-pin'){
+      return `<div class="overlay" data-close="1"><div class="sheet" style="max-width:380px">
+        <div class="sheet-head"><h2>${t('quickPinTitle')}</h2><button class="xbtn" data-close="1">✕</button></div>
+        <div class="field"><input class="input" id="ip-in" type="password" inputmode="numeric" placeholder="••••"></div>
+        <p id="ip-err" style="color:var(--red);font-size:13px;min-height:18px;margin:4px 0 8px"></p>
+        <button class="btn" id="ip-go" style="width:100%">${t('login')}</button>
+      </div></div>`;
+    }
+    if (S.modal && S.modal.type==='item-edit'){
+      const f = fileOf(S.modal.key);
+      const it = f ? itemOf(f) : {};
+      return `<div class="overlay" data-close="1"><div class="sheet" style="max-width:520px;max-height:88vh;overflow-y:auto">
+        <div class="sheet-head"><h2>✏️ ${S.lang==='ar'?'تعديل الوجبة':'Edit dish'}</h2><button class="xbtn" data-close="1">✕</button></div>
+        <div class="field"><label>${t('nameAr')}</label><input class="input" id="ie-name-ar" value="${esc(it.name_ar||'')}" placeholder="${esc(f?prettyName(f.name):'')}"></div>
+        <div class="field"><label>${t('nameEn')}</label><input class="input" id="ie-name-en" dir="ltr" style="text-align:left" value="${esc(it.name_en||'')}"></div>
+        <div class="field"><label>${t('descAr')}</label><textarea class="input" id="ie-desc-ar" rows="2">${esc(it.desc_ar||'')}</textarea></div>
+        <div class="field"><label>${t('descEn')}</label><textarea class="input" id="ie-desc-en" dir="ltr" style="text-align:left" rows="2">${esc(it.desc_en||'')}</textarea></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field"><label>${t('price')} (${t('dirham')})</label><input class="input" id="ie-price" type="number" inputmode="numeric" value="${esc(it.price||'')}" placeholder="10"></div>
+          <div class="field"><label>${t('oldPrice')}</label><input class="input" id="ie-oldprice" type="number" inputmode="numeric" value="${esc(it.old_price||'')}"></div>
+        </div>
+        <div class="field"><label>${t('category')}</label>
+          <select class="input" id="ie-cat">
+            <option value="">${S.lang==='ar'?'— بدون تصنيف —':'— No category —'}</option>
+            ${CATS.map(c=>`<option value="${esc(c.k)}" ${c.k===it.category?'selected':''}>${esc(catLabel(c.k))}</option>`).join('')}
+          </select></div>
+        <label style="font-size:14px;display:flex;gap:8px;align-items:center;margin-bottom:8px">
+          <input type="checkbox" id="ie-sale" ${it.sale!==false?'checked':''}> ${t('saleChk')}</label>
+        <label style="font-size:14px;display:flex;gap:8px;align-items:center;margin-bottom:12px">
+          <input type="checkbox" id="ie-hidden" ${it.hidden?'checked':''}> ${t('hide')}</label>
+        <button class="btn" id="ie-save" style="width:100%">${t('quickSave')}</button>
       </div></div>`;
     }
     if (S.modal && S.modal.type==='wa-extra'){
@@ -1072,24 +1125,25 @@ const CONFIG = {
       await persist();
     });
 
-    /* تكبير الصور */
-    /* 4 نقرات على السعر ← رمز سري ← تعديل وحفظ في المستودع */
+    /* 4 نقرات على السعر/الاسم/التصنيف ← رمز سري ← تعديل وحفظ في المستودع */
     all('[data-pclick]', el => el.onclick = e => {
       e.stopPropagation();
       const k = el.dataset.pclick;
+      const fld = el.dataset.pfield || 'price';
+      const id = k + '|' + fld;
       const now = Date.now();
-      if (!S._pc || S._pc.k !== k || now - S._pc.t > 3000) S._pc = { k, n:0 };
+      if (!S._pc || S._pc.id !== id || now - S._pc.t > 3000) S._pc = { id, n:0 };
       S._pc.n++; S._pc.t = now;
       if (S._pc.n >= 4){
         S._pc = null;
-        S.modal = S.admin ? { type:'price-edit', key:k } : { type:'price-pin', key:k };
+        S.modal = S.admin ? { type:'price-edit', key:k, field:fld } : { type:'price-pin', key:k, field:fld };
         render();
       }
     });
     if ($('pp-go')){
       const ppGo = async () => {
         const h = await sha256($('pp-in').value);
-        if (h === S.pinHash){ S.modal = { type:'price-edit', key:S.modal.key }; render(); }
+        if (h === S.pinHash){ S.modal = { type:'price-edit', key:S.modal.key, field:S.modal.field }; render(); }
         else $('pp-err').textContent = t('wrongPin');
       };
       $('pp-go').onclick = ppGo;
@@ -1099,15 +1153,25 @@ const CONFIG = {
     if ($('pe-save')){
       const peSave = async () => {
         const k = S.modal.key;
-        const v = Number($('pe-in').value) || 0;
+        const fld = S.modal.field || 'price';
         const it = S.data.items[k] || {};
-        S.data.items[k] = Object.assign({}, it, { price: v });
+        if (fld === 'name'){
+          S.data.items[k] = Object.assign({}, it, {
+            name_ar: $('pe-nar').value.trim(),
+            name_en: $('pe-nen').value.trim(),
+          });
+        } else if (fld === 'cat'){
+          S.data.items[k] = Object.assign({}, it, { category: $('pe-cat').value.trim() });
+        } else {
+          S.data.items[k] = Object.assign({}, it, { price: Number($('pe-in').value) || 0 });
+        }
         S.modal = null;
         await persist();   // يُحفظ في menu.json بالمستودع — يظهر للزوار كافة
       };
       $('pe-save').onclick = peSave;
-      $('pe-in').onkeydown = e => { if (e.key==='Enter') peSave(); };
-      setTimeout(() => { const p=$('pe-in'); if(p){ p.focus(); p.select(); } }, 50);
+      const first = $('pe-in') || $('pe-nar') || $('pe-cat');
+      ['pe-in','pe-nar','pe-nen'].forEach(id => { if ($(id)) $(id).onkeydown = e => { if (e.key==='Enter') peSave(); }; });
+      setTimeout(() => { if (first){ first.focus(); if (first.select) first.select(); } }, 50);
     }
 
     all('[data-lb]', el => el.onclick = e => {
