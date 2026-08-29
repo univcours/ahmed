@@ -823,7 +823,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.4</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v3.5</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
@@ -1205,7 +1205,7 @@ const CONFIG = {
       const price = f ? iprice(f) : '';
       const dsc = f ? idesc(f) : '';
       const siteUrl = 'https://univcours.github.io/ahmed/';
-      const shareUrl = f ? (siteUrl + 'share/' + dishSlug(f.name) + '.html?v=2') : siteUrl;
+      const shareUrl = f ? (siteUrl + 'share/' + dishSlug(f.name) + '.html?v=3') : siteUrl;
       const msg = '🍽️ ' + nm + ' - ' + price + ' ' + t('dirham') + '\n'
                 + (dsc ? dsc + '\n' : '')
                 + '👨‍🍳 ' + (S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn) + '\n'
@@ -1231,7 +1231,14 @@ const CONFIG = {
       }
       /* احتياط (حاسوب/متصفح قديم) */
       if (b.dataset.share === 'fb'){
-        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(f ? f.url : siteUrl), '_blank');
+        /* ننسخ النص للحافظة — يلصقه في المنشور، والمعاينة تُظهر الصورة + الاسم + الوصف */
+        try{
+          if (navigator.clipboard && navigator.clipboard.writeText){
+            await navigator.clipboard.writeText(msg);
+            toast('📋 ' + (S.lang==='ar' ? 'نُسخ النص — الصقه في منشورك (Ctrl+V)' : 'Text copied — paste it into your post'));
+          }
+        }catch(e){}
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl), '_blank');
       } else {
         window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
       }
