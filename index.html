@@ -60,6 +60,19 @@ const CONFIG = {
   h1,h2,h3{font-family:'Alexandria',sans-serif;font-weight:700;margin:0}
   img{display:block} button{font-family:'Rubik',sans-serif;cursor:pointer}
 
+  /* ---------- زر الموسيقى ---------- */
+  .music-btn{position:fixed;bottom:20px;inset-inline-start:16px;z-index:55;
+    width:46px;height:46px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--card);color:var(--green);font-size:19px;
+    box-shadow:var(--sh-md);display:flex;align-items:center;justify-content:center;
+    transition:transform .18s, background .18s}
+  .music-btn:hover{transform:scale(1.08)}
+  .music-btn.on{background:var(--gold);color:#221F1C}
+  .music-btn.on::after{content:'';position:absolute;inset:-5px;border-radius:50%;
+    border:2px solid var(--gold);opacity:.55;animation:m-ring 1.8s ease-out infinite}
+  @keyframes m-ring{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.35);opacity:0}}
+  @media(max-width:640px){.music-btn{width:40px;height:40px;font-size:16px;bottom:16px}}
+
   /* ---------- زر الحفظ العائم للمدير ---------- */
   .save-fab{position:fixed;bottom:86px;inset-inline-end:16px;z-index:60;
     background:var(--red);color:#fff;border:none;border-radius:999px;
@@ -411,7 +424,7 @@ const CONFIG = {
     data:{ items:{} },
     files:[], chefImgs:[], error:'', loadingList:true,
     cat:'الكل', q:'', cart:{}, admin:false, editing:null, modal:null, lightbox:null,
-    dirty:false, saving:false, ghToken:'', pinHash:'',
+    dirty:false, saving:false, ghToken:'', pinHash:'', music:false, hasMusic:false,
   };
 
   /* ---------- تخزين آمن (يعمل حتى بدون window.storage) ---------- */
@@ -666,6 +679,34 @@ const CONFIG = {
     render();
   }
 
+  /* ---------- موسيقى الخلفية (مطفأة افتراضياً، اختيار الزائر محفوظ) ---------- */
+  let AUDIO = null;
+  function musicUrl(){ return rawUrl((S.cfg.path ? S.cfg.path + '/' : '') + 'music.mp3'); }
+  async function initMusic(){
+    try{
+      const res = await fetch(musicUrl(), { method:'HEAD' });
+      if (!res.ok) return;                       // لا يوجد ملف موسيقى — لا يظهر الزر
+      S.hasMusic = true;
+      AUDIO = new Audio(musicUrl());
+      AUDIO.loop = true; AUDIO.volume = 0.35; AUDIO.preload = 'none';
+      /* نستأنف فقط إن كان الزائر قد شغّلها سابقاً بنفسه */
+      const was = await sGet('music_on', false);
+      if (was === '1'){
+        try{ await AUDIO.play(); S.music = true; }catch(e){ S.music = false; }
+      }
+      render();
+    }catch(e){ /* لا موسيقى */ }
+  }
+  async function toggleMusic(){
+    if (!AUDIO) return;
+    if (S.music){ AUDIO.pause(); S.music = false; await sSet('music_on','0',false); }
+    else {
+      try{ await AUDIO.play(); S.music = true; await sSet('music_on','1',false); }
+      catch(e){ toast('🔇 ' + (S.lang==='ar'?'المتصفح منع التشغيل — أعد المحاولة':'Browser blocked playback — try again')); }
+    }
+    render();
+  }
+
   /* ---------- التشغيل ---------- */
   async function boot(){
     S.lang = (await sGet('lang', false)) || 'ar';
@@ -678,6 +719,7 @@ const CONFIG = {
     S.data = (await loadRepoMenu()) || { items:{} };
     if (!S.data.items) S.data.items = {};
     await refresh();
+    initMusic();
   }
 
   async function refresh(){
@@ -744,7 +786,12 @@ const CONFIG = {
       ${modalHTML()}
       ${lightboxHTML()}
       ${videoOverlayHTML()}
-      ${S.admin && S.dirty ? `<button class="save-fab" id="save-now">💾 ${S.lang==='ar'?'احفظ التغييرات':'Save changes'}</button>` : ''}`;
+      ${S.admin && S.dirty ? `<button class="save-fab" id="save-now">💾 ${S.lang==='ar'?'احفظ التغييرات':'Save changes'}</button>` : ''}
+      ${S.hasMusic ? `
+        <button class="music-btn ${S.music?'on':''}" id="music-toggle"
+          title="${S.lang==='ar' ? (S.music?'إيقاف الموسيقى':'تشغيل الموسيقى') : (S.music?'Pause music':'Play music')}">
+          ${S.music ? '⏸' : '🎵'}
+        </button>` : ''}`;
     bind();
   }
 
@@ -885,7 +932,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.3</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.4</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
@@ -1316,6 +1363,7 @@ const CONFIG = {
       const vx = document.getElementById('vx');
       if (vx) vx.onclick = () => { S.lightbox=null; render(); };
     }
+    if ($('music-toggle')) $('music-toggle').onclick = toggleMusic;
     if ($('save-now')) $('save-now').onclick = async () => {
       const r = await pushRepoMenu();
       if (r.ok){ S.dirty = false; toast(t('pushed')); }
