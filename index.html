@@ -690,7 +690,7 @@ const CONFIG = {
       catch(e2){ S.error = e.message; S.loadingList=false; render(); return; }
     }
     S.chefImgs = imgs.filter(f => CHEF_RE.test(baseName(f.name)));
-    S.files = imgs.filter(f => !CHEF_RE.test(baseName(f.name)));
+    S.files = imgs.filter(f => !CHEF_RE.test(baseName(f.name)) && !/^og[-_.]/i.test(baseName(f.name)));
     S.loadingList = false;
     render();
   }
@@ -885,7 +885,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.1</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.2</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
