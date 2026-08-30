@@ -849,6 +849,15 @@ const CONFIG = {
         <div class="dish-body">
           <h3>${esc(lbl)}</h3>
           <p style="color:var(--gold);font-size:13px">${S.lang==='ar'?'اضغط لمشاهدة الفيديو كاملاً':'Tap to watch full video'}</p>
+          <div class="share-row">
+            <span>${S.lang==='ar'?'شارك:':'Share:'}</span>
+            <button class="shr wa2" data-vshare="wa" data-vurl="${esc(v.url)}" data-vlbl="${esc(lbl)}" title="${S.lang==='ar'?'شارك عبر واتساب':'Share on WhatsApp'}">
+              <svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 0 0-8.6 15L2 22l5.1-1.3A10 10 0 1 0 12 2z"/></svg>
+            </button>
+            <button class="shr fb" data-vshare="fb" data-vurl="${esc(v.url)}" data-vlbl="${esc(lbl)}" title="${S.lang==='ar'?'شارك عبر فيسبوك':'Share on Facebook'}">
+              <svg viewBox="0 0 24 24"><path d="M13 22v-8h3l.5-4H13V7.5c0-1.1.3-1.8 1.9-1.8H17V2.2C16.7 2.1 15.6 2 14.4 2 11.7 2 10 3.7 10 6.9V10H7v4h3v8h3z"/></svg>
+            </button>
+          </div>
         </div>
       </article>`;
   }
@@ -932,7 +941,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.4</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.5</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
@@ -1353,8 +1362,50 @@ const CONFIG = {
       }
     });
 
+    /* مشاركة الفيديوهات */
+    all('[data-vshare]', b => b.onclick = async e => {
+      e.stopPropagation();
+      const url = b.dataset.vurl, lbl = b.dataset.vlbl;
+      const siteUrl = 'https://univcours.github.io/ahmed/';
+      const msg = '🎬 ' + lbl + '\n'
+                + '👨‍🍳 ' + (S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn)
+                + ' - ' + (S.lang==='ar' ? 'الطبخ لكل المناسبات' : 'Catering for all occasions') + '\n'
+                + '📞 ' + CONFIG.phone + '\n' + siteUrl;
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      /* الهاتف: نشارك ملف الفيديو نفسه */
+      if (isMobile && navigator.share && navigator.canShare && window.File){
+        try{
+          toast('⏳ ' + (S.lang==='ar' ? 'جارٍ تجهيز الفيديو…' : 'Preparing video…'));
+          const res = await fetch(url);
+          if (res.ok){
+            const blob = await res.blob();
+            if (blob.size > 5000 && blob.size < 60*1024*1024){
+              const file = new File([blob], 'video.mp4', { type: blob.type || 'video/mp4' });
+              if (navigator.canShare({ files:[file] })){
+                await navigator.share({ files:[file], text: msg });
+                return;
+              }
+            }
+          }
+        }catch(err){ if (err && err.name === 'AbortError') return; }
+      }
+      /* احتياط: رابط الفيديو المباشر */
+      if (b.dataset.vshare === 'fb'){
+        try{
+          if (navigator.clipboard && navigator.clipboard.writeText){
+            await navigator.clipboard.writeText(msg);
+            toast('📋 ' + (S.lang==='ar' ? 'نُسخ النص — الصقه في منشورك (Ctrl+V)' : 'Text copied — paste it (Ctrl+V)'));
+          }
+        }catch(e2){}
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url), '_blank');
+      } else {
+        window.open('https://wa.me/?text=' + encodeURIComponent(msg + '\n' + url), '_blank');
+      }
+    });
+
     /* بطاقات الفيديو */
-    all('[data-vid]', el => el.onclick = () => {
+    all('[data-vid]', el => el.onclick = e => {
+      if (e.target.closest('[data-vshare]')) return;   // أزرار المشاركة لا تفتح المشغّل
       S.lightbox = { type:'vid', url:el.dataset.vid, lbl:el.dataset.vidlbl }; render();
     });
     const vov = document.getElementById('vov');
