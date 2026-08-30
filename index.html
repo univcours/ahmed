@@ -688,23 +688,26 @@ const CONFIG = {
     try{
       AUDIO = new Audio(musicUrl());
       AUDIO.loop = true; AUDIO.volume = 0.35; AUDIO.preload = 'auto';
-      /* يظهر الزر فقط إذا كان الملف صالحاً فعلاً */
-      AUDIO.addEventListener('canplaythrough', () => { S.hasMusic = true; render(); }, {once:true});
+      S.hasMusic = true;                       // أظهر الزر فوراً — لا تنتظر تحميل الملف
       AUDIO.addEventListener('error', () => { S.hasMusic = false; AUDIO = null; render(); }, {once:true});
+      render();
       const pref = await sGet('music_on', false);
-      if (pref === '0') return;                     // أوقفها الزائر سابقاً — احترم اختياره
-      try{ await AUDIO.play(); S.music = true; render(); }
-      catch(e){
-        /* المتصفح يمنع التشغيل قبل التفاعل → شغّلها عند أول لمسة/ضغطة/تمرير */
-        const kick = async () => {
-          if (!AUDIO) return;
-          try{ await AUDIO.play(); S.music = true; render(); }catch(e2){}
-          ['pointerdown','keydown','touchstart','scroll'].forEach(ev =>
+      if (pref === '0') return;                // أوقفها الزائر سابقاً — احترم اختياره
+      const tryPlay = async () => {
+        try{ await AUDIO.play(); S.music = true; render(); return true; }
+        catch(e){ return false; }
+      };
+      if (await tryPlay()) return;
+      /* المتصفح يمنع التشغيل قبل التفاعل → شغّلها عند أول لمسة/ضغطة/تمرير */
+      const kick = async () => {
+        if (!AUDIO || S.music) return;
+        if (await tryPlay()){
+          ['pointerdown','keydown','touchstart','scroll','mousemove'].forEach(ev =>
             document.removeEventListener(ev, kick));
-        };
-        ['pointerdown','keydown','touchstart','scroll'].forEach(ev =>
-          document.addEventListener(ev, kick, {passive:true}));
-      }
+        }
+      };
+      ['pointerdown','keydown','touchstart','scroll','mousemove'].forEach(ev =>
+        document.addEventListener(ev, kick, {passive:true}));
     }catch(e){ /* لا موسيقى */ }
   }
   async function toggleMusic(){
@@ -946,7 +949,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.9</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v5.0</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
