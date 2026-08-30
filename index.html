@@ -680,31 +680,31 @@ const CONFIG = {
     render();
   }
 
-  /* ---------- موسيقى الخلفية (مطفأة افتراضياً، اختيار الزائر محفوظ) ---------- */
+  /* ---------- موسيقى الخلفية ---------- */
   let AUDIO = null;
-  function musicUrl(){ return rawUrl((S.cfg.path ? S.cfg.path + '/' : '') + 'music.mp3'); }
+  /* من نفس النطاق: raw.githubusercontent يفرض CSP sandbox يمنع تشغيل الصوت */
+  function musicUrl(){ return 'music.mp3'; }
   async function initMusic(){
     try{
-      const res = await fetch(musicUrl(), { method:'HEAD' });
-      if (!res.ok) return;                       // لا يوجد ملف موسيقى — لا يظهر الزر
-      S.hasMusic = true;
       AUDIO = new Audio(musicUrl());
-      AUDIO.loop = true; AUDIO.volume = 0.35; AUDIO.preload = 'none';
+      AUDIO.loop = true; AUDIO.volume = 0.35; AUDIO.preload = 'auto';
+      /* يظهر الزر فقط إذا كان الملف صالحاً فعلاً */
+      AUDIO.addEventListener('canplaythrough', () => { S.hasMusic = true; render(); }, {once:true});
+      AUDIO.addEventListener('error', () => { S.hasMusic = false; AUDIO = null; render(); }, {once:true});
       const pref = await sGet('music_on', false);
-      /* مطفأة فقط إذا أوقفها الزائر بنفسه سابقاً — وإلا تشتغل تلقائياً */
-      if (pref === '0'){ render(); return; }
-      try{ await AUDIO.play(); S.music = true; }      // بعض المتصفحات تسمح مباشرة
+      if (pref === '0') return;                     // أوقفها الزائر سابقاً — احترم اختياره
+      try{ await AUDIO.play(); S.music = true; render(); }
       catch(e){
-        /* المتصفح يمنع التشغيل قبل التفاعل → نشغّلها عند أول لمسة/ضغطة */
+        /* المتصفح يمنع التشغيل قبل التفاعل → شغّلها عند أول لمسة/ضغطة/تمرير */
         const kick = async () => {
+          if (!AUDIO) return;
           try{ await AUDIO.play(); S.music = true; render(); }catch(e2){}
           ['pointerdown','keydown','touchstart','scroll'].forEach(ev =>
             document.removeEventListener(ev, kick));
         };
         ['pointerdown','keydown','touchstart','scroll'].forEach(ev =>
-          document.addEventListener(ev, kick, {once:false, passive:true}));
+          document.addEventListener(ev, kick, {passive:true}));
       }
-      render();
     }catch(e){ /* لا موسيقى */ }
   }
   async function toggleMusic(){
@@ -946,7 +946,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.8</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.9</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
