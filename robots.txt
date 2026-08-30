@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /share/
+
+Sitemap: https://univcours.github.io/ahmed/sitemap.xml
