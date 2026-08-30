@@ -823,17 +823,10 @@ const CONFIG = {
     { name:'__vid_1__', url:'https://raw.githubusercontent.com/univcours/ahmed/main/WhatsApp%20Video%202026-08-28%20at%2012.17.49.mp4',       label_ar:'لحظات المطبخ 🎬', label_en:'Kitchen moments 🎬' },
   ];
 
-  /* نبني قائمة مدمجة: نضع فيديو بعد كل 6 صور */
-  function buildMixed(files){
-    const result = [];
-    let vi = 0;
-    files.forEach((f, i) => {
-      result.push({ type:'img', data:f });
-      if ((i+1) % 6 === 0 && vi < VIDEOS.length){
-        result.push({ type:'vid', data:VIDEOS[vi++] });
-      }
-    });
-    while (vi < VIDEOS.length) result.push({ type:'vid', data:VIDEOS[vi++] });
+  /* نبني القائمة: الصور أولاً، ثم الفيديوهات في الأسفل (وتظهر فقط في العرض الكامل) */
+  function buildMixed(files, showVideos){
+    const result = files.map(f => ({ type:'img', data:f }));
+    if (showVideos) VIDEOS.forEach(v => result.push({ type:'vid', data:v }));
     return result;
   }
 
@@ -931,7 +924,7 @@ const CONFIG = {
 
       <main class="grid">
         ${S.loadingList ? `<div class="empty"><div class="spinner" style="margin:0 auto 14px"></div></div>` : ''}
-        ${buildMixed(visible).map((item,i) =>
+        ${buildMixed(visible, !query && S.cat==='الكل').map((item,i) =>
             item.type==='vid' ? videoCardHTML(item.data, i) : dishHTML(item.data, i, false)
           ).join('')}
         ${(!S.loadingList && !visible.length && !S.error && S.cfg) ? `
@@ -942,7 +935,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.6</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.7</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
