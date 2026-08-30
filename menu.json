@@ -247,7 +247,12 @@
     },
     "WhatsApp Image 2026-08-28 at 22.03.51 (2).jpeg": {
       "hidden": true,
-      "price": 0
+      "price": 0,
+      "name_ar": "من كواليس العمل",
+      "name_en": "Behind the scenes",
+      "desc_ar": "الشيف أحمد في إدارة العمل اليومي.",
+      "desc_en": "Chef Ahmed managing daily operations.",
+      "category": "أجواء المطبخ"
     },
     "og-image.jpg": {
       "hidden": true,
@@ -255,7 +260,12 @@
     },
     "WhatsApp Image 2026-08-28 at 22.03.52 (2).jpeg": {
       "hidden": true,
-      "price": 0
+      "price": 0,
+      "name_ar": "الشيف في خدمة الفنادق",
+      "name_en": "Chef in hotel service",
+      "desc_ar": "لمسة الشيف أحمد في أرقى المطابخ الفندقية.",
+      "desc_en": "Chef Ahmed's touch in fine hotel kitchens.",
+      "category": "أجواء المطبخ"
     },
     "WhatsApp Image 2026-08-28 at 12.17.49 (1).jpeg": {
       "name_ar": "دجاج محمر",
@@ -271,7 +281,12 @@
     },
     "تحضير المناسبات.png": {
       "price": 0,
-      "category": "أجواء المطبخ"
+      "category": "أجواء المطبخ",
+      "name_ar": "تحضير المناسبات",
+      "name_en": "Event preparation",
+      "desc_ar": "الشيف أحمد يجهز صواني المناسبات الكبيرة بإتقان.",
+      "desc_en": "Chef Ahmed expertly preparing large event trays.",
+      "hidden": false
     },
     "WhatsApp Image 2026-08-28 at 22.03.53.jpeg": {
       "name_ar": "سلطة منوعة",
@@ -279,10 +294,103 @@
       "category": "أجواء المطبخ"
     },
     "حلويات الاعراس و المناسبات.png": {
-      "category": "أجواء المطبخ"
+      "category": "حلويات مغربية",
+      "name_ar": "حلويات الأعراس والمناسبات",
+      "name_en": "Wedding & event cakes",
+      "desc_ar": "كعكات وحلويات الأعراس بتصميم فاخر يليق بيومكم الكبير.",
+      "desc_en": "Luxurious wedding cakes and sweets for your big day.",
+      "price": 0,
+      "hidden": false
     },
     "طبخ الفنادق.png": {
-      "category": "أجواء المطبخ"
+      "category": "أجواء المطبخ",
+      "name_ar": "طبخ الفنادق",
+      "name_en": "Hotel cuisine",
+      "desc_ar": "خبرة فندقية عالية في التقديم والإعداد.",
+      "desc_en": "High-end hotel expertise in preparation and plating.",
+      "price": 0,
+      "hidden": false
+    },
+    "WhatsApp Image 2026-08-28 at 22.03.51 (1).jpeg": {
+      "name_ar": "بلاطو مقبلات المناسبات",
+      "name_en": "Event canapés platter",
+      "desc_ar": "تشكيلة فاخرة من المقبلات الصغيرة المزينة، مثالية لاستقبال الضيوف.",
+      "desc_en": "A lavish assortment of decorated mini canapés, perfect for guests.",
+      "category": "مقبلات",
+      "price": 0,
+      "hidden": false
+    },
+    "WhatsApp Image 2026-08-28 at 22.03.51 (3).jpeg": {
+      "name_ar": "بسطيلات المناسبات بالجملة",
+      "name_en": "Event pastillas in bulk",
+      "desc_ar": "بسطيلات كبيرة مزينة بالقمرون والليمون، جاهزة بكميات المناسبات.",
+      "desc_en": "Large shrimp-topped pastillas prepared in event quantities.",
+      "category": "بسطيلة",
+      "price": 0,
+      "hidden": false
+    },
+    "WhatsApp Image 2026-08-28 at 22.03.51 (4).jpeg": {
+      "name_ar": "بريوات ومملحات مشكلة",
+      "name_en": "Assorted briouates & savouries",
+      "desc_ar": "بريوات مقرمشة ومملحات متنوعة محضرة طازجة.",
+      "desc_en": "Crispy briouates and assorted fresh savoury bites.",
+      "category": "مقبلات",
+      "price": 0,
+      "hidden": false
+    },
+    "WhatsApp Image 2026-08-28 at 22.03.51 (5).jpeg": {
+      "name_ar": "ميني ساندويتشات المناسبات",
+      "name_en": "Mini party sandwiches",
+      "desc_ar": "ميني ساندويتشات محشوة ومزينة بالقمرون، أنيقة وعملية للحفلات.",
+      "desc_en": "Elegant stuffed mini sandwiches topped with shrimp.",
+      "category": "مقبلات",
+      "price": 0,
+      "hidden": false
+    },
+    "WhatsApp Image 2026-08-28 at 22.03.51 (6).jpeg": {
+      "name_ar": "فيرين بالقمرون والأفوكادو",
+      "name_en": "Shrimp & avocado verrines",
+      "desc_ar": "كؤوس فيرين أنيقة بالقمرون والأفوكادو والخضار الطازجة.",
+      "desc_en": "Elegant verrine cups with shrimp, avocado and fresh veggies.",
+      "category": "مقبلات",
+      "price": 0,
+      "hidden": false
+    },
+    "WhatsApp Image 2026-08-28 at 22.03.51.jpeg": {
+      "name_ar": "سلطة ملكية مزينة",
+      "name_en": "Decorated royal salad",
+      "desc_ar": "سلطة ملكية كبيرة بتزيين فني يليق بالمناسبات.",
+      "desc_en": "A grand royal salad with artistic garnish for events.",
+      "category": "سلطات",
+      "price": 0,
+      "hidden": false
+    },
+    "WhatsApp Image 2026-08-28 at 22.03.52 (1).jpeg": {
+      "name_ar": "كوكتيل القمرون في كؤوس",
+      "name_en": "Shrimp cocktail cups",
+      "desc_ar": "كوكتيل القمرون الطازج يقدم في كؤوس فردية أنيقة.",
+      "desc_en": "Fresh shrimp cocktail served in elegant individual cups.",
+      "category": "مقبلات",
+      "price": 0,
+      "hidden": false
+    },
+    "WhatsApp Image 2026-08-28 at 22.03.52 (3).jpeg": {
+      "name_ar": "سبرينغ رول مقلي",
+      "name_en": "Fried spring rolls",
+      "desc_ar": "سبرينغ رول ذهبي مقرمش يقدم مع صلصة حلوة حارة.",
+      "desc_en": "Golden crispy spring rolls with sweet chili sauce.",
+      "category": "مقبلات",
+      "price": 0,
+      "hidden": false
+    },
+    "WhatsApp Image 2026-08-28 at 22.03.52 (4).jpeg": {
+      "name_ar": "أطباق راقية بلمسة فندقية",
+      "name_en": "Fine-dining plates",
+      "desc_ar": "أطباق مقدمة بأسلوب المطاعم الراقية والفنادق.",
+      "desc_en": "Dishes plated in refined hotel-restaurant style.",
+      "category": "سلطات",
+      "price": 0,
+      "hidden": false
     }
   },
   "settings": {
