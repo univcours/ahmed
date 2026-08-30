@@ -425,7 +425,7 @@ const CONFIG = {
     data:{ items:{} },
     files:[], chefImgs:[], error:'', loadingList:true,
     cat:'الكل', q:'', cart:{}, admin:false, editing:null, modal:null, lightbox:null,
-    dirty:false, saving:false, ghToken:'', pinHash:'', music:false, hasMusic:false,
+    dirty:false, saving:false, ghToken:'', pinHash:'', music:false, hasMusic:false, musicStopped:false,
   };
 
   /* ---------- تخزين آمن (يعمل حتى بدون window.storage) ---------- */
@@ -692,29 +692,36 @@ const CONFIG = {
       AUDIO.addEventListener('error', () => { S.hasMusic = false; AUDIO = null; render(); }, {once:true});
       render();
       const pref = await sGet('music_on', false);
-      if (pref === '0') return;                // أوقفها الزائر سابقاً — احترم اختياره
+      if (pref === '0') return;                // أوقفها الزائر سابقاً — لا تشغّلها إطلاقاً
       const tryPlay = async () => {
         try{ await AUDIO.play(); S.music = true; render(); return true; }
         catch(e){ return false; }
       };
       if (await tryPlay()) return;
-      /* المتصفح يمنع التشغيل قبل التفاعل → شغّلها عند أول لمسة/ضغطة/تمرير */
+      /* المتصفح يمنع التشغيل قبل التفاعل → أول لمسة/ضغطة/تمرير تشغّلها */
+      const evs = ['pointerdown','keydown','touchstart','scroll','mousemove'];
+      const stop = () => evs.forEach(ev => document.removeEventListener(ev, kick));
       const kick = async () => {
-        if (!AUDIO || S.music) return;
-        if (await tryPlay()){
-          ['pointerdown','keydown','touchstart','scroll','mousemove'].forEach(ev =>
-            document.removeEventListener(ev, kick));
-        }
+        /* إن أوقفها الزائر بنفسه، لا تحاول ثانية أبداً */
+        if (!AUDIO || S.music || S.musicStopped){ stop(); return; }
+        if (await tryPlay()) stop();
       };
-      ['pointerdown','keydown','touchstart','scroll','mousemove'].forEach(ev =>
-        document.addEventListener(ev, kick, {passive:true}));
+      evs.forEach(ev => document.addEventListener(ev, kick, {passive:true}));
     }catch(e){ /* لا موسيقى */ }
   }
   async function toggleMusic(){
     if (!AUDIO) return;
-    if (S.music){ AUDIO.pause(); S.music = false; await sSet('music_on','0',false); }
+    if (S.music){
+      AUDIO.pause(); S.music = false;
+      S.musicStopped = true;                  // قرار الزائر: لا تشغيل تلقائي بعد الآن
+      await sSet('music_on','0',false);
+    }
     else {
-      try{ await AUDIO.play(); S.music = true; await sSet('music_on','1',false); }
+      try{
+        await AUDIO.play(); S.music = true;
+        S.musicStopped = false;
+        await sSet('music_on','1',false);
+      }
       catch(e){ toast('🔇 ' + (S.lang==='ar'?'المتصفح منع التشغيل — أعد المحاولة':'Browser blocked playback — try again')); }
     }
     render();
@@ -949,7 +956,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v5.0</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v5.1</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
