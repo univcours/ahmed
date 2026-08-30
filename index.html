@@ -849,6 +849,7 @@ const CONFIG = {
         <div class="dish-body">
           <h3>${esc(lbl)}</h3>
           <p style="color:var(--gold);font-size:13px">${S.lang==='ar'?'اضغط لمشاهدة الفيديو كاملاً':'Tap to watch full video'}</p>
+          <button class="btn" style="width:100%;visibility:hidden;pointer-events:none" aria-hidden="true" tabindex="-1">&nbsp;</button>
           <div class="share-row">
             <span>${S.lang==='ar'?'شارك:':'Share:'}</span>
             <button class="shr wa2" data-vshare="wa" data-vurl="${esc(v.url)}" data-vlbl="${esc(lbl)}" title="${S.lang==='ar'?'شارك عبر واتساب':'Share on WhatsApp'}">
@@ -941,7 +942,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.5</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.6</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
