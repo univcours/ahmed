@@ -60,18 +60,19 @@ const CONFIG = {
   h1,h2,h3{font-family:'Alexandria',sans-serif;font-weight:700;margin:0}
   img{display:block} button{font-family:'Rubik',sans-serif;cursor:pointer}
 
-  /* ---------- زر الموسيقى ---------- */
-  .music-btn{position:fixed;bottom:20px;inset-inline-start:16px;z-index:55;
-    width:46px;height:46px;border-radius:50%;border:none;cursor:pointer;
-    background:var(--card);color:var(--green);font-size:19px;
-    box-shadow:var(--sh-md);display:flex;align-items:center;justify-content:center;
-    transition:transform .18s, background .18s}
-  .music-btn:hover{transform:scale(1.08)}
-  .music-btn.on{background:var(--gold);color:#221F1C}
-  .music-btn.on::after{content:'';position:absolute;inset:-5px;border-radius:50%;
-    border:2px solid var(--gold);opacity:.55;animation:m-ring 1.8s ease-out infinite}
-  @keyframes m-ring{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.35);opacity:0}}
-  @media(max-width:640px){.music-btn{width:40px;height:40px;font-size:16px;bottom:16px}}
+  /* ---------- زر الموسيقى (داخل بطاقة الشيف) ---------- */
+  .music-btn{margin-top:10px;display:inline-flex;align-items:center;gap:7px;
+    border:1.5px solid var(--line);background:var(--card);color:var(--ink-2);
+    border-radius:999px;padding:7px 15px;font-size:12.5px;font-weight:700;
+    font-family:'Alexandria',sans-serif;cursor:pointer;position:relative;
+    transition:background .18s,color .18s,border-color .18s}
+  .music-btn:hover{border-color:var(--gold)}
+  .music-btn.on{background:var(--gold);color:#221F1C;border-color:var(--gold)}
+  .music-btn.on::after{content:'';position:absolute;inset:-4px;border-radius:999px;
+    border:2px solid var(--gold);opacity:.5;animation:m-ring 1.8s ease-out infinite}
+  @keyframes m-ring{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.12);opacity:0}}
+  @media(max-width:640px){.music-btn{font-size:11.5px;padding:6px 13px}
+    .music-btn .mlabel{display:none}}
 
   /* ---------- زر الحفظ العائم للمدير ---------- */
   .save-fab{position:fixed;bottom:86px;inset-inline-end:16px;z-index:60;
@@ -689,10 +690,19 @@ const CONFIG = {
       S.hasMusic = true;
       AUDIO = new Audio(musicUrl());
       AUDIO.loop = true; AUDIO.volume = 0.35; AUDIO.preload = 'none';
-      /* نستأنف فقط إن كان الزائر قد شغّلها سابقاً بنفسه */
-      const was = await sGet('music_on', false);
-      if (was === '1'){
-        try{ await AUDIO.play(); S.music = true; }catch(e){ S.music = false; }
+      const pref = await sGet('music_on', false);
+      /* مطفأة فقط إذا أوقفها الزائر بنفسه سابقاً — وإلا تشتغل تلقائياً */
+      if (pref === '0'){ render(); return; }
+      try{ await AUDIO.play(); S.music = true; }      // بعض المتصفحات تسمح مباشرة
+      catch(e){
+        /* المتصفح يمنع التشغيل قبل التفاعل → نشغّلها عند أول لمسة/ضغطة */
+        const kick = async () => {
+          try{ await AUDIO.play(); S.music = true; render(); }catch(e2){}
+          ['pointerdown','keydown','touchstart','scroll'].forEach(ev =>
+            document.removeEventListener(ev, kick));
+        };
+        ['pointerdown','keydown','touchstart','scroll'].forEach(ev =>
+          document.addEventListener(ev, kick, {once:false, passive:true}));
       }
       render();
     }catch(e){ /* لا موسيقى */ }
@@ -786,12 +796,7 @@ const CONFIG = {
       ${modalHTML()}
       ${lightboxHTML()}
       ${videoOverlayHTML()}
-      ${S.admin && S.dirty ? `<button class="save-fab" id="save-now">💾 ${S.lang==='ar'?'احفظ التغييرات':'Save changes'}</button>` : ''}
-      ${S.hasMusic ? `
-        <button class="music-btn ${S.music?'on':''}" id="music-toggle"
-          title="${S.lang==='ar' ? (S.music?'إيقاف الموسيقى':'تشغيل الموسيقى') : (S.music?'Pause music':'Play music')}">
-          ${S.music ? '⏸' : '🎵'}
-        </button>` : ''}`;
+      ${S.admin && S.dirty ? `<button class="save-fab" id="save-now">💾 ${S.lang==='ar'?'احفظ التغييرات':'Save changes'}</button>` : ''}`;
     bind();
   }
 
@@ -904,6 +909,12 @@ const CONFIG = {
           <span class="role">${t('chefRole')}</span>
           <h2>${esc(restName)}</h2>
           <p>${esc(welcome)}</p>
+          ${S.hasMusic ? `
+          <button class="music-btn ${S.music?'on':''}" id="music-toggle"
+            title="${S.lang==='ar' ? (S.music?'إيقاف الموسيقى':'تشغيل الموسيقى') : (S.music?'Pause music':'Play music')}">
+            <span>${S.music ? '⏸' : '🎵'}</span>
+            <span class="mlabel">${S.lang==='ar' ? (S.music?'إيقاف الموسيقى':'تشغيل الموسيقى') : (S.music?'Pause music':'Play music')}</span>
+          </button>` : ''}
         </div>
       </div></div>
 
@@ -935,7 +946,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.7</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v4.8</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
