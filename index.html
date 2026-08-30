@@ -44,6 +44,8 @@
   "geo": { "@type": "GeoCoordinates", "latitude": 32.9994, "longitude": -7.6206 },
   "areaServed": [ { "@type": "City", "name": "سطات" }, { "@type": "AdministrativeArea", "name": "إقليم سطات" } ],
   "hasMenu": "https://univcours.github.io/ahmed/",
+  "sameAs": ["https://share.google/oIOvRXmTqYLV39oL8"],
+  "hasMap": "https://share.google/oIOvRXmTqYLV39oL8",
   "acceptsReservations": "True",
   "paymentAccepted": "Cash on delivery",
   "makesOffer": [
@@ -111,6 +113,16 @@ const CONFIG = {
   #app-root{font-family:'Rubik',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:16px;line-height:1.6}
   h1,h2,h3{font-family:'Alexandria',sans-serif;font-weight:700;margin:0}
   img{display:block} button{font-family:'Rubik',sans-serif;cursor:pointer}
+
+  /* ---------- أزرار بطاقة غوغل ---------- */
+  .gbp-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .gbp-btn{display:inline-flex;align-items:center;text-decoration:none;border-radius:999px;
+    padding:8px 16px;font-size:12.5px;font-weight:700;font-family:'Alexandria',sans-serif;
+    transition:transform .15s}
+  .gbp-btn:hover{transform:translateY(-1px)}
+  .gbp-btn.map{background:var(--green);color:#fff}
+  .gbp-btn.rate{background:var(--gold);color:#221F1C}
+  @media(max-width:640px){.gbp-btn{font-size:11.5px;padding:7px 13px}}
 
   /* ---------- زر الموسيقى (داخل بطاقة الشيف) ---------- */
   .music-btn{margin-top:10px;display:inline-flex;align-items:center;gap:7px;
@@ -368,6 +380,7 @@ const CONFIG = {
   const ROOT = document.getElementById('app-root');
   const IMG_EXT = /\.(jpe?g|png|webp|gif)$/i;
   const CHEF_RE = /^chef/i;
+  const GBP_URL = 'https://share.google/oIOvRXmTqYLV39oL8';   // بطاقة النشاط على غوغل
   const MENU_FILE = 'menu.json';
 
   /* ---------- تصنيفات الأكلة المغربية (ثابتة، تظهر كلها في الواجهة) ---------- */
@@ -407,6 +420,8 @@ const CONFIG = {
     name:['الاسم الكامل *','Full name *'], phone:['رقم الهاتف *','Phone number *'],
     address:['عنوان التوصيل *','Delivery address *'], notes:['ملاحظات (اختياري)','Notes (optional)'],
     persons:['عدد الأشخاص *','Number of persons *'],
+    findUs:['📍 موقعنا على الخريطة','📍 Find us on Maps'],
+    rateUs:['⭐ قيّمنا على غوغل','⭐ Rate us on Google'],
     personsPh:['مثال: 10 أشخاص','e.g. 10 persons'],
     personsInfo:['يساعد الشيف على تحضير الكمية المناسبة','Helps the chef prepare the right quantity'],
     notesPh:['مثال: بدون بصل','e.g. no onions'],
@@ -971,6 +986,10 @@ const CONFIG = {
           <span class="role">${t('chefRole')}</span>
           <h2>${esc(restName)}</h2>
           <p>${esc(welcome)}</p>
+          <div class="gbp-row">
+            <a class="gbp-btn map" href="${GBP_URL}" target="_blank" rel="noopener">${t('findUs')}</a>
+            <a class="gbp-btn rate" href="${GBP_URL}" target="_blank" rel="noopener">${t('rateUs')}</a>
+          </div>
           ${S.hasMusic ? `
           <button class="music-btn ${S.music?'on':''}" id="music-toggle"
             title="${S.lang==='ar' ? (S.music?'إيقاف الموسيقى':'تشغيل الموسيقى') : (S.music?'Pause music':'Play music')}">
@@ -1008,7 +1027,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v5.3</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v5.4</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
