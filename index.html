@@ -148,13 +148,15 @@ const CONFIG = {
   .save-fab:active{transform:scale(.95)}
 
   /* ---------- شريط الاتصال ---------- */
-  .callbar{background:var(--gold);text-align:center;padding:8px 12px;font-size:13px;font-weight:700}
+  .callbar{position:sticky;top:0;z-index:40;background:var(--gold);text-align:center;
+    padding:8px 12px;font-size:13px;font-weight:700;box-shadow:0 2px 8px rgba(35,25,15,.18)}
   .callbar a{color:#221F1C;text-decoration:none;display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
   .callbar b{font-family:'Alexandria',sans-serif;font-size:14px;letter-spacing:.5px}
-  @media(max-width:640px){.callbar{font-size:12px;padding:7px 10px}.callbar b{font-size:13px}}
+  @media(max-width:640px){.callbar{font-size:12px;padding:7px 10px}.callbar b{font-size:13px}
+    .topbar{top:32px}}
 
   /* ---------- الشريط العلوي ---------- */
-  .topbar{position:sticky;top:0;z-index:30;background:#171310;color:#fff;box-shadow:var(--sh-md)}
+  .topbar{position:sticky;top:35px;z-index:30;background:#171310;color:#fff;box-shadow:var(--sh-md)}
   .topbar-in{max-width:1140px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;gap:8px}
   .homebtn{width:40px;height:40px;flex-shrink:0;border:none;border-radius:12px;background:rgba(255,255,255,.12);
     color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
@@ -1027,7 +1029,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v5.5</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v5.6</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
