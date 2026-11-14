@@ -41,6 +41,11 @@ small{color:#51677c;line-height:1.9;display:block}a{color:#0562c2}
 <div id="progress" role="status" aria-live="polite">ما بدّلنا حتى منشور دابا.</div>
 <div id="results"></div>
 </section>
+<section class="panel">
+<h2>الطريقة اليدوية بدون مفتاح Facebook</h2>
+<p class="intro">إلا ما خدمش تعديل النص بالـAPI، كل صورة عندها رابط المنشور الأصلي ونص مُصحَّح جاهز للنسخ. من المنشور على Facebook دير ⋯ ثم Edit post والصق النص الجديد وحفظ؛ بلا حذف أو إعادة نشر.</p>
+<div id="manual">جارٍ جلب العناوين...</div>
+</section>
 <p class="intro"><a href="https://www.facebook.com/profile.php?id=1293206400544880" target="_blank" rel="noopener noreferrer">فتح صفحة الشيف أحمد على Facebook</a> · <a href="https://univcours.github.io/ahmed/" target="_blank" rel="noopener noreferrer">الموقع الأصلي</a></p>
 </main>
 <script>
@@ -137,6 +142,41 @@ document.getElementById('fix').onclick=async()=>{
    inspected=false
  }finally{lock(false)}
 };
+
+async function showManual(){
+ const el=document.getElementById('manual');
+ try{
+  const resp=await fetch('menu.json',{cache:'no-store'});
+  if(!resp.ok)throw Error('تعذر تحميل قائمة الموقع');
+  const menu=await resp.json();
+  const dishes=Object.entries(menu.items||{}).filter(([_,v])=>!v.hidden);
+  if(dishes.length!==IDS.length)throw Error('عدد الصور تبدل؛ ما غاديش نربط نصوص خاطئة بالمنشورات');
+  el.textContent='';
+  for(let i=0;i<IDS.length;i++){
+   const [file,v]=dishes[i];
+   const block=document.createElement('div');
+   block.className='item';
+   const title=document.createElement('strong');
+   title.textContent=(i+1)+'. '+(v.name_ar||file);
+   const link=document.createElement('a');
+   link.textContent='فتح المنشور فـFacebook';
+   link.href=postUrl(IDS[i]);
+   link.target='_blank';
+   link.rel='noopener noreferrer';
+   link.style.margin='0 14px';
+   const caption=i===0
+    ?['🥟 '+v.name_ar,'',v.desc_ar,'','🎉 الشيف أحمد — أطباق المناسبات بسطات وضواحيها','📞 للاستفسار:',PHONE,'🌐 https://univcours.github.io/ahmed/','','#الشيف_أحمد #بسطيلة_الحوت #مناسبات_سطات'].join('\n')
+    :['🍽️ '+v.name_ar,(v.desc_ar && v.name_ar!=='بسطيلة بالدجاج' && v.name_ar!=='بريوات مالحة بالحوت المناسبات')?'\n'+v.desc_ar:'','\n🎉 الشيف أحمد — طبخ المناسبات بسطات وضواحيها','📞 للاستفسار:',PHONE,'🌐 https://univcours.github.io/ahmed/','','#الشيف_أحمد #طبخ_مغربي #مناسبات_سطات'].filter(Boolean).join('\n');
+   const copy=document.createElement('button');
+   copy.type='button';copy.className='secondary';copy.style.padding='7px 10px';
+   copy.textContent='نسخ النص الصحيح';
+   copy.onclick=async()=>{try{await navigator.clipboard.writeText(caption);copy.textContent='تم النسخ ✓'}catch(e){const input=document.createElement('textarea');input.value=caption;block.appendChild(input);input.select();document.execCommand('copy');input.remove();copy.textContent='تم النسخ ✓'}};
+   block.appendChild(title);block.appendChild(link);block.appendChild(copy);el.appendChild(block);
+  }
+ }catch(e){el.textContent='تعذر تجهيز النسخ اليدوي: '+e.message}
+}
+showManual();
+
 </script>
 </body>
 </html>
