@@ -124,11 +124,10 @@
     var name = it.name_ar || 'وجبة شهية';
     var lines = ['🍽️ ' + name];
     if (it.desc_ar) lines.push('', it.desc_ar);
-    var price = Number(it.price) > 0 ? it.price : 10;
-    lines.push('', '💰 الثمن: ' + price + ' درهم' + (it.sale !== false ? ' (مخفض 🔥)' : ''));
+    if (Number(it.price) > 0) lines.push('', '💰 الثمن: ' + Number(it.price) + ' درهم' + (it.sale !== false ? ' (مخفض 🔥)' : ''));
     lines.push('🎉 متوفر لكل مناسباتكم — أعراس، عقيقة، حفلات');
     lines.push('🛵 توصيل — 💵 الدفع عند الاستلام');
-    lines.push('', '📞 للطلب: ' + PHONE);
+    lines.push('', '📞 للاستفسار والطلبات:', PHONE);
     lines.push('🌐 القائمة الكاملة: ' + SITE);
     lines.push('', (HASH[it.category] || '') + ' #الشيف_أحمد #طبخ_مغربي #مناسبات');
     return lines.join('\n');
