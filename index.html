@@ -76,7 +76,7 @@
     <li>سلطات ملكية، مقبلات، بريوات وكاناپي</li>
     <li>حلويات الأعراس والمناسبات</li>
   </ul>
-  <p>خدمة التوصيل مع الدفع عند الاستلام. للطلب والاستفسار: <a href="tel:+212689199142">+212 689-199142</a></p>
+  <p>خدمة التوصيل مع الدفع عند الاستلام. للطلب والاستفسار: <a href="tel:+212689199142">0689199142</a></p>
 </noscript>
 
 <script>
@@ -87,8 +87,8 @@ const CONFIG = {
   repoUrl: "https://github.com/univcours/ahmed",
   restaurantName: "الشيف أحمد",
   restaurantNameEn: "Chef AHMED",
-  whatsapp: "21260545825",              // رقم واتساب الطلبات بالصيغة الدولية
-  phone: "+212 689-199142",             // رقم الاتصال الظاهر أعلى الصفحة
+  whatsapp: "212689199142",              // رقم واتساب الطلبات بالصيغة الدولية
+  phone: "0689199142",             // رقم الاتصال الظاهر أعلى الصفحة
   // 🔒 بصمة الرمز السري (SHA-256) — لتوليدها: دخول المدير → «توليد بصمة رمز سري»
   adminPinHash: "576c85c584f60555c2a024cbb99dfbbdb5f58c3bdcf28dbc8ea315fd46a388f3",
   welcomeAr: "مرحباً بكم في مطبخنا! كل طبق نحضّره بمكونات طازجة وبكل حب، كما لو كنا نطبخ لعائلتنا.",
@@ -462,7 +462,7 @@ const CONFIG = {
     saleChk:['إظهار شارة «مخفض» على الوجبة','Show a "SALE" badge on the dish'],
     saleTag:['مخفض','SALE'],
     waNumbers:['أرقام واتساب لاستقبال الطلبات (رقم في كل سطر — الأول هو الرئيسي)','WhatsApp numbers receiving orders (one per line — first is primary)'],
-    waHint:['بالصيغة الدولية بدون + مثل 212612345678. الطلب يُفتح على الرقم الأول، وتظهر للزبون أزرار لإرسال نسخة للأرقام الأخرى.','International format without +, e.g. 212612345678. The order opens on the first number; buttons let the customer send a copy to the others.'],
+    waHint:['بالصيغة الدولية بدون + مثل 212689199142. الطلب يُفتح على الرقم الأول، وتظهر للزبون أزرار لإرسال نسخة للأرقام الأخرى.','International format without +, e.g. 212689199142. The order opens on the first number; buttons let the customer send a copy to the others.'],
     waExtraTitle:['📩 أرسل نسخة من الطلب','📩 Send a copy of the order'],
     waExtraSub:['تم فتح الطلب على الرقم الرئيسي. اضغط على كل رقم لإرسال نفس الطلب إليه أيضاً.','The order opened on the main number. Tap each number to also send it there.'],
     sendTo:['أرسل إلى','Send to'],
@@ -1058,7 +1058,7 @@ const CONFIG = {
         <div class="panel">
           <h2>${t('settings')}</h2>
           <div class="field"><label>${t('waNumbers')}</label>
-            <textarea class="input" id="st-wa" rows="3" dir="ltr" style="text-align:left" placeholder="212612345678&#10;212698765432">${esc(waNums().join('\n'))}</textarea>
+            <textarea class="input" id="st-wa" rows="3" dir="ltr" style="text-align:left" placeholder="212689199142">${esc(waNums().join('\n'))}</textarea>
             <span style="font-size:12px;color:var(--ink-3)">${t('waHint')}</span></div>
           <div class="field"><label>${t('stToken')}</label>
             <input class="input" id="st-token" type="password" dir="ltr" style="text-align:left" placeholder="github_pat_…" value="${esc(S.ghToken)}">
@@ -1393,7 +1393,7 @@ const CONFIG = {
             /* الهاتف + الموقع */
             x.fillStyle = '#F2B84B';
             x.font = 'bold ' + Math.round(W * .031) + 'px Arial, sans-serif';
-            x.fillText('📞 +212 689-199142  •  univcours.github.io/ahmed', W - pad,
+            x.fillText('📞 0689199142  •  univcours.github.io/ahmed', W - pad,
                        H - Math.round(barH * (hasDsc ? .08 : .12)));
 
             c.toBlob(b => resolve(b), 'image/jpeg', .95);
