@@ -27,11 +27,14 @@ def main():
         img = ImageOps.exif_transpose(img)
         if img.size != (1448, 1086):
             raise RuntimeError("Unexpected uploaded image dimensions; site unchanged")
-        if img.format != "PNG":
-            raise RuntimeError("Expected original PNG; site unchanged")
+        if img.format not in ("PNG", "JPEG", "WEBP"):
+            raise RuntimeError("Unsupported verified image encoding; site unchanged")
         rgb = img.convert("RGB")
     APPROVED.parent.mkdir(parents=True, exist_ok=True)
-    APPROVED.write_bytes(data)
+    # The approved image host may transcode PNG into WEBP or JPEG.
+    # Persist the approved visual pixels in a real, standards-compliant PNG.
+    rgb.save(APPROVED, format="PNG", optimize=True)
+    print("Downloaded approved photo encoding:", Image.open(BytesIO(data)).format)
     temp = TARGET.with_suffix(".jpeg.tmp")
     rgb.save(temp, format="JPEG", quality=96, subsampling=0, optimize=True)
     os.replace(temp, TARGET)
@@ -40,7 +43,7 @@ def main():
             raise RuntimeError("Post-save verification failed")
     print("Updated original image path:", TARGET.name)
     print("Kept unchanged source:", APPROVED.relative_to(ROOT))
-    print("PNG sha256:", hashlib.sha256(data).hexdigest())
+    print("Archived PNG sha256:", hashlib.sha256(APPROVED.read_bytes()).hexdigest())
     print("JPEG sha256:", hashlib.sha256(TARGET.read_bytes()).hexdigest())
 
 if __name__ == "__main__":
