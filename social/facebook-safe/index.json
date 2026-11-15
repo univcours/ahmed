@@ -1,0 +1,61 @@
+{
+  "items": [
+    {
+      "name": "couscous",
+      "post_id": "1293206400544880_122129588859432953",
+      "original_size": [
+        1080,
+        1350
+      ],
+      "facebook_safe_size": [
+        1350,
+        1350
+      ],
+      "safe_image": "social/facebook-safe/couscous.jpg",
+      "original_post_media_replaced": false
+    },
+    {
+      "name": "rfissa",
+      "post_id": "1293206400544880_122129588949432953",
+      "original_size": [
+        1080,
+        1350
+      ],
+      "facebook_safe_size": [
+        1350,
+        1350
+      ],
+      "safe_image": "social/facebook-safe/rfissa.jpg",
+      "original_post_media_replaced": false
+    },
+    {
+      "name": "medhoussa",
+      "post_id": "1293206400544880_122129589045432953",
+      "original_size": [
+        1080,
+        1350
+      ],
+      "facebook_safe_size": [
+        1350,
+        1350
+      ],
+      "safe_image": "social/facebook-safe/medhoussa.jpg",
+      "original_post_media_replaced": false
+    },
+    {
+      "name": "burak-tangier",
+      "post_id": "1293206400544880_122129588127432953",
+      "original_size": [
+        1448,
+        1086
+      ],
+      "facebook_safe_size": [
+        1448,
+        1448
+      ],
+      "safe_image": "social/facebook-safe/burak-tangier.jpg",
+      "original_post_media_replaced": false
+    }
+  ],
+  "note": "These are non-cropped replacements for future/new Facebook posts only. Existing photo media cannot be overwritten with this tool."
+}
