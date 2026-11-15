@@ -1,182 +1,72 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<meta name="referrer" content="no-referrer">
-<title>إصلاح أرقام هاتف منشورات الشيف أحمد</title>
+<title>مركز تصحيح منشورات الشيف أحمد — GitHub محمي</title>
 <style>
-:root{font-family:system-ui,"Segoe UI",Tahoma,sans-serif;color-scheme:light;background:#f4f7fb;color:#1f3048}
-*{box-sizing:border-box}body{max-width:820px;margin:32px auto;padding:12px}
-h1{font-size:1.55rem;margin:0 0 8px}.intro{line-height:1.9;color:#44566b}
-.panel{background:white;border:1px solid #dde6ef;border-radius:16px;padding:22px;margin:16px 0;box-shadow:0 3px 18px #14324d0b}
-.number{direction:ltr;unicode-bidi:isolate;text-align:center;font-weight:800;font-size:2rem;letter-spacing:.025em;color:#0759b5;background:#eaf4ff;border-radius:12px;padding:14px}
-label{display:block;font-weight:700;margin:10px 0}input{width:100%;padding:12px;border:1px solid #aabbd0;border-radius:10px;font-size:1rem;direction:ltr;text-align:left}
-button{padding:12px 17px;border:0;border-radius:9px;background:#1265cd;color:white;cursor:pointer;font-size:.95rem;font-weight:700}
-button.secondary{background:#eaf1fa;color:#0b4d95}button:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
-small{color:#51677c;line-height:1.9;display:block}a{color:#0562c2}
-#progress{padding:10px;border-radius:8px;background:#edf3f8;line-height:1.8;white-space:pre-wrap;margin-top:12px}
-#results{margin-top:10px;max-height:380px;overflow:auto} .item{font-size:.87rem;padding:9px;border-bottom:1px solid #edf1f6;overflow-wrap:anywhere}
-.ok{color:#047444}.skip{color:#667482}.err{color:#a5222f}
-.warning{background:#fff6e4;border:1px solid #eacb85;border-radius:9px;padding:12px;line-height:1.7}
+:root{color-scheme:light;font-family:system-ui,"Segoe UI",Tahoma,sans-serif;background:#f2f6fb;color:#102743}
+*{box-sizing:border-box}
+body{margin:0}
+main{max-width:820px;margin:38px auto;padding:0 18px 45px}
+header{padding:25px 24px;border-radius:19px;background:linear-gradient(130deg,#14365c,#1360a6);color:white;box-shadow:0 9px 25px #133a6920}
+header h1{font-size:1.6rem;margin:0 0 7px}
+header p{line-height:1.8;margin:0;opacity:.92}
+.card{background:white;border:1px solid #e1eaf3;border-radius:16px;padding:22px;margin-top:16px;box-shadow:0 4px 14px #1327470a}
+h2{font-size:1.15rem;margin:0 0 11px}
+p{line-height:1.9}
+.phone{text-align:center;direction:ltr;unicode-bidi:isolate;font:800 2rem system-ui;letter-spacing:.03em;color:#075bb6;background:#eaf4ff;padding:15px;border-radius:12px;margin:12px 0}
+.step{display:flex;gap:12px;align-items:flex-start;margin:17px 0}
+.num{display:grid;place-items:center;flex:none;width:32px;height:32px;border-radius:50%;background:#e8f1ff;color:#1760b3;font-weight:800}
+.step div{flex:1;line-height:1.8}
+code{font-size:.92em;direction:ltr;unicode-bidi:isolate;padding:4px 7px;border-radius:5px;background:#eef3f8;color:#0c3861;overflow-wrap:anywhere}
+a.action{display:inline-block;background:#1265ca;color:white;padding:13px 20px;text-decoration:none;font-weight:800;border-radius:11px}
+a.action.second{background:#e8f1fb;color:#165caa}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.alert{background:#fff6df;border:1px solid #e6ca87;border-radius:11px;padding:12px;line-height:1.8;margin-top:16px}
+.good{background:#e9f8ef;border:1px solid #a1d9b7;border-radius:11px;padding:12px;line-height:1.8}
+small{display:block;color:#62758a;margin-top:10px}
+@media(max-width:550px){main{margin-top:16px}header h1{font-size:1.3rem}.card{padding:16px}.phone{font-size:1.8rem}}
 </style>
 </head>
 <body>
 <main>
-<h1>📞 تصحيح رقم الهاتف في منشورات الشيف أحمد</h1>
-<p class="intro">أداة مخصصة لآخر 40 منشور صور منشورين فصفحة «الشيف أحمد»؛ الهدف هو تغيير الرقم القديم فالنص، <strong>بلا حذف أو إعادة نشر الصور</strong> وبلا تغيير باقي المعلومات.</p>
-<section class="panel">
-<div class="number" lang="en">0689199142</div>
-<p>الصيغة المطلوبة: الرقم كيبان بوحده فسطـر مستقل، بلا ‎+212 وبلا شرطات أو مسافات.</p>
-<div class="warning">التعديل كيتم عبر Facebook Graph API، وبإذن الصفحة. بعض أنواع منشورات الصور يمكن أن تمنع Meta تعديل النص بواسطة API؛ فهاد الحالة الأداة غادي توقف وتوريك المنشور باش تعدلو من Facebook. ما كتدير حتى حذف أو إعادة نشر.</div>
-<label for="token">مفتاح الولوج لصفحة الشيف أحمد (Page Access Token)</label>
-<input id="token" type="password" autocomplete="off" placeholder="يُلصق هنا داخل المتصفح فقط — ما تشاركوش فالمحادثة">
-<small>المفتاح كيتستعمل غير داخل متصفحك فالاتصال مع graph.facebook.com، وما كيتصيفطش للموقع ولا لـGitHub. إذا كنت ربطتي الصفحة قبل فهاد الموقع، تقدر تضغط «استعمال الاتصال السابق».</small>
-<div class="actions">
-<button type="button" class="secondary" id="legacy">استعمال الاتصال السابق</button>
-<button type="button" class="secondary" id="check">فحص المنشورات</button>
-<button type="button" id="fix">تصحيح المنشورات المؤكدة</button>
+<header>
+<h1>🔐 مركز تصحيح Facebook — الشيف أحمد</h1>
+<p>واجهة إرشادية للربط الآمن بـGitHub. المفتاح ما كيتكتبش هنا وما كيتخزنش فالموقع؛ صفحة GitHub الرسمية هي اللي كتستقبل السر.</p>
+</header>
+<section class="card">
+<h2>الرقم الوحيد المعتمد</h2>
+<div class="phone" lang="en">0689199142</div>
+<div class="good">✅ التصحيح كيستهدف نصوص 40 منشور قديم فقط، مع الاحتفاظ بالصور والتفاعلات. لا حذف، لا رفع صور جديدة، ولا تغيير لإعدادات الصفحة.</div>
+</section>
+<section class="card">
+<h2>كيفاش تضيف المفتاح بطريقة محمية؟</h2>
+<div class="step"><span class="num">1</span><div>فـMeta Graph API Explorer اختار <strong>Page Token</strong> ديال «الشيف أحمد». بما أن المفاتيح السابقة ظهرت فالتصاور، <strong>لغِ صلاحياتها وولد واحد جديد</strong>، وخليه سري.</div></div>
+<div class="step"><span class="num">2</span><div>ضغط على الزر التالي. غادي يحلك إعدادات <strong>GitHub Actions Secrets</strong> ديال المستودع ديالك بعد تسجيل الدخول.</div></div>
+<div class="links"><a class="action" href="https://github.com/univcours/ahmed/settings/secrets/actions/new" target="_blank" rel="noopener noreferrer">🔒 فتح نموذج المفتاح المحمي على GitHub</a></div>
+<div class="step"><span class="num">3</span><div>فخانة <strong>Name</strong> كتب <code>CHEF_AHMED_PAGE_TOKEN</code>، وفخانة <strong>Secret</strong> لصق مفتاح الصفحة الجديد، واضغط <strong>Add secret</strong>.</div></div>
+<div class="step"><span class="num">4</span><div>رجع لـChatGPT وكتب فقط <strong>حطيت المفتاح</strong>، بلا ما تصيفط قيمة المفتاح ولا صور فيها القيمة. غادي ندير فحص للمنشورات ونتحقق من الصلاحيات ثم نطلق التصحيح إذا كان Facebook كيسمح به.</div></div>
+<div class="alert">⚠️ المفتاح سرّ بحال كلمة المرور. ما تحطوش هنا، ولا فملف GitHub عادي، ولا فـIssues أو Pull Requests، ولا فالمحادثة. فقط داخل <strong>GitHub Actions Secrets</strong> الرسمية. GitHub Actions تقدر تشغل البرنامج بدون كشف القيمة فالمستودع.</div>
+</section>
+<section class="card">
+<h2>المتابعة والنتيجة</h2>
+<p>أولاً كيتنفذ <strong>Scan</strong> بلا تغيير، وكيبان تقرير بعدد المنشورات القابلة للتعديل. من بعد كيتنفذ <strong>Apply</strong> لتصحيح النص وإعادة قراءته للتأكد من نجاح التغيير. إذا Facebook رفض تعديل نوع معيّن من المنشورات، كيوقف البرنامج وكيظهر السبب بدون حذف أي حاجة.</p>
+<div class="links">
+<a class="action second" href="https://github.com/univcours/ahmed/actions/workflows/chef-ahmed-phone-repair.yml" target="_blank" rel="noopener noreferrer">📊 تتبع التنفيذ في GitHub Actions</a>
+<a class="action second" href="https://www.facebook.com/profile.php?id=1293206400544880" target="_blank" rel="noopener noreferrer">📘 فتح صفحة الشيف أحمد</a>
 </div>
-<div id="progress" role="status" aria-live="polite">ما بدّلنا حتى منشور دابا.</div>
-<div id="results"></div>
+<small>معلومة: هاد الصفحة عمومية غير للشرح؛ الواجهة اللي كتستقبل المفتاح محمية بتسجيل الدخول لحساب GitHub، وما كاين حتى حقل مفتاح هنا.</small>
 </section>
-<section class="panel">
-<h2>الطريقة اليدوية بدون مفتاح Facebook</h2>
-<p class="intro">إلا ما خدمش تعديل النص بالـAPI، كل صورة عندها رابط المنشور الأصلي ونص مُصحَّح جاهز للنسخ. من المنشور على Facebook دير ⋯ ثم Edit post والصق النص الجديد وحفظ؛ بلا حذف أو إعادة نشر.</p>
-<div id="manual">جارٍ جلب العناوين...</div>
-</section>
-<p class="intro"><a href="https://www.facebook.com/profile.php?id=1293206400544880" target="_blank" rel="noopener noreferrer">فتح صفحة الشيف أحمد على Facebook</a> · <a href="https://univcours.github.io/ahmed/" target="_blank" rel="noopener noreferrer">الموقع الأصلي</a></p>
 </main>
 <script>
-'use strict';
-const PAGE_ID='1293206400544880';
-const IDS=["122129288991432953","122129289249432953","122129289339432953","122129289465432953","122129289549432953","122129289759432953","122129289903432953","122129289999432953","122129290107432953","122129290389432953","122129290491432953","122129290593432953","122129290755432953","122129290851432953","122129290953432953","122129291061432953","122129291145432953","122129291241432953","122129291445432953","122129291547432953","122129291679432953","122129291889432953","122129292033432953","122129292111432953","122129292225432953","122129292315432953","122129292477432953","122129292657432953","122129292789432953","122129292927432953","122129293059432953","122129293185432953","122129293293432953","122129293575432953","122129293665432953","122129293791432953","122129293965432953","122129294097432953","122129294211432953","122129294313432953"];
-const OLD=/\+212[\s\-]*689[\s\-]*199142/g;
-const PHONE='0689199142';
-const rows=[];
-const log=document.getElementById('results');
-const progress=document.getElementById('progress');
-let busy=false, inspected=false, chosen=[];
-function token(){return document.getElementById('token').value.trim()}
-function status(s){progress.textContent=s}
-function line(text,cls=''){const d=document.createElement('div');d.className='item '+cls;d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight}
-function lock(yes){busy=yes;document.querySelectorAll('button').forEach(x=>x.disabled=yes)}
-function postUrl(id){return 'https://www.facebook.com/'+PAGE_ID+'/posts/'+id}
-async function api(id,method,params={}){
- const access=token();if(!access)throw Error('خاصك Page Access Token');
- const url='https://graph.facebook.com/v27.0/'+encodeURIComponent(id);
- let response;
- if(method==='GET'){
-  const q=new URLSearchParams({fields:'id,message',access_token:access});
-  response=await fetch(url+'?'+q.toString(),{method:'GET',cache:'no-store',referrerPolicy:'no-referrer'});
- }else{
-  const body=new URLSearchParams({...params,access_token:access});
-  response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body,cache:'no-store',referrerPolicy:'no-referrer'});
- }
- const data=await response.json();
- if(!response.ok||data.error){const reason=data.error?.message||('HTTP '+response.status);throw Error(reason)}
- return data
-}
-function corrected(msg){
- return msg.replace(/(📞\s*للاستفسار\s*:\s*)\+212[\s\-]*689[\s\-]*199142/g,
-  (_,heading)=>heading.trimEnd()+'\n'+PHONE)
- .replace(OLD,PHONE);
-}
-async function scan(showLines=true){
- inspected=false;chosen=[];let problems=0,already=0;
- for(let i=0;i<IDS.length;i++){
-  const id=PAGE_ID+'_'+IDS[i];
-  status('فحص '+(i+1)+' من '+IDS.length+' منشور...');
-  let value;
-  try{value=await api(id,'GET')}catch(e){
-   problems++;line('تعذر قراءة منشور '+(i+1)+': '+e.message,'err');
-   if(i===0)break;
-   continue
-  }
-  const msg=value.message||'';
-  if(OLD.test(msg)){const next=corrected(msg);chosen.push({id,from:msg,to:next});if(showLines)line('قابل للتصحيح: المنشور '+(i+1),'skip')}
-  else if(msg.includes(PHONE)){already++;if(showLines)line('الرقم صحيح: المنشور '+(i+1),'ok')}
-  else {problems++;if(showLines)line('بدون الرقم القديم: المنشور '+(i+1)+' — ما غاديش نبدلوه','skip')}
-  OLD.lastIndex=0;
- }
- inspected=true;
- status('الفحص كمل. قابل للتصحيح: '+chosen.length+'، صحيح من قبل: '+already+'، بدون تعديل/تعذر: '+problems+'.');
- return {problems,already}
-}
-document.getElementById('legacy').onclick=()=>{
- const old=localStorage.getItem('fb_page_token')||'';
- const page=localStorage.getItem('fb_page_id')||'';
- if(page && page!==PAGE_ID){status('الاتصال السابق لصفحة أخرى، ما استعملتوش');return}
- if(!old){status('ما كاينش مفتاح سابق فهاد المتصفح. خاصك تربط الصفحة يدوياً.');return}
- document.getElementById('token').value=old;
- status('لقينا اتصال قديم. اضغط فحص المنشورات قبل أي تعديل.')
-};
-document.getElementById('check').onclick=async()=>{
- if(busy)return;log.textContent='';lock(true);
- try{await scan()}catch(e){line('خطأ الفحص: '+e.message,'err')}finally{lock(false)}
-};
-document.getElementById('fix').onclick=async()=>{
- if(busy)return;
- if(!token()){status('خاصك تربط الصفحة أولاً.');return}
- if(!inspected){status('خاص تفحص المنشورات قبل التصحيح.');return}
- if(!chosen.length){status('ما كاين حتى منشور قديم خاصو التصحيح.');return}
- if(!confirm('تأكيد: تعديل الرقم فقط فـ'+chosen.length+' منشور قديم، بلا حذف أو إعادة نشر؟'))return;
- lock(true);let fixed=0,failed=0;
- try{
-   for(let i=0;i<chosen.length;i++){
-     const p=chosen[i];status('تصحيح '+(i+1)+' من '+chosen.length+' ...');
-     try{
-       const current=await api(p.id,'GET');
-       if((current.message||'')!==p.from){failed++;line('تجاوزت منشور تبدّل منذ الفحص: '+p.id,'skip');continue}
-       await api(p.id,'POST',{message:p.to});
-       const verified=await api(p.id,'GET');
-       if((verified.message||'')===p.to){
-         fixed++;line('✓ تصلح: '+p.id,'ok')
-       }else{failed++;line('⚠️ الرد نجح لكن ما تأكدش النص الجديد: '+p.id,'err')}
-     }catch(e){failed++;line('✗ فشل تعديل '+p.id+': '+e.message+' — '+postUrl(p.id),'err');
-       if(/permissions?|unsupported|cannot|not allowed|(#200)|(#100)/i.test(e.message)){line('Facebook منع التعديل عبر API؛ وقفنا العملية حتى ما نعاودوش أخطاء. يمكن تعديل المنشورات من واجهة Facebook.','err');break}
-     }
-   }
-   status('النتيجة: تصلحو '+fixed+'، ما تأكدش/تعذر '+failed+'؛ إعادة الفحص ضرورية للتأكد من الباقي.');
-   inspected=false
- }finally{lock(false)}
-};
-
-async function showManual(){
- const el=document.getElementById('manual');
- try{
-  const resp=await fetch('menu.json',{cache:'no-store'});
-  if(!resp.ok)throw Error('تعذر تحميل قائمة الموقع');
-  const menu=await resp.json();
-  const dishes=Object.entries(menu.items||{}).filter(([_,v])=>!v.hidden);
-  if(dishes.length!==IDS.length)throw Error('عدد الصور تبدل؛ ما غاديش نربط نصوص خاطئة بالمنشورات');
-  el.textContent='';
-  for(let i=0;i<IDS.length;i++){
-   const [file,v]=dishes[i];
-   const block=document.createElement('div');
-   block.className='item';
-   const title=document.createElement('strong');
-   title.textContent=(i+1)+'. '+(v.name_ar||file);
-   const link=document.createElement('a');
-   link.textContent='فتح المنشور فـFacebook';
-   link.href=postUrl(IDS[i]);
-   link.target='_blank';
-   link.rel='noopener noreferrer';
-   link.style.margin='0 14px';
-   const caption=i===0
-    ?['🥟 '+v.name_ar,'',v.desc_ar,'','🎉 الشيف أحمد — أطباق المناسبات بسطات وضواحيها','📞 للاستفسار:',PHONE,'🌐 https://univcours.github.io/ahmed/','','#الشيف_أحمد #بسطيلة_الحوت #مناسبات_سطات'].join('\n')
-    :['🍽️ '+v.name_ar,(v.desc_ar && v.name_ar!=='بسطيلة بالدجاج' && v.name_ar!=='بريوات مالحة بالحوت المناسبات')?'\n'+v.desc_ar:'','\n🎉 الشيف أحمد — طبخ المناسبات بسطات وضواحيها','📞 للاستفسار:',PHONE,'🌐 https://univcours.github.io/ahmed/','','#الشيف_أحمد #طبخ_مغربي #مناسبات_سطات'].filter(Boolean).join('\n');
-   const copy=document.createElement('button');
-   copy.type='button';copy.className='secondary';copy.style.padding='7px 10px';
-   copy.textContent='نسخ النص الصحيح';
-   copy.onclick=async()=>{try{await navigator.clipboard.writeText(caption);copy.textContent='تم النسخ ✓'}catch(e){const input=document.createElement('textarea');input.value=caption;block.appendChild(input);input.select();document.execCommand('copy');input.remove();copy.textContent='تم النسخ ✓'}};
-   block.appendChild(title);block.appendChild(link);block.appendChild(copy);el.appendChild(block);
-  }
- }catch(e){el.textContent='تعذر تجهيز النسخ اليدوي: '+e.message}
-}
-showManual();
-
+try {
+  // Remove the old unsafe browser-stored credential from previous public helper.
+  localStorage.removeItem("fb_page_token");
+  localStorage.removeItem("fb_page_id");
+  localStorage.removeItem("fb_page_name");
+} catch(e) {}
 </script>
 </body>
 </html>
