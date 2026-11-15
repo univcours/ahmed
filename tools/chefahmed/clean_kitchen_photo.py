@@ -53,14 +53,31 @@ def main():
         (183,244),(160,274),(25,277),(10,250),(8,64)
     ]
     cv2.fillPoly(mask_patch,[np.array(pts,np.int32)],255)
-    # Replace the interior with authentic, adjacent tile pixels (not
-    # gradient-domain cloning, which can retain shadows of the old bin).
-    # Feather the silhouette edges so the new tile meets the original floor.
+    # Use a separately retouched, clean view of *this same kitchen*
+    # only as a texture reference for the trash-bin region, keeping
+    # every original meal pixel untouched. Never replace the entire image.
+    import urllib.request
+    reference_url=(
+      "https://gcdn.picsart.com/picsart-mcp/"
+      "02c1bd26-f345-4029-896e-27aaa9af8c8c.png"
+    )
+    req=urllib.request.Request(reference_url,headers={"User-Agent":"ChefAhmed-Photo-Restoration/1.0"})
+    with urllib.request.urlopen(req,timeout=30) as response:
+        ai_bytes=response.read(8_000_000)
+    reference=cv2.imdecode(np.frombuffer(ai_bytes,np.uint8),cv2.IMREAD_COLOR)
+    if reference is None:
+        raise RuntimeError("Clean floor reference unavailable; leave site photo unchanged")
+    reference=cv2.resize(reference,(w,h),interpolation=cv2.INTER_AREA)
+    tile=reference[y0:y1,x0:x1].astype(np.float32)
+    # Match overall background floor brightness to nearby original tiles.
+    orig_clean_area=img[730:900,1112:1210].astype(np.float32)
+    ref_clean_area=reference[730:900,1112:1210].astype(np.float32)
+    tile=np.clip(tile+(orig_clean_area.mean(axis=(0,1))-ref_clean_area.mean(axis=(0,1))),0,255)
+    # A broad soft edge prevents a rectangular paste line.
     inner=(mask_patch>0).astype(np.uint8)*255
-    soft=cv2.GaussianBlur(inner,(0,0),11).astype(np.float32)/255.0
-    soft=np.where(mask_patch>0,np.maximum(soft,0.72),soft)
+    soft=cv2.GaussianBlur(inner,(0,0),20).astype(np.float32)/255.0
+    soft=np.where(mask_patch>0,np.maximum(soft,0.85),soft)
     dst=img[y0:y1,x0:x1].astype(np.float32)
-    tile=patch.astype(np.float32)
     cleaned=img.copy()
     cleaned[y0:y1,x0:x1]=np.clip(
         (tile*soft[...,None]+dst*(1-soft[...,None])),0,255
