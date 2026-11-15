@@ -245,10 +245,14 @@ const CONFIG = {
   .dish:hover{transform:translateY(-4px);box-shadow:var(--sh-md)}
   @keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
   @media (prefers-reduced-motion:reduce){.dish{animation:none;transition:none}}
-  .dish-img{position:relative;aspect-ratio:4/3;background:#EDE7D8;cursor:zoom-in;overflow:hidden}
-  .dish-img img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease;
+  /* Show every original photo completely: no cut faces, food edges, text or trays.
+     Neutral backdrop for mixed landscape, portrait and square source formats. */
+  .dish-img{position:relative;aspect-ratio:4/3;background:#F3EEE7;cursor:zoom-in;overflow:hidden;
+    display:flex;align-items:center;justify-content:center}
+  .dish-img img{display:block;width:100%;height:100%;object-fit:contain;object-position:center;
+    padding:6px;transition:none;
     user-select:none;-webkit-user-select:none;-webkit-user-drag:none;pointer-events:none}
-  .dish:hover .dish-img img{transform:scale(1.05)}
+  .dish:hover .dish-img img{transform:none}
   .zoom-hint{position:absolute;top:10px;inset-inline-start:10px;background:rgba(20,50,46,.7);color:#fff;pointer-events:none;
     width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;backdrop-filter:blur(4px)}
   .price-tag{position:absolute;bottom:8px;inset-inline-start:8px;background:rgba(255,255,255,.92);color:var(--green);
@@ -339,7 +343,7 @@ const CONFIG = {
   .sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
   .xbtn{width:38px;height:38px;border:none;background:var(--bg);border-radius:12px;font-size:16px;color:var(--ink-2);flex-shrink:0}
   .cart-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
-  .cart-row img{width:52px;height:52px;object-fit:cover;border-radius:11px;flex-shrink:0}
+  .cart-row img{width:52px;height:52px;object-fit:contain;background:#F3EEE7;border-radius:11px;flex-shrink:0}
   .total-row{display:flex;justify-content:space-between;align-items:center;background:var(--bg);
     border-radius:13px;padding:13px 15px;margin:13px 0;font-family:'Alexandria',sans-serif;font-weight:800;font-size:16px}
   .cod{display:flex;gap:10px;align-items:center;background:var(--gold-soft);border:1px solid #EDD9A3;border-radius:12px;padding:10px 13px;font-size:13px;margin:10px 0 13px}
@@ -820,8 +824,13 @@ const CONFIG = {
       try{ S.cfg.branch = alt; imgs = await listImages(S.cfg); }
       catch(e2){ S.error = e.message; S.loadingList=false; render(); return; }
     }
-    S.chefImgs = imgs.filter(f => CHEF_RE.test(baseName(f.name)));
-    S.files = imgs.filter(f => !CHEF_RE.test(baseName(f.name)) && !/^og[-_.]/i.test(baseName(f.name)));
+    // Public catalog is an explicit allowlist. Never display photos from social,
+    // drafts, backup/original folders, publicity artwork or other repo assets.
+    // The current menu.json has the professionally curated dish images.
+    const curated = new Set(Object.keys(S.data.items || {}));
+    S.chefImgs = imgs.filter(f => f.name === (S.cfg.path ? S.cfg.path + '/' : '') + 'chef.jpg' || f.name === 'chef.jpg');
+    S.files = imgs.filter(f => curated.has(f.name) && !CHEF_RE.test(baseName(f.name)));
+
     S.loadingList = false;
     render();
   }
@@ -920,7 +929,7 @@ const CONFIG = {
       <article class="dish fade" style="animation-delay:${Math.min(i*30,280)}ms;cursor:pointer" data-vid="${esc(v.url)}" data-vidlbl="${esc(lbl)}">
         <div class="dish-img" style="background:#0A2030">
           <video src="${esc(v.url)}" preload="metadata" muted playsinline
-            style="width:100%;height:100%;object-fit:cover;pointer-events:none"></video>
+            style="width:100%;height:100%;object-fit:contain;background:#0A2030;pointer-events:none"></video>
           <div class="vid-badge"><div class="vid-play">▶</div></div>
         </div>
         <div class="dish-body">
