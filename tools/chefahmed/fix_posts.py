@@ -23,7 +23,7 @@ class FBError(Exception):
     pass
 
 def api(path, token, *, method="GET", params=None):
-    if not re.fullmatch(r"(?:me|\d+_\d+)",path):
+    if not re.fullmatch(r"(?:me|me/accounts|\d+_\d+)",path):
         raise ValueError("Unexpected resource")
     url=GRAPH+path
     headers={"Authorization":"Bearer "+token,"Accept":"application/json"}
@@ -88,11 +88,24 @@ def main():
         return 2
     try:
         identity=api("me",token,params={"fields":"id,name"})
-        if str(identity.get("id"))!=PAGE_ID:
-            report(args.mode,0,0,0,0,"BLOCKED: token does not belong to Chef Ahmed Facebook Page")
-            return 3
+        if str(identity.get("id")) != PAGE_ID:
+            # The supplied encrypted secret can also be an authorized user token.
+            # Derive the Chef Ahmed Page token in runner memory only; never print/store it.
+            pages=api("me/accounts",token,params={"fields":"id,name,access_token","limit":"100"}).get("data",[])
+            selected=next((p for p in pages if str(p.get("id")) == PAGE_ID),None)
+            if not selected or not isinstance(selected.get("access_token"),str):
+                report(args.mode,0,0,0,0,"BLOCKED: User Token has no authorized Chef Ahmed Page access; choose Page Token in Graph API Explorer")
+                return 3
+            token=selected["access_token"]
+            page_identity=api("me",token,params={"fields":"id,name"})
+            if str(page_identity.get("id")) != PAGE_ID:
+                report(args.mode,0,0,0,0,"BLOCKED: derived Page Token identity mismatch")
+                return 3
+            print("Verified Chef Ahmed Page Token derived securely from authorized user token.",flush=True)
+        else:
+            print("Verified Chef Ahmed Page Token.",flush=True)
     except FBError as e:
-        report(args.mode,0,0,0,0,"BLOCKED: Page token verification: "+str(e))
+        report(args.mode,0,0,0,0,"BLOCKED: Facebook Page authorization: "+str(e))
         return 3
 
     changes=[]
