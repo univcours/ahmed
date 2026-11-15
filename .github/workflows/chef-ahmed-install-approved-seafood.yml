@@ -1,0 +1,36 @@
+name: Chef Ahmed - install approved seafood image from user
+on:
+  push:
+    branches: [main]
+    paths:
+      - tools/chefahmed/install_approved_seafood.py
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: chef-ahmed-approved-seafood-photo
+  cancel-in-progress: false
+jobs:
+  install:
+    if: github.repository == 'univcours/ahmed' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Pillow
+        run: python -m pip install --disable-pip-version-check "Pillow>=10,<12"
+      - name: Replace seafood photo with exact user-approved image
+        run: python tools/chefahmed/install_approved_seafood.py
+      - name: Commit image and source
+        run: |
+          set -euo pipefail
+          git config user.name "chef-ahmed-publisher[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "WhatsApp Image 2026-08-28 at 12.17.50 (3).jpeg" "social/approved-seafood-photo.png"
+          if ! git diff --cached --quiet; then
+            git commit -m "Use exact customer-approved clean seafood photo throughout Chef Ahmed site"
+            git push
+          fi
