@@ -1,0 +1,58 @@
+name: Chef Ahmed - secure Facebook phone repair
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "scan (read only) or apply (edit existing captions)"
+        required: true
+        type: choice
+        default: scan
+        options:
+          - scan
+          - apply
+  push:
+    branches:
+      - main
+    paths:
+      - tools/chefahmed/run-mode.txt
+
+permissions:
+  contents: read
+
+concurrency:
+  group: chef-ahmed-facebook-phone-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: github.repository == 'univcours/ahmed' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out approved repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Prepare Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate scanner syntax
+        run: python -m py_compile tools/chefahmed/fix_posts.py
+      - name: Scan or repair exactly 40 original posts
+        shell: bash
+        env:
+          CHEF_AHMED_PAGE_TOKEN: ${{ secrets.CHEF_AHMED_PAGE_TOKEN }}
+          DISPATCH_MODE: ${{ inputs.mode }}
+        run: |
+          set -euo pipefail
+          mode="$DISPATCH_MODE"
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            mode="$(tr -d '\r\n ' < tools/chefahmed/run-mode.txt)"
+          fi
+          case "$mode" in
+            scan|apply) ;;
+            *) echo "::error::Invalid mode. Allowed: scan or apply"; exit 2 ;;
+          esac
+          python tools/chefahmed/fix_posts.py --mode "$mode"
