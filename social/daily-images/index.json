@@ -1,0 +1,293 @@
+{
+  "chef": "chef.jpg",
+  "items": [
+    {
+      "index": 1,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.47 (1).jpeg",
+      "image": "social/daily-images/01.jpg",
+      "name_ar": "بسطيلة الحوت",
+      "desc_ar": "بسطيلة بحرية مقرمشة مزينة بالقمرون والشعرية الصينية.",
+      "category": "بسطيلة"
+    },
+    {
+      "index": 2,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.47 (2).jpeg",
+      "image": "social/daily-images/02.jpg",
+      "name_ar": "سلطة مشكلة",
+      "desc_ar": "تشكيلة سلطات طازجة ملونة بالخضار والبيض وأصابع السلطعون.",
+      "category": "سلطات"
+    },
+    {
+      "index": 3,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.47 (3).jpeg",
+      "image": "social/daily-images/03.jpg",
+      "name_ar": "صينية مأكولات بحرية ملكية",
+      "desc_ar": "صينية فاخرة بجراد البحر والقمرون الملكي، مثالية للمناسبات.",
+      "category": "مأكولات بحرية"
+    },
+    {
+      "index": 4,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.47 (4).jpeg",
+      "image": "social/daily-images/04.jpg",
+      "name_ar": "صينية السمك بالمأكولات البحرية",
+      "desc_ar": "سمك طازج محمر مع أطباق القمرون بالصلصة والخضار المزينة.",
+      "category": "مأكولات بحرية"
+    },
+    {
+      "index": 5,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.47 (5).jpeg",
+      "image": "social/daily-images/05.jpg",
+      "name_ar": "صينية السمك المعمر",
+      "desc_ar": "سمك معمر بالحشوة البحرية الغنية، يقدم مزيناً للمناسبات.",
+      "category": "مأكولات بحرية"
+    },
+    {
+      "index": 6,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.47.jpeg",
+      "image": "social/daily-images/06.jpg",
+      "name_ar": "لحم محمر",
+      "desc_ar": "لحم محمر على الطريقة المغربية، طري يذوب في الفم.",
+      "category": "لحوم ومشوي"
+    },
+    {
+      "index": 7,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.48 (1).jpeg",
+      "image": "social/daily-images/07.jpg",
+      "name_ar": "بسطيلة المأكولات البحرية",
+      "desc_ar": "بسطيلة ذهبية مقرمشة محشوة بخيرات البحر ومزينة بالقمرون.",
+      "category": "بسطيلة"
+    },
+    {
+      "index": 8,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.48 (2).jpeg",
+      "image": "social/daily-images/08.jpg",
+      "name_ar": "سلطة ملكية بالقمرون",
+      "desc_ar": "سلطة فاخرة بالقمرون الطازج والخضار المقطعة بعناية.",
+      "category": "سلطات"
+    },
+    {
+      "index": 9,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.48 (3).jpeg",
+      "image": "social/daily-images/09.jpg",
+      "name_ar": "بسطيلة بالقمرون",
+      "desc_ar": "بسطيلة مقرمشة بحشوة القمرون والشعرية الصينية الشهية.",
+      "category": "بسطيلة"
+    },
+    {
+      "index": 10,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.48 (4).jpeg",
+      "image": "social/daily-images/10.jpg",
+      "name_ar": "مقبلات وكاناپي",
+      "desc_ar": "تشكيلة مقبلات صغيرة أنيقة مثالية لاستقبال الضيوف.",
+      "category": "مقبلات"
+    },
+    {
+      "index": 11,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.48 (5).jpeg",
+      "image": "social/daily-images/11.jpg",
+      "name_ar": "لحم محمر بالبرقوق",
+      "desc_ar": "لحم محمر بالبرقوق والمشمش والبيض — طبق الأعراس المغربية بامتياز.",
+      "category": "لحم بالبرقوق"
+    },
+    {
+      "index": 12,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.48.jpeg",
+      "image": "social/daily-images/12.jpg",
+      "name_ar": "رولي معمر",
+      "desc_ar": "رولي معمر بحشوة غنية، مقطع ومزين بالخضار الطازجة.",
+      "category": "لحوم ومشوي"
+    },
+    {
+      "index": 13,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.49 (2).jpeg",
+      "image": "social/daily-images/13.jpg",
+      "name_ar": "المشوي — خروف محمر",
+      "desc_ar": "خروف محمر كامل على الطريقة التقليدية، مزين للمناسبات.",
+      "category": "لحوم ومشوي"
+    },
+    {
+      "index": 14,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.49 (3).jpeg",
+      "image": "social/daily-images/14.jpg",
+      "name_ar": "سلطة خضار مبخرة",
+      "desc_ar": "أطباق خضار مبخرة طازجة وصحية بألوان زاهية.",
+      "category": "خضار"
+    },
+    {
+      "index": 15,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.49.jpeg",
+      "image": "social/daily-images/15.jpg",
+      "name_ar": "كسكس بالتفاية",
+      "desc_ar": "كسكس باللحم مغطى بالتفاية بالبصل المكرمل والحمص.",
+      "category": "كسكس وسفة"
+    },
+    {
+      "index": 16,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.50 (2).jpeg",
+      "image": "social/daily-images/16.jpg",
+      "name_ar": "بسطيلة الحوت",
+      "desc_ar": "بسطيلة بحرية مقرمشة مزينة بالقمرون والشعرية الصينية.",
+      "category": "بسطيلة"
+    },
+    {
+      "index": 17,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.50 (4).jpeg",
+      "image": "social/daily-images/17.jpg",
+      "name_ar": "بسطيلة بالدجاج",
+      "desc_ar": "سفة ذهبية بالقرفة واللوز تخفي حشوة لحم شهية.",
+      "category": "بسطيلة"
+    },
+    {
+      "index": 18,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.50 (5).jpeg",
+      "image": "social/daily-images/18.jpg",
+      "name_ar": "تشكيلة فواكه البحر",
+      "desc_ar": "تشكيلة سخية من فواكه البحر الطازجة ببلح البحر والقمرون.",
+      "category": "مأكولات بحرية"
+    },
+    {
+      "index": 19,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.50.jpeg",
+      "image": "social/daily-images/19.jpg",
+      "name_ar": "طبق السلمون المدخن",
+      "desc_ar": "شرائح سلمون مدخن فاخرة مرتبة بلمسة فنية.",
+      "category": "مأكولات بحرية"
+    },
+    {
+      "index": 20,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.51 (1).jpeg",
+      "image": "social/daily-images/20.jpg",
+      "name_ar": "بسطيلة فواكه البحر",
+      "desc_ar": "بسطيلة فاخرة مغطاة ببلح البحر والقمرون الطازج.",
+      "category": "بسطيلة"
+    },
+    {
+      "index": 21,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.51 (2).jpeg",
+      "image": "social/daily-images/21.jpg",
+      "name_ar": "صينية ملكية بفواكه البحر",
+      "desc_ar": "جراد البحر، بلح البحر والقمرون الملكي في صينية واحدة فاخرة.",
+      "category": "مأكولات بحرية"
+    },
+    {
+      "index": 22,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.51 (3).jpeg",
+      "image": "social/daily-images/22.jpg",
+      "name_ar": "بسطيلة بالقمرون",
+      "desc_ar": "بسطيلة مقرمشة بحشوة القمرون والشعرية الصينية الشهية.",
+      "category": "بسطيلة"
+    },
+    {
+      "index": 23,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.51 (4).jpeg",
+      "image": "social/daily-images/23.jpg",
+      "name_ar": "سلطة ملكية مشكلة",
+      "desc_ar": "سلطة ملكية كبيرة بالخضار والذرة والفواكه الموسمية.",
+      "category": "سلطات"
+    },
+    {
+      "index": 24,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.51.jpeg",
+      "image": "social/daily-images/24.jpg",
+      "name_ar": "بسطيلة فواكه البحر",
+      "desc_ar": "بسطيلة فاخرة مغطاة ببلح البحر والقمرون الطازج.",
+      "category": "بسطيلة"
+    },
+    {
+      "index": 25,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.49 (1).jpeg",
+      "image": "social/daily-images/25.jpg",
+      "name_ar": "دجاج محمر",
+      "desc_ar": null,
+      "category": "دجاج محمر"
+    },
+    {
+      "index": 26,
+      "source": "WhatsApp Image 2026-08-28 at 12.17.50 (1).jpeg",
+      "image": "social/daily-images/26.jpg",
+      "name_ar": "دجاج محمر",
+      "desc_ar": null,
+      "category": "دجاج محمر"
+    },
+    {
+      "index": 27,
+      "source": "حلويات الاعراس و المناسبات.png",
+      "image": "social/daily-images/27.jpg",
+      "name_ar": "حلويات الأعراس والمناسبات",
+      "desc_ar": "كعكات وحلويات الأعراس بتصميم فاخر يليق بيومكم الكبير.",
+      "category": "حلويات مغربية"
+    },
+    {
+      "index": 28,
+      "source": "WhatsApp Image 2026-08-28 at 22.03.51 (1).jpeg",
+      "image": "social/daily-images/28.jpg",
+      "name_ar": "بلاطو مقبلات المناسبات",
+      "desc_ar": "تشكيلة فاخرة من المقبلات الصغيرة المزينة، مثالية لاستقبال الضيوف.",
+      "category": "مقبلات"
+    },
+    {
+      "index": 29,
+      "source": "WhatsApp Image 2026-08-28 at 22.03.51 (3).jpeg",
+      "image": "social/daily-images/29.jpg",
+      "name_ar": "بسطيلات المناسبات",
+      "desc_ar": "بسطيلات كبيرة مزينة بالقمرون والليمون، جاهزة بكميات المناسبات.",
+      "category": "بسطيلة"
+    },
+    {
+      "index": 30,
+      "source": "WhatsApp Image 2026-08-28 at 22.03.51 (4).jpeg",
+      "image": "social/daily-images/30.jpg",
+      "name_ar": "بريوات ومملحات مشكلة",
+      "desc_ar": "بريوات مقرمشة ومملحات متنوعة محضرة طازجة.",
+      "category": "مقبلات"
+    },
+    {
+      "index": 31,
+      "source": "WhatsApp Image 2026-08-28 at 22.03.51 (5).jpeg",
+      "image": "social/daily-images/31.jpg",
+      "name_ar": "بريوات مالحة بالحوت المناسبات",
+      "desc_ar": "ميني ساندويتشات محشوة ومزينة بالقمرون، أنيقة وعملية للحفلات.",
+      "category": "مقبلات"
+    },
+    {
+      "index": 32,
+      "source": "WhatsApp Image 2026-08-28 at 22.03.51 (6).jpeg",
+      "image": "social/daily-images/32.jpg",
+      "name_ar": "فيرين بالقمرون والأفوكادو",
+      "desc_ar": "كؤوس فيرين أنيقة بالقمرون والأفوكادو والخضار الطازجة.",
+      "category": "مقبلات"
+    },
+    {
+      "index": 33,
+      "source": "WhatsApp Image 2026-08-28 at 22.03.51.jpeg",
+      "image": "social/daily-images/33.jpg",
+      "name_ar": "سلطة ملكية مزينة",
+      "desc_ar": "سلطة ملكية كبيرة بتزيين فني يليق بالمناسبات.",
+      "category": "سلطات"
+    },
+    {
+      "index": 34,
+      "source": "WhatsApp Image 2026-08-28 at 22.03.52 (1).jpeg",
+      "image": "social/daily-images/34.jpg",
+      "name_ar": "كوكتيل القمرون في كؤوس",
+      "desc_ar": "كوكتيل القمرون الطازج يقدم في كؤوس فردية أنيقة.",
+      "category": "مقبلات"
+    },
+    {
+      "index": 35,
+      "source": "WhatsApp Image 2026-08-28 at 22.03.52 (3).jpeg",
+      "image": "social/daily-images/35.jpg",
+      "name_ar": "سبرينغ رول مقلي",
+      "desc_ar": "سبرينغ رول ذهبي مقرمش يقدم مع صلصة حلوة حارة.",
+      "category": "مقبلات"
+    },
+    {
+      "index": 36,
+      "source": "WhatsApp Image 2026-08-28 at 22.03.52 (4).jpeg",
+      "image": "social/daily-images/36.jpg",
+      "name_ar": "أطباق راقية بلمسة فندقية",
+      "desc_ar": "أطباق مقدمة بأسلوب المطاعم الراقية والفنادق.",
+      "category": "سلطات"
+    }
+  ]
+}
