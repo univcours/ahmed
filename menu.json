@@ -291,7 +291,8 @@
     "WhatsApp Image 2026-08-28 at 22.03.53.jpeg": {
       "name_ar": "سلطة منوعة",
       "name_en": "",
-      "category": "أجواء المطبخ"
+      "category": "أجواء المطبخ",
+      "hidden": true
     },
     "حلويات الاعراس و المناسبات.png": {
       "category": "حلويات مغربية",
