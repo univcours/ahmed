@@ -24,10 +24,11 @@ def main():
         data = response.read(10_000_000)
     with Image.open(BytesIO(data)) as img:
         img.load()
+        original_format = img.format
         img = ImageOps.exif_transpose(img)
         if img.size != (1448, 1086):
             raise RuntimeError("Unexpected uploaded image dimensions; site unchanged")
-        if img.format not in ("PNG", "JPEG", "WEBP"):
+        if original_format not in ("PNG", "JPEG", "WEBP"):
             raise RuntimeError("Unsupported verified image encoding; site unchanged")
         rgb = img.convert("RGB")
     APPROVED.parent.mkdir(parents=True, exist_ok=True)
