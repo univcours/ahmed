@@ -7,10 +7,6 @@ on:
         options: [scan, apply]
         required: true
         default: scan
-  push:
-    branches: [main]
-    paths:
-      - tools/chefahmed/hashtags-mode.txt
 permissions:
   contents: read
 concurrency:
@@ -38,8 +34,5 @@ jobs:
         run: |
           set -euo pipefail
           mode="$DISPATCH_MODE"
-          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
-            mode="$(tr -d '\r\n ' < tools/chefahmed/hashtags-mode.txt)"
-          fi
           case "$mode" in scan|apply) ;; *) echo "::error::Invalid mode"; exit 2;; esac
           python tools/chefahmed/optimize_hashtags.py --mode "$mode"
