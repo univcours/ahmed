@@ -1,0 +1,24 @@
+name: Chef Ahmed - luxury site QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - luxury.css
+      - menu.json
+      - tools/chefahmed/site_qa.js
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    if: github.repository == 'univcours/ahmed' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify page, all JavaScript scripts and real dish assets
+        run: node tools/chefahmed/site_qa.js
