@@ -53,11 +53,18 @@ def main():
         (183,244),(160,274),(25,277),(10,250),(8,64)
     ]
     cv2.fillPoly(mask_patch,[np.array(pts,np.int32)],255)
-    # Seamless clone minimizes hard seams to the surrounding tile floor.
-    # Patch RGB texture stays photographic, rather than a blurry smudge.
-    cloned=cv2.seamlessClone(patch,img,mask_patch,
-                            ((x0+x1)//2,(y0+y1)//2),cv2.NORMAL_CLONE)
-    cleaned=cloned
+    # Replace the interior with authentic, adjacent tile pixels (not
+    # gradient-domain cloning, which can retain shadows of the old bin).
+    # Feather the silhouette edges so the new tile meets the original floor.
+    inner=(mask_patch>0).astype(np.uint8)*255
+    soft=cv2.GaussianBlur(inner,(0,0),11).astype(np.float32)/255.0
+    soft=np.where(mask_patch>0,np.maximum(soft,0.72),soft)
+    dst=img[y0:y1,x0:x1].astype(np.float32)
+    tile=patch.astype(np.float32)
+    cleaned=img.copy()
+    cleaned[y0:y1,x0:x1]=np.clip(
+        (tile*soft[...,None]+dst*(1-soft[...,None])),0,255
+    ).astype(np.uint8)
     # Small floor stains on the far right can safely be locally healed.
     floor_mask=np.zeros((h,w),dtype=np.uint8)
     cv2.ellipse(floor_mask,(1139,716),(30,14),0,0,360,255,-1)
