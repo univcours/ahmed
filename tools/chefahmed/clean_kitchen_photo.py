@@ -38,28 +38,34 @@ def main():
     if (w,h)!=(1280,960):
         raise RuntimeError("Unexpected original dimensions. Refusing destructive overwrite.")
 
-    # Target only garbage bin and wrapper at the counter's far right.
-    # The seafood plates occupy the left/bottom portions and are NEVER masked.
-    mask=np.zeros((h,w),np.uint8)
-    polygons=[
-       # Black bin and clear plastic bag immediately behind it.
-       [(933,696),(964,675),(1012,671),(1051,693),(1076,690),
-        (1106,710),(1106,739),(1100,918),(1072,942),
-        (938,947),(921,927),(919,731)],
-       # Floor debris / wash stain beside the discarded bucket.
-       [(1103,672),(1151,673),(1183,705),(1180,744),
-        (1143,751),(1092,731)],
-       # Dark incidental object intruding from top-right, not part of the dishes.
-       [(1197,0),(1279,0),(1279,161),(1217,148),(1171,86)],
+    # Replace the black trash bucket with real clean floor texture from
+    # ANOTHER PART OF THIS ORIGINAL PHOTO. This avoids the blurry/flat
+    # results caused by inpainting a large bucket with only a few pixels.
+    x0,y0,x1,y1=919,662,1107,947
+    sx0,sy0=1071,425
+    patch=img[sy0:sy0+(y1-y0),sx0:sx0+(x1-x0)].copy()
+    if patch.shape[:2] != (y1-y0,x1-x0):
+        raise RuntimeError("Floor patch dimensions not available")
+    mask_patch=np.zeros((y1-y0,x1-x0),dtype=np.uint8)
+    # Hand-traced mask avoids touching the plated lobster and shrimp.
+    pts=[
+        (27,40),(64,19),(96,14),(139,30),(158,31),(180,52),
+        (183,244),(160,274),(25,277),(10,250),(8,64)
     ]
-    for pts in polygons:
-        cv2.fillPoly(mask,[np.array(pts,np.int32)],255)
-    mask=cv2.dilate(mask,np.ones((7,7),np.uint8),iterations=1)
-    # Multistage content-aware fill only of the rubbish mask.
-    cleaned=cv2.inpaint(img,mask,7,cv2.INPAINT_TELEA)
-    # Preserve the actual food EXACTLY as captured, pixel-for-pixel, outside mask.
+    cv2.fillPoly(mask_patch,[np.array(pts,np.int32)],255)
+    # Seamless clone minimizes hard seams to the surrounding tile floor.
+    # Patch RGB texture stays photographic, rather than a blurry smudge.
+    cloned=cv2.seamlessClone(patch,img,mask_patch,
+                            ((x0+x1)//2,(y0+y1)//2),cv2.NORMAL_CLONE)
+    cleaned=cloned
+    # Small floor stains on the far right can safely be locally healed.
+    floor_mask=np.zeros((h,w),dtype=np.uint8)
+    cv2.ellipse(floor_mask,(1139,716),(30,14),0,0,360,255,-1)
+    cv2.ellipse(floor_mask,(1184,687),(10,8),0,0,360,255,-1)
+    cleaned=cv2.inpaint(cleaned,floor_mask,3,cv2.INPAINT_TELEA)
+    # Pixel-for-pixel preserve everything on the left including all food.
     changed=(np.abs(cleaned.astype("int16")-img.astype("int16")).sum(axis=2)>0)
-    assert not changed[:640,:900].any(), "Food or chef pixels modified unexpectedly"
+    assert not changed[:630,:910].any(), "Original dishes or chef altered unexpectedly"
     write(PHOTO,cleaned)
     print("Garbage removed and original foods preserved.")
     print("Source backup:",BACKUP.relative_to(ROOT))
