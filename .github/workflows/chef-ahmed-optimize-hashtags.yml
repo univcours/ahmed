@@ -1,0 +1,45 @@
+name: Chef Ahmed - update hashtags on existing Facebook posts
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [scan, apply]
+        required: true
+        default: scan
+  push:
+    branches: [main]
+    paths:
+      - tools/chefahmed/hashtags-mode.txt
+permissions:
+  contents: read
+concurrency:
+  group: chef-ahmed-hashtag-update
+  cancel-in-progress: false
+jobs:
+  add-hashtags:
+    if: github.repository == 'univcours/ahmed' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate source
+        run: python -m py_compile tools/chefahmed/optimize_hashtags.py
+      - name: Optimize existing Facebook caption hashtags
+        env:
+          CHEF_AHMED_PAGE_TOKEN: ${{ secrets.CHEF_AHMED_PAGE_TOKEN }}
+          DISPATCH_MODE: ${{ inputs.mode }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mode="$DISPATCH_MODE"
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            mode="$(tr -d '\r\n ' < tools/chefahmed/hashtags-mode.txt)"
+          fi
+          case "$mode" in scan|apply) ;; *) echo "::error::Invalid mode"; exit 2;; esac
+          python tools/chefahmed/optimize_hashtags.py --mode "$mode"
