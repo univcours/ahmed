@@ -79,29 +79,36 @@ def discover(token):
     return result
 
 def relevant_tags(message):
+    """Five well-established, clickable topic hashtags, not invented phrases.
+
+    Facebook makes a standalone #tag an interactive search link in the caption.
+    Avoid misleading famous-person tags unless they relate to the actual post.
+    """
     m=message.casefold()
-    b="#الشيف_أحمد"
+    brand="#الشيف_أحمد"  # Own branded tag now has existing Page content.
     if re.search(r"burak|بوراك|بوراق",m):
-        return [b,"#CZNBurak","#طنجة","#Chefs","#FoodLovers"]
+        return [brand,"#CZNBurak","#Food","#Cooking","#طنجة"]
     if re.search(r"كسكس|couscous|تفاية",m):
-        return [b,"#كسكس_مغربي","#طبخ_مغربي","#Choumicha","#MoroccanFood"]
+        return [brand,"#كسكس","#Couscous","#طبخ","#MoroccanFood"]
     if re.search(r"رفيسة|rfissa|تريد",m):
-        return [b,"#رفيسة_مغربية","#طبخ_مغربي","#Choumicha","#MoroccanFood"]
+        return [brand,"#رفيسة","#طبخ","#Food","#MoroccanFood"]
     if re.search(r"مضهوص|مدهوص|medhoussa|madghoussa",m):
-        return [b,"#المضهوصة_الغرباوية","#تراث_مغربي","#Choumicha","#MoroccanFood"]
+        return [brand,"#طبخ","#وصفات","#Food","#MoroccanFood"]
     if re.search(r"طاكوس|tacos|بيتزا|pizza",m):
-        return [b,"#Pizza","#Tacos","#FoodLovers","#ChefAhmed"]
+        return [brand,"#Pizza","#Tacos","#Food","#Foodie"]
     if re.search(r"بسطيل|pastilla|bastilla",m):
-        return [b,"#بسطيلة","#مطبخ_مغربي","#طاولات_المناسبات","#MoroccanFood"]
+        return [brand,"#بسطيلة","#طبخ","#Food","#MoroccanFood"]
     if re.search(r"بحر|سمك|حوت|قمرون|كروفيت|جمبري|كالامار|seafood|lobster",m):
-        return [b,"#مأكولات_بحرية","#فواكه_البحر","#SeafoodLovers","#MoroccanFood"]
-    if re.search(r"لحم|مشوي|برقوق|خروف|لوز",m):
-        return [b,"#مطبخ_مغربي","#مناسبات_المغرب","#MoroccanFood","#FoodLovers"]
-    if re.search(r"سلط|شلايض|مقبلات|كاناپي|canap",m):
-        return [b,"#سلطات_مغربية","#طاولات_المناسبات","#FoodPresentation","#MoroccanFood"]
-    if re.search(r"دجاج|كسبرة|حلو|ديسير|حلويات",m):
-        return [b,"#وصفات_مغربية","#طبخ_مغربي","#Choumicha","#MoroccanFood"]
-    return [b,"#أكلات_مغربية","#طاولات_المناسبات","#MoroccanFood","#ChefAhmed"]
+        return [brand,"#Seafood","#Food","#طبخ","#MoroccanFood"]
+    if re.search(r"لحم|مشوي|برقوق|خروف|لوز|طاجين|طجين|tagine",m):
+        return [brand,"#طبخ","#Food","#Cooking","#MoroccanFood"]
+    if re.search(r"حلويات|حلوى|ديسير|كيك|dessert|cake",m):
+        return [brand,"#حلويات","#Dessert","#Food","#وصفات"]
+    if re.search(r"سلط|شلايض|مقبلات|canap|salad",m):
+        return [brand,"#سلطة","#Food","#وصفات","#MoroccanFood"]
+    if re.search(r"دجاج|كسبرة|توابل|وصفة",m):
+        return [brand,"#وصفات","#طبخ","#Food","#MoroccanFood"]
+    return [brand,"#طبخ","#Food","#Foodie","#MoroccanFood"]
 
 def rewrite(message):
     # Only replace an existing trailing block of hashtags, preserving the
@@ -125,7 +132,7 @@ def report(mode,source,total,actionable,updated,skipped,missing,error=None):
         "- Posts already optimized: **%d**"%skipped,
         "- Deleted/unreadable posts skipped: **%d**"%missing,
         "- Hashtags per post: **5**, selected by topic",
-        "- Famous chef tags: **#CZNBurak only when mentioned**, **#Choumicha on traditional Moroccan recipes**",
+        "- Broad, clickable search topics: **#Food #طبخ #MoroccanFood**; famous-person tag only for an actual related post",
         "- Images, post IDs, likes and comments: **untouched**",
         "- Status: **%s**"%(error or ("SCAN COMPLETE (no changes)" if mode=="scan" else "APPLY COMPLETE"))
     ]
