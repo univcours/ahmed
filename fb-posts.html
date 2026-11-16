@@ -72,7 +72,12 @@
     var name = it.name_ar || 'وجبة شهية';
     var lines = ['🍽️ ' + name];
     if (it.desc_ar) lines.push('', it.desc_ar);
-    if (Number(it.price) > 0) lines.push('', '💰 الثمن: ' + Number(it.price) + ' درهم' + (it.sale !== false ? ' (مخفض 🔥)' : ''));
+    if (Number(it.price) > 0) {
+      const discounted = it.sale === true && Number(it.old_price) > Number(it.price);
+      lines.push('', '💰 الثمن: ' + Number(it.price) + ' درهم' + (discounted ? ' (مخفض 🔥)' : ''));
+    } else {
+      lines.push('', '💰 الثمن عند الطلب — تواصل معنا عبر واتساب');
+    }
     lines.push('🎉 متوفر لكل مناسباتكم — أعراس، عقيقة، حفلات');
     lines.push('🛵 توصيل — 💵 الدفع عند الاستلام');
     lines.push('', '📞 للاستفسار والطلبات:', PHONE);
