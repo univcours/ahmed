@@ -824,7 +824,10 @@ const CONFIG = {
     const safeName = n => typeof n==='string' && !n.includes('..') && !n.startsWith('/') && IMG_EXT.test(n);
     const names = Object.keys(S.data.items || {}).filter(n => safeName(n) && !/^og[-_.]/i.test(baseName(n)));
     S.chefImgs = [{name:'chef.jpg', url:rawUrl(prefix+'chef.jpg')}];
-    S.files = names.map(name => ({name, url:rawUrl(prefix+name)}));
+    const cleaned = S.data.cleaned_images || {};
+    S.files = names.map(name => ({
+      name, url:rawUrl(prefix + (cleaned[name] || name))
+    }));
     S.loadingList = false;
     render();
   }
