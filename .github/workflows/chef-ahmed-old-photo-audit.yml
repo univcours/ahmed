@@ -1,0 +1,29 @@
+name: Chef Ahmed - verify old photo posts without deleting
+on:
+  push:
+    branches: [main]
+    paths: [tools/chefahmed/scan_old_photo_posts.py]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Read-only verify old Facebook photo posts
+        env:
+          CHEF_AHMED_PAGE_TOKEN: ${{ secrets.CHEF_AHMED_PAGE_TOKEN }}
+        run: python tools/chefahmed/scan_old_photo_posts.py
+      - name: Publish safe ID-and-status-only inventory
+        run: |
+          git config user.name "chef-ahmed-social-audit[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social/audit/original-facebook-posts.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Inventory existing photo post IDs before safe replacements"
+            git push
+          fi
