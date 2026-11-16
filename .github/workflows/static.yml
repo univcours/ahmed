@@ -50,6 +50,8 @@ jobs:
           done
           test -f _public/index.html
           test -f _public/menu.json
+          node tools/chefahmed/build_share_pages.js _public/share
+          test "$(find _public/share -name '*.html' | wc -l)" -ge 40
           test ! -e _public/token.enc
           test ! -d _public/.github
       - name: Configure GitHub Pages
