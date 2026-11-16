@@ -17,7 +17,7 @@ report=[]
 secret=os.environ.get("CHEF_AHMED_PAGE_TOKEN","").strip()
 if len(secret)<30: raise SystemExit("No Page token configured")
 try: token=helper["page_token"](secret)
-except Exception: raise SystemExit("Page token not authorized (no details exposed)")
+except helper["FBError"] as e: raise SystemExit("Page token not authorized: "+str(e))
 for index,(oldid,(file,item)) in enumerate(zip(IDs,old_visible)):
     pid=helper["PAGE"]+"_"+oldid
     try:
