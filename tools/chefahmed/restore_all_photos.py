@@ -28,6 +28,7 @@ OUT = ROOT / "social" / "enhanced"
 MENU = ROOT / "menu.json"
 BACKGROUND_URL = "https://gcdn.picsart.com/picsart-mcp/1e399729-140a-4e9e-aaee-e8ba3dd93905.png"
 WIDTH = HEIGHT = 1200
+# Preserve every existing menu item and keep its original photograph as a fallback.
 CHEF_CATEGORY = "أجواء المطبخ"
 
 
