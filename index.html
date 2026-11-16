@@ -836,18 +836,11 @@ const CONFIG = {
     // raw domain; keep the original uploaded photo paths and their captions.
     const localImageUrl = path => new URL(path.split('/').map(encodeURIComponent).join('/'), document.baseURI).href;
     S.chefImgs = [{name:'chef.jpg', url:localImageUrl(prefix+'chef.jpg')}];
-    // Always keep a tested fallback to the original photograph.
-    // Only recognize restored assets in our dedicated photo directory.
-    const restored = S.data.cleaned_images || {};
+    // Serve only unmodified photos from Chef Ahmed's original uploads.
+    // AI-composited/retouched copies are not used anywhere in the gallery.
     S.files = names.map(name => {
       const originalUrl = localImageUrl(prefix + name);
-      const restoredPath = restored[name];
-      const valid = typeof restoredPath === 'string'
-        && /^social\/enhanced\/chef-ahmed-\d+\.jpg$/.test(restoredPath);
-      return {
-        name, originalUrl,
-        url: valid ? localImageUrl(prefix + restoredPath) : originalUrl
-      };
+      return {name, originalUrl, url: originalUrl};
     });
     S.loadingList = false;
     render();
@@ -1018,7 +1011,7 @@ const CONFIG = {
               <figcaption>${S.lang==='ar'?'كسكس مغربي':'Couscous'}</figcaption>
             </figure>
             <figure class="luxe-photo mini">
-              <img src="social/cleaned/food-07.jpg" alt="${S.lang==='ar'?'بسطيلة القمرون من أطباق الشيف أحمد':'Chef Ahmed shrimp pastilla'}" loading="eager">
+              <img src="WhatsApp%20Image%202026-08-28%20at%2012.17.48%20%283%29.jpeg" alt="${S.lang==='ar'?'بسطيلة القمرون من أطباق الشيف أحمد':'Chef Ahmed shrimp pastilla'}" loading="eager">
               <figcaption>${S.lang==='ar'?'بسطيلة':'Pastilla'}</figcaption>
             </figure>
             <span class="luxe-photo-mark" aria-hidden="true">أصيل</span>
