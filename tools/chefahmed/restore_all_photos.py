@@ -150,6 +150,23 @@ def main():
         print("PHOTO %02d/%02d %s — %s"%(i,len(sources),item.get("name_ar",""),method),flush=True)
     if len(mapping)!=len(sources):raise RuntimeError("Incomplete output")
 
+    # Overview sheet for independent visual QA (does not modify originals).
+    columns=5
+    tile=220
+    rows=(len(entries)+columns-1)//columns
+    book=Image.new("RGB",(columns*tile,rows*(tile+42)),(250,247,240))
+    drawer=ImageDraw.Draw(book)
+    for k,entry in enumerate(entries):
+        with Image.open(ROOT/entry["enhanced"]) as im:
+            thumb=ImageOps.contain(im.convert("RGB"),(tile-12,tile-12))
+        px=(k%columns)*tile+(tile-thumb.width)//2
+        py=(k//columns)*(tile+42)+(tile-thumb.height)//2
+        book.paste(thumb,(px,py))
+        drawer.text(((k%columns)*tile+12,(k//columns)*(tile+42)+tile+5),
+                    "%02d | %s"%(entry["id"],entry["method"].split("_")[0]),
+                    fill=(65,42,30))
+    book.save(OUT/"contact-sheet.jpg",quality=85,optimize=True)
+
     # Manifest first; menu links updated only after every source is safe & present.
     (OUT/"manifest.json").write_text(json.dumps({
         "version":2,"count":len(mapping),
