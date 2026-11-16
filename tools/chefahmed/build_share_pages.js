@@ -13,7 +13,13 @@ const outDir = process.argv[2] || '_public/share';
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
   '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
 })[ch]);
-const slug = name => String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+const slug = name => {
+  const readable = String(name).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  if (readable && !/^(png|jpg|jpeg|webp|gif)$/.test(readable)) return readable;
+  // Arabic-only photo filenames must not all collapse to 'png'.
+  const bytes = new TextEncoder().encode(String(name));
+  return 'photo-' + Array.from(bytes, b=>b.toString(16).padStart(2,'0')).join('');
+};
 const fileUrl = file => SITE + file.split('/').map(encodeURIComponent).join('/');
 
 function render(name, item) {
