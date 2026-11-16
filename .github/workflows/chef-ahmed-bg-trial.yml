@@ -25,5 +25,6 @@ jobs:
           git add social/audit/bg-trial/
           if ! git diff --cached --quiet; then
             git commit -m "Stage food background cleanup for quality review"
+            git pull --rebase origin main
             git push
           fi
