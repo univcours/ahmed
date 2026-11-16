@@ -1384,7 +1384,11 @@ const CONFIG = {
     });
 
     /* أزرار المشاركة */
-    const dishSlug = n => n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+    const dishSlug = n => {
+      const readable = String(n).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+      if (readable && !/^(png|jpg|jpeg|webp|gif)$/.test(readable)) return readable;
+      return 'photo-' + Array.from(new TextEncoder().encode(String(n)), b=>b.toString(16).padStart(2,'0')).join('');
+    };
 
     /* نرسم المعلومات على الصورة + نوضّحها لتعويض ضغط واتساب */
     function composeShareImage(f, nm, price, dsc){
