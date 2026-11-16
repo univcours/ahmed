@@ -1,0 +1,61 @@
+name: Chef Ahmed - restore and decorate original photo gallery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - tools/chefahmed/restore_all_photos.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: chef-ahmed-restore-and-decorate
+  cancel-in-progress: false
+
+jobs:
+  decorate:
+    if: github.repository == 'univcours/ahmed' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - name: Checkout authentic photo files
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install CPU masking and photo validation libraries
+        run: python -m pip install --disable-pip-version-check "rembg[cpu]>=2.0.65,<3" "opencv-python-headless>=4.8,<5" "numpy<3" "Pillow>=10,<12"
+      - name: Restore every original menu photo on clean decorated background
+        run: python tools/chefahmed/restore_all_photos.py
+      - name: Validate all enhanced assets and original source photos
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          from PIL import Image
+          menu=json.loads(Path('menu.json').read_text(encoding='utf-8'))
+          manifest=json.loads(Path('social/enhanced/manifest.json').read_text(encoding='utf-8'))
+          mapping=menu['cleaned_images']
+          assert manifest['count']==len(mapping)>=35
+          for name,rel in mapping.items():
+              assert Path(name).is_file() and Path(rel).is_file()
+              with Image.open(rel) as img:
+                  img.verify()
+          print("VERIFIED:",len(mapping),"retouched photos. Originals untouched.")
+          PY
+      - name: Commit cleaned photo copies and menu references
+        run: |
+          set -euo pipefail
+          git config user.name "chef-ahmed-photolab[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social/enhanced/ menu.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish full decorated Moroccan gallery while keeping original food and chef photos"
+            git pull --rebase origin main
+            git push
+          fi
