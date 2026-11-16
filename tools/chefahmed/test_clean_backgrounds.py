@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """AI-assisted non-destructive studio backgrounds for original catering photos.
-Trial only: outputs not applied to menu until visual review.
+Trial only: outputs not applied to menu until visual review; safe re-run.
 Removes scratched / cluttered table beyond original dish silhouette, while
 compositing the ORIGINAL plate/food pixels over a spotless linen surface.
 """
