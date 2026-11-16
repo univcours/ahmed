@@ -13,11 +13,11 @@ server_pid=$!
 trap 'kill $server_pid 2>/dev/null || true' EXIT
 sleep 2
 "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
- --hide-scrollbars --disable-background-timer-throttling --window-size=1440,1050 \
+ --hide-scrollbars --disable-background-timer-throttling --window-size=1440,1650 \
  --virtual-time-budget=18000 --screenshot="social/audit/luxury-desktop.png" \
  "http://127.0.0.1:8462/"
 "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
- --hide-scrollbars --disable-background-timer-throttling --window-size=440,1000 \
+ --hide-scrollbars --disable-background-timer-throttling --window-size=440,1550 \
  --virtual-time-budget=18000 --screenshot="social/audit/luxury-mobile.png" \
  "http://127.0.0.1:8462/"
 for p in social/audit/luxury-desktop.png social/audit/luxury-mobile.png; do
