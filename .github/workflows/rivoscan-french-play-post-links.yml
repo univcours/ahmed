@@ -1,0 +1,25 @@
+name: RivoScan - add French Google Play link to verified posts
+on:
+  push:
+    branches: [main]
+    paths:
+      - tools/rivoscan/append_french_play_links.py
+      - .github/workflows/rivoscan-french-play-post-links.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: rivoscan-french-play-post-links
+  cancel-in-progress: false
+jobs:
+  update:
+    if: github.repository == 'univcours/ahmed' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update only listed RivoScan Facebook post captions and verify
+        env:
+          CHEF_AHMED_PAGE_TOKEN: ${{ secrets.CHEF_AHMED_PAGE_TOKEN }}
+        run: |
+          python tools/rivoscan/append_french_play_links.py
