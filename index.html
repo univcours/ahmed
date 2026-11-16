@@ -836,9 +836,19 @@ const CONFIG = {
     // raw domain; keep the original uploaded photo paths and their captions.
     const localImageUrl = path => new URL(path.split('/').map(encodeURIComponent).join('/'), document.baseURI).href;
     S.chefImgs = [{name:'chef.jpg', url:localImageUrl(prefix+'chef.jpg')}];
-    S.files = names.map(name => ({
-      name, url:localImageUrl(prefix + name)
-    }));
+    // Always keep a tested fallback to the original photograph.
+    // Only recognize restored assets in our dedicated photo directory.
+    const restored = S.data.cleaned_images || {};
+    S.files = names.map(name => {
+      const originalUrl = localImageUrl(prefix + name);
+      const restoredPath = restored[name];
+      const valid = typeof restoredPath === 'string'
+        && /^social\/enhanced\/chef-ahmed-\d+\.jpg$/.test(restoredPath);
+      return {
+        name, originalUrl,
+        url: valid ? localImageUrl(prefix + restoredPath) : originalUrl
+      };
+    });
     S.loadingList = false;
     render();
   }
@@ -1170,7 +1180,7 @@ const CONFIG = {
     return `
       <article class="dish" style="animation-delay:${Math.min(i*30,280)}ms;${it.hidden && adminCard?'outline:2px dashed var(--red);outline-offset:-2px':''}">
         <div class="dish-img" data-lb="${esc(f.name)}" title="${S.lang==='ar'?'اضغط للتكبير':'Click to zoom'}">
-          <img src="${esc(f.url)}" alt="${esc(iname(f))}" loading="lazy">
+          <img src="${esc(f.url)}" data-fallback="${esc(f.originalUrl || f.url)}" alt="${esc(iname(f))}" loading="lazy">
           <span class="zoom-hint">⤢</span>
           <span class="price-tag" data-pclick="${esc(f.name)}" title="">${iold(f)?`<s>${iold(f)}</s> `:''}${price} ${t('dirham')}${isale(f)?` <b class="off">${t('saleTag')}</b>`:''}</span>
           ${it.hidden && adminCard ? `<span class="hid-tag">${t('hidden')}</span>` : ''}
@@ -1364,6 +1374,13 @@ const CONFIG = {
   function bind(){
     const $ = id => document.getElementById(id);
     const all = (sel,fn) => ROOT.querySelectorAll(sel).forEach(fn);
+    // Missing retouched photo? Display the actual original, never a blank card.
+    all('.dish-img img[data-fallback]', img => {
+      img.addEventListener('error', () => {
+        const original = img.dataset.fallback;
+        if (original && img.src !== original) img.src = original;
+      }, {once:true});
+    });
 
     /* أزرار المشاركة */
     const dishSlug = n => n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
