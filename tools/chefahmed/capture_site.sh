@@ -20,11 +20,7 @@ sleep 2
  --hide-scrollbars --disable-background-timer-throttling --window-size=440,1000 \
  --virtual-time-budget=18000 --screenshot="social/audit/luxury-mobile.png" \
  "http://127.0.0.1:8462/"
-python3 - <<'PY'
-from PIL import Image
-from pathlib import Path
-for n in ['social/audit/luxury-desktop.png','social/audit/luxury-mobile.png']:
- p=Path(n)
- with Image.open(p) as im:
-  print(p,im.size,'bytes=',p.stat().st_size)
-PY
+for p in social/audit/luxury-desktop.png social/audit/luxury-mobile.png; do
+  test -s "$p"
+  file "$p"
+done
