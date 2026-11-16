@@ -632,12 +632,21 @@ const CONFIG = {
   }
 
   async function loadRepoMenu(){
-    try{
-      // raw مباشرة مع كسر الكاش — نقرأ دائماً أحدث نسخة من المستودع
-      const res = await fetch(rawUrl(menuPath()) + '?v=' + Date.now());
-      if (!res.ok) return null;
-      return await res.json();
-    }catch(e){ return null; }
+    // GitHub Pages hosts menu.json alongside index.html. Prefer the same
+    // origin so blocked raw.githubusercontent.com requests do not empty the menu.
+    const local = new URL(menuPath().split('/').map(encodeURIComponent).join('/'), document.baseURI).href;
+    const sources = [local, rawUrl(menuPath())];
+    for (const source of sources){
+      try{
+        const res = await fetch(source + '?v=' + Date.now(), {cache:'no-store'});
+        if (!res.ok) continue;
+        const value = await res.json();
+        if (!value || !value.items || !Object.keys(value.items).length) continue;
+        await sSet('public_menu_cache', value, false);
+        return value;
+      }catch(e){ /* fall back to next source */ }
+    }
+    return await sGet('public_menu_cache', false);
   }
 
   /* الرمز السري: بصمته المشفرة فقط تُحفظ في ملف pin.json داخل المستودع */
@@ -823,10 +832,12 @@ const CONFIG = {
     const prefix = S.cfg.path ? S.cfg.path + '/' : '';
     const safeName = n => typeof n==='string' && !n.includes('..') && !n.startsWith('/') && IMG_EXT.test(n);
     const names = Object.keys(S.data.items || {}).filter(n => safeName(n) && !/^og[-_.]/i.test(baseName(n)));
-    S.chefImgs = [{name:'chef.jpg', url:rawUrl(prefix+'chef.jpg')}];
-    const cleaned = S.data.cleaned_images || {};
+    // Serve public images locally from GitHub Pages rather than a third-party
+    // raw domain; keep the original uploaded photo paths and their captions.
+    const localImageUrl = path => new URL(path.split('/').map(encodeURIComponent).join('/'), document.baseURI).href;
+    S.chefImgs = [{name:'chef.jpg', url:localImageUrl(prefix+'chef.jpg')}];
     S.files = names.map(name => ({
-      name, url:rawUrl(prefix + (cleaned[name] || name))
+      name, url:localImageUrl(prefix + name)
     }));
     S.loadingList = false;
     render();
