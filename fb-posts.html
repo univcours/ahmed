@@ -93,7 +93,7 @@
       var html = '';
       keys.forEach(function(k, i){
         var it = items[k];
-        var img = RAW + enc(k);
+        var img = RAW + enc((data.cleaned_images || {})[k] || k);
         var txt = postText(it);
         html += '<div class="post">'
           + '<img src="' + img + '" loading="lazy" alt="">'
