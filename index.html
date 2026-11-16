@@ -38,7 +38,6 @@
   "image": "https://univcours.github.io/ahmed/og-image.jpg",
   "url": "https://univcours.github.io/ahmed/",
   "telephone": "+212689199142",
-  "priceRange": "$$",
   "servesCuisine": ["مغربي", "Moroccan", "Seafood", "Mediterranean"],
   "address": { "@type": "PostalAddress", "addressLocality": "سطات", "addressRegion": "الدار البيضاء سطات", "addressCountry": "MA" },
   "geo": { "@type": "GeoCoordinates", "latitude": 32.9994, "longitude": -7.6206 },
@@ -46,7 +45,7 @@
   "hasMenu": "https://univcours.github.io/ahmed/",
   "sameAs": ["https://share.google/ANXBvnyJEyVQo4nXG"],
   "hasMap": "https://share.google/ANXBvnyJEyVQo4nXG",
-  "acceptsReservations": "True",
+  "acceptsReservations": true,
   "paymentAccepted": "Cash on delivery",
   "makesOffer": [
     { "@type": "Offer", "itemOffered": { "@type": "MenuItem", "name": "بسطيلة الحوت" } },
@@ -498,7 +497,7 @@ const CONFIG = {
     lang:'ar', cfg:null, view:'home',       // home | admin
     data:{ items:{} },
     files:[], chefImgs:[], error:'', loadingList:true,
-    cat:'الكل', q:'', cart:{}, admin:false, editing:null, modal:null, lightbox:null,
+    cat:'الكل', q:'', cart:{}, admin:false, editing:null, modal:null, lightbox:null, showCleaned:true,
     dirty:false, saving:false, ghToken:'', pinHash:'', music:false, hasMusic:false, musicStopped:false,
   };
 
@@ -535,9 +534,11 @@ const CONFIG = {
   const itemOf = f => S.data.items[f.name] || {};
   const iname = f => { const it=itemOf(f); return (S.lang==='ar' ? (it.name_ar||it.name_en) : (it.name_en||it.name_ar)) || prettyName(f.name); };
   const idesc = f => { const it=itemOf(f); return (S.lang==='ar' ? (it.desc_ar||'') : (it.desc_en||'')); };
-  const iprice = f => Number(itemOf(f).price) || 0;   // الثمن الحقيقي — 0 يظهر حتى يضبطه المدير
-  const iold = f => Number(itemOf(f).old_price) || 0;
-  const isale = f => itemOf(f).sale !== false;   // شارة «مخفض» مفعّلة افتراضياً
+  const iprice = f => Math.max(0, Number(itemOf(f).price) || 0);
+  const iold = f => Math.max(0, Number(itemOf(f).old_price) || 0);
+  // A sale badge only appears for an explicitly selected, genuine price drop.
+  const isale = f => itemOf(f).sale === true && iprice(f)>0 && iold(f)>iprice(f);
+  const priceText = f => f && iprice(f)>0 ? iprice(f)+' '+t('dirham') : (S.lang==='ar'?'الثمن عند الطلب':'Price on request');
 
   /* أرقام الواتساب: من إعدادات المستودع (menu.json) أولاً، ثم CONFIG */
   const waNums = () => {
@@ -836,11 +837,13 @@ const CONFIG = {
     // raw domain; keep the original uploaded photo paths and their captions.
     const localImageUrl = path => new URL(path.split('/').map(encodeURIComponent).join('/'), document.baseURI).href;
     S.chefImgs = [{name:'chef.jpg', url:localImageUrl(prefix+'chef.jpg')}];
-    // Serve only unmodified photos from Chef Ahmed's original uploads.
-    // AI-composited/retouched copies are not used anywhere in the gallery.
+    // Cleaned surroundings can be toggled off; source dish photos stay available.
     S.files = names.map(name => {
       const originalUrl = localImageUrl(prefix + name);
-      return {name, originalUrl, url: originalUrl};
+      const cleanedName = (S.data.items[name] || {}).cleaned_image;
+      const cleanedUrl = typeof cleanedName === 'string' && /^social\/cleaned\/[a-zA-Z0-9._-]+\.(?:jpe?g|png|webp)$/i.test(cleanedName)
+        ? localImageUrl(prefix + cleanedName) : null;
+      return {name, originalUrl, cleanedUrl, url:S.showCleaned && cleanedUrl ? cleanedUrl : originalUrl};
     });
     S.loadingList = false;
     render();
@@ -851,6 +854,9 @@ const CONFIG = {
     const f = S.files.find(x=>x.name===k); return a + (f?iprice(f):0)*q;
   },0);
   const fileOf = k => S.files.find(f => f.name===k);
+  const cartHasQuote = () => Object.keys(S.cart).some(k => {const f=fileOf(k);return !f || iprice(f)<=0;});
+  const cartTotalText = () => cartHasQuote()
+    ? (S.lang==='ar'?'الثمن يتأكد عبر واتساب':'Price confirmed on WhatsApp') : cartTotal()+' '+t('dirham');
 
   function goHome(){
     S.view='home'; S.q=''; S.cat='الكل'; S.editing=null; S.modal=null; S.lightbox=null;
@@ -864,12 +870,12 @@ const CONFIG = {
     if (!nums.length){ toast('⚠️ ' + (S.lang==='ar'?'لم تُضبط أرقام الواتساب — أضفها من لوحة التحكم':'WhatsApp numbers not set — add them in the dashboard')); return; }
     const lines = Object.entries(S.cart).map(([k,q]) => {
       const f = fileOf(k);
-      return `• ${f?iname(f):k} × ${q} = ${(f?iprice(f):0)*q} ${t('dirham')}`;
+      return `• ${f?iname(f):k} × ${q} = ${f && iprice(f)>0 ? iprice(f)*q+' '+t('dirham') : priceText(f)}`;
     });
     const msg = [
       `${t('orderMsgTitle')} ${S.lang==='ar'?CONFIG.restaurantName:CONFIG.restaurantNameEn}:`,
       ...lines,
-      `${t('total')}: *${cartTotal()} ${t('dirham')}* (${t('codShort')})`,
+      `${t('total')}: *${cartTotalText()}* (${t('codShort')})`,
       '',
       `${t('customer')}:`,
       `👤 ${c.name}`, `📞 ${c.phone}`, `📍 ${c.address}`,
@@ -1046,8 +1052,9 @@ const CONFIG = {
         <p>${S.lang==='ar'?'أطباق حقيقية · '+S.files.filter(f=>!itemOf(f).hidden).length+' اختيار':'Real dishes · '+S.files.filter(f=>!itemOf(f).hidden).length+' selections'}</p>
       </div>
       <div class="toolbar"><div class="toolbar-card">
+        ${S.files.some(f=>f.cleanedUrl) ? `<button id="photos-switch" class="photos-switch" aria-pressed="${S.showCleaned}" type="button">${S.showCleaned ? (S.lang==='ar'?'📷 عرض الصور الأصلية':'📷 View original photos') : (S.lang==='ar'?'✨ عرض الصور المنظفة':'✨ View cleaned photos')}</button>` : ''}
         <div class="search"><span>🔍</span>
-          <input id="search-in" placeholder="${t('search')}" value="${esc(S.q)}">
+          <input id="search-in" type="search" aria-label="${t('search')}" placeholder="${t('search')}" value="${esc(S.q)}">
           ${query ? '<button class="xbtn" id="clear-q" style="width:30px;height:30px;font-size:13px">✕</button>' : ''}
         </div>
         <div class="cats"><div class="cats-track">${(() => {
@@ -1073,7 +1080,7 @@ const CONFIG = {
           </div>`:''}
       </main>
 
-      <p class="foot">${t('footer')} · <span style="opacity:.45">v5.6</span></p>`;
+      <p class="foot">${t('footer')} · <span style="opacity:.45">v5.7</span></p>`;
   }
 
   /* --- لوحة التحكم (المدير) --- */
@@ -1144,7 +1151,7 @@ const CONFIG = {
         <div class="field"><label>${t('price')} (${t('dirham')})</label><input class="input" id="ed-price" type="number" inputmode="numeric" value="${esc(it.price||'')}" placeholder="10"></div>
         <div class="field"><label>${t('oldPrice')}</label><input class="input" id="ed-oldprice" type="number" inputmode="numeric" value="${esc(it.old_price||'')}"></div>
         <label style="font-size:14px;display:flex;gap:8px;align-items:center">
-          <input type="checkbox" id="ed-sale" ${it.sale!==false?'checked':''}> ${t('saleChk')}</label>
+          <input type="checkbox" id="ed-sale" ${it.sale===true?'checked':''}> ${t('saleChk')}</label>
         <div class="field"><label>${t('category')}</label>
           <select class="input" id="ed-cat">
             <option value="">${S.lang==='ar'?'— بدون تصنيف —':'— No category —'}</option>
@@ -1175,7 +1182,8 @@ const CONFIG = {
         <div class="dish-img" data-lb="${esc(f.name)}" title="${S.lang==='ar'?'اضغط للتكبير':'Click to zoom'}">
           <img src="${esc(f.url)}" data-fallback="${esc(f.originalUrl || f.url)}" alt="${esc(iname(f))}" loading="lazy">
           <span class="zoom-hint">⤢</span>
-          <span class="price-tag" data-pclick="${esc(f.name)}" title="">${iold(f)?`<s>${iold(f)}</s> `:''}${price} ${t('dirham')}${isale(f)?` <b class="off">${t('saleTag')}</b>`:''}</span>
+          ${S.showCleaned && f.cleanedUrl ? `<span class="clean-tag">${S.lang==='ar'?'خلفية منظفة':'Clean backdrop'}</span>` : ''}
+          <span class="price-tag" data-pclick="${esc(f.name)}" title="">${isale(f)?`<s>${iold(f)}</s> `:''}${priceText(f)}${isale(f)?` <b class="off">${t('saleTag')}</b>`:''}</span>
           ${it.hidden && adminCard ? `<span class="hid-tag">${t('hidden')}</span>` : ''}
         </div>
         <div class="dish-body">
@@ -1206,9 +1214,9 @@ const CONFIG = {
     return `
       <div class="lightbox" id="lb">
         <button class="lb-x" id="lb-x">✕</button>
-        <img src="${esc(f.url)}" alt="">
+        <img src="${esc(f.url)}" data-fallback="${esc(f.originalUrl||f.url)}" alt="${esc(isChef?t('chefRole'):iname(f))}">
         <div class="lb-cap">${esc(isChef ? t('chefRole') : iname(f))}</div>
-        ${!isChef ? `<div class="lb-price">${iold(f)?`<s style="opacity:.6">${iold(f)}</s> `:''}${iprice(f)} ${t('dirham')}${isale(f)?' · '+t('saleTag'):''}</div>` : ''}
+        ${!isChef ? `<div class="lb-price">${isale(f)?`<s style="opacity:.6">${iold(f)}</s> `:''}${priceText(f)}${isale(f)?' · '+t('saleTag'):''}</div>` : ''}
       </div>`;
   }
 
@@ -1225,7 +1233,7 @@ const CONFIG = {
           ${f?`<img src="${esc(f.url)}" alt="">`:''}
           <div style="flex:1;min-width:0">
             <b style="display:block;font-size:14px">${esc(f?iname(f):k)}</b>
-            <span style="color:var(--ink-2);font-size:12px">${f?iprice(f):0} × ${q} = <b>${(f?iprice(f):0)*q} ${t('dirham')}</b></span>
+            <span style="color:var(--ink-2);font-size:12px">${q} × <b>${f && iprice(f)>0 ? iprice(f)*q+' '+t('dirham') : priceText(f)}</b></span>
           </div>
           <div class="stepper" style="padding:3px">
             <button class="stepbtn" style="width:32px;height:32px;font-size:15px" data-dec-m="${esc(k)}">−</button>
@@ -1239,7 +1247,7 @@ const CONFIG = {
         <div class="sheet-head"><h2>${t('cartTitle')}</h2><button class="xbtn" data-close="1">✕</button></div>
         ${entries.length ? rows : `<p style="text-align:center;color:var(--ink-2);padding:24px 0">${t('cartEmpty')}</p>`}
         ${entries.length ? `
-          <div class="total-row"><span>${t('total')}</span><span style="color:var(--green)">${cartTotal()} ${t('dirham')}</span></div>
+          <div class="total-row"><span>${t('total')}</span><span style="color:var(--green)">${cartTotalText()}</span></div>
           <h3 style="font-size:15px;margin-bottom:10px">${t('delivery')}</h3>
           <div style="display:grid;gap:10px">
             <div class="field"><label>${t('name')}</label><input class="input" id="c-name" autocomplete="name"></div>
@@ -1253,7 +1261,7 @@ const CONFIG = {
           <div class="cod">💵 <span>${t('cod')}</span></div>
           <button class="btn wa" id="wa-order" style="width:100%;padding:14px;font-size:15px">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4l-2.1-1c-.3-.1-.5-.1-.7.1l-1 1.2c-.2.2-.4.2-.6.1-1.6-.8-3-2.1-3.8-3.8-.1-.2-.1-.4.1-.6l1.2-1c.2-.2.2-.4.1-.7l-1-2.1c-.2-.4-.5-.5-.9-.4-1.2.4-2 1.6-1.8 2.8.5 3.9 3.6 7 7.5 7.5 1.2.2 2.4-.6 2.8-1.8.1-.4 0-.7-.4-.9zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5-1.3c1.5.8 3.2 1.3 5 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.3c-1.6 0-3.1-.5-4.4-1.2l-.3-.2-3 .8.8-3-.2-.3c-.8-1.3-1.2-2.9-1.2-4.4 0-4.6 3.7-8.3 8.3-8.3s8.3 3.7 8.3 8.3-3.7 8.3-8.3 8.3z"/></svg>
-            ${t('waOrder')} — ${cartTotal()} ${t('dirham')}
+            ${t('waOrder')} — ${cartTotalText()}
           </button>` : ''}
       </div></div>`;
     }
@@ -1345,7 +1353,7 @@ const CONFIG = {
             ${CATS.map(c=>`<option value="${esc(c.k)}" ${c.k===it.category?'selected':''}>${esc(catLabel(c.k))}</option>`).join('')}
           </select></div>
         <label style="font-size:14px;display:flex;gap:8px;align-items:center;margin-bottom:8px">
-          <input type="checkbox" id="ie-sale" ${it.sale!==false?'checked':''}> ${t('saleChk')}</label>
+          <input type="checkbox" id="ie-sale" ${it.sale===true?'checked':''}> ${t('saleChk')}</label>
         <label style="font-size:14px;display:flex;gap:8px;align-items:center;margin-bottom:12px">
           <input type="checkbox" id="ie-hidden" ${it.hidden?'checked':''}> ${t('hide')}</label>
         <button class="btn" id="ie-save" style="width:100%">${t('quickSave')}</button>
@@ -1368,7 +1376,7 @@ const CONFIG = {
     const $ = id => document.getElementById(id);
     const all = (sel,fn) => ROOT.querySelectorAll(sel).forEach(fn);
     // Missing retouched photo? Display the actual original, never a blank card.
-    all('.dish-img img[data-fallback]', img => {
+    all('.dish-img img[data-fallback], .lightbox img[data-fallback]', img => {
       img.addEventListener('error', () => {
         const original = img.dataset.fallback;
         if (original && img.src !== original) img.src = original;
@@ -1426,7 +1434,7 @@ const CONFIG = {
             /* اسم + ثمن */
             x.fillStyle = '#FFFFFF';
             x.font = 'bold ' + Math.round(W * .046) + 'px Arial, sans-serif';
-            x.fillText(nm + '  •  ' + price + ' درهم', W - pad,
+            x.fillText(nm + '  •  ' + (price>0 ? price+' درهم' : 'السعر عند الطلب'), W - pad,
                        H - Math.round(barH * (hasDsc ? .62 : .44)));
 
             /* الوصف — سطر واحد يُقصّ بأناقة إن طال */
@@ -1463,7 +1471,7 @@ const CONFIG = {
       const dsc = f ? idesc(f) : '';
       const siteUrl = 'https://univcours.github.io/ahmed/';
       const shareUrl = f ? (siteUrl + 'share/' + dishSlug(f.name) + '.html?v=3') : siteUrl;
-      const msg = '🍽️ ' + nm + ' - ' + price + ' ' + t('dirham') + '\n'
+      const msg = '🍽️ ' + nm + ' - ' + priceText(f) + '\n'
                 + (dsc ? dsc + '\n' : '')
                 + '👨‍🍳 ' + (S.lang==='ar' ? CONFIG.restaurantName : CONFIG.restaurantNameEn) + '\n'
                 + siteUrl;
@@ -1579,6 +1587,11 @@ const CONFIG = {
         const n=$('search-in'); if(n){ n.focus(); n.setSelectionRange(n.value.length,n.value.length);} }, 300); };
     }
     if ($('clear-q')) $('clear-q').onclick = () => { S.q=''; render(); };
+    if ($('photos-switch')) $('photos-switch').onclick = () => {
+      S.showCleaned = !S.showCleaned;
+      S.files.forEach(f => {f.url = S.showCleaned && f.cleanedUrl ? f.cleanedUrl : f.originalUrl;});
+      render();
+    };
 
     all('[data-cat]', b => b.onclick = () => { S.cat=b.dataset.cat; render(); });
     all('[data-add]', b => b.onclick = () => { S.cart[b.dataset.add]=1; render(); toast(t('added')); });
