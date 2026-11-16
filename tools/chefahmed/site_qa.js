@@ -30,5 +30,22 @@ for(const media of [
  'WhatsApp Image 2026-08-28 at 12.17.48 (3).jpeg',
  'chef.jpg'
 ])assert(fs.existsSync(media),'Hero/chef photo missing: '+media);
-console.log('PASS — JS syntax:',tags.length,'tags; original curated photos:',visible.length,
-'— layout supports RTL/mobile, photos contain, menu/admin/cart intact.');
+const cleaned = Object.entries(menu.items).filter(([,item])=>Boolean(item.cleaned_image));
+assert(cleaned.length>=16,'Expected verified cleaned food copies were not connected to the catalog');
+for (const [name,item] of cleaned){
+  assert(/^social\/cleaned\/[a-zA-Z0-9._-]+\.(?:jpe?g|png|webp)$/i.test(item.cleaned_image),
+    'Invalid cleaned image path for '+name);
+  assert(fs.existsSync(item.cleaned_image), 'Cleaned menu file missing: '+item.cleaned_image);
+}
+assert(html.includes('id="photos-switch"'),'Original/cleaned picture toggle missing');
+assert(html.includes('S.showCleaned') && html.includes('f.originalUrl'),'Gallery is not reversible');
+assert(html.includes('const priceText = f =>'),'Quote-only items must not display 0 MAD');
+assert(html.includes('const cartTotalText = () =>'),'Unpriced items need an honest cart total');
+assert(html.includes('itemOf(f).sale === true && iprice(f)>0 && iold(f)>iprice(f)'),'Sale badge must require a genuine discount');
+assert(!html.includes('itemOf(f).sale !== false'),'Old default-on sale badge remains');
+assert(!fs.readFileSync('fb-posts.html','utf8').includes('it.sale !== false'),
+  'Facebook promo still treats nonexistent discounts as real');
+new vm.Script(fs.readFileSync('tools/chefahmed/build_share_pages.js','utf8'),
+  {filename:'build_share_pages.js'});
+console.log('PASS — JS syntax:',tags.length,'HTML scripts; dishes:',visible.length,
+  '— verified clean copies:',cleaned.length,'— accurate price/discount handling and static share generation.');
