@@ -1,0 +1,134 @@
+{
+  "selected_count": 16,
+  "mode": "original pixels preserved, dirty surroundings replaced; photo sources untouched",
+  "images": [
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (2).jpeg",
+      "clean": "social/cleaned/food-01.jpg",
+      "mask_coverage": 0.619,
+      "width": 1200,
+      "height": 1600,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (3).jpeg",
+      "clean": "social/cleaned/food-02.jpg",
+      "mask_coverage": 0.666,
+      "width": 1200,
+      "height": 1600,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (4).jpeg",
+      "clean": "social/cleaned/food-03.jpg",
+      "mask_coverage": 0.698,
+      "width": 1200,
+      "height": 1600,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (5).jpeg",
+      "clean": "social/cleaned/food-04.jpg",
+      "mask_coverage": 0.647,
+      "width": 1200,
+      "height": 1600,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.48 (1).jpeg",
+      "clean": "social/cleaned/food-05.jpg",
+      "mask_coverage": 0.537,
+      "width": 1200,
+      "height": 1600,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.48 (2).jpeg",
+      "clean": "social/cleaned/food-06.jpg",
+      "mask_coverage": 0.568,
+      "width": 1600,
+      "height": 1200,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.48 (3).jpeg",
+      "clean": "social/cleaned/food-07.jpg",
+      "mask_coverage": 0.589,
+      "width": 1600,
+      "height": 1200,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.48.jpeg",
+      "clean": "social/cleaned/food-08.jpg",
+      "mask_coverage": 0.445,
+      "width": 1200,
+      "height": 1600,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.50 (2).jpeg",
+      "clean": "social/cleaned/food-09.jpg",
+      "mask_coverage": 0.641,
+      "width": 1600,
+      "height": 1200,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.50 (5).jpeg",
+      "clean": "social/cleaned/food-10.jpg",
+      "mask_coverage": 0.587,
+      "width": 1600,
+      "height": 900,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.51 (1).jpeg",
+      "clean": "social/cleaned/food-11.jpg",
+      "mask_coverage": 0.705,
+      "width": 960,
+      "height": 1280,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.51 (3).jpeg",
+      "clean": "social/cleaned/food-12.jpg",
+      "mask_coverage": 0.484,
+      "width": 3024,
+      "height": 4032,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.51.jpeg",
+      "clean": "social/cleaned/food-13.jpg",
+      "mask_coverage": 0.567,
+      "width": 960,
+      "height": 1280,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.50 (1).jpeg",
+      "clean": "social/cleaned/food-14.jpg",
+      "mask_coverage": 0.539,
+      "width": 1200,
+      "height": 1600,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 22.03.51.jpeg",
+      "clean": "social/cleaned/food-15.jpg",
+      "mask_coverage": 0.524,
+      "width": 1600,
+      "height": 900,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.50 (3).jpeg",
+      "clean": "social/cleaned/kitchen-real-original-clean-framing.jpg",
+      "operation": "frame out right-side trash with exact original food pixels",
+      "width": 1090,
+      "height": 1086,
+      "original_untouched": true
+    }
+  ]
+}
