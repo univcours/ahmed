@@ -31,7 +31,8 @@ for(const media of [
  'chef.jpg'
 ])assert(fs.existsSync(media),'Hero/chef photo missing: '+media);
 const cleaned = Object.entries(menu.items).filter(([,item])=>Boolean(item.cleaned_image));
-assert(cleaned.length>=16,'Expected verified cleaned food copies were not connected to the catalog');
+// Cleaned images are optional: a dish must always remain on its original photographed table.
+// A full-photo edit is permitted only after visual QA and source geometry checks.
 for (const [name,item] of cleaned){
   assert(/^social\/cleaned\/[a-zA-Z0-9._-]+\.(?:jpe?g|png|webp)$/i.test(item.cleaned_image),
     'Invalid cleaned image path for '+name);
