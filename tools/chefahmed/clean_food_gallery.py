@@ -34,6 +34,9 @@ SELECTED=[
  "WhatsApp Image 2026-08-28 at 12.17.51.jpeg",
  "WhatsApp Image 2026-08-28 at 12.17.50 (1).jpeg",
  "WhatsApp Image 2026-08-28 at 22.03.51.jpeg",
+ "WhatsApp Image 2026-08-28 at 12.17.47 (1).jpeg",
+ "WhatsApp Image 2026-08-28 at 12.17.49 (2).jpeg",
+ "WhatsApp Image 2026-08-28 at 12.17.50.jpeg",
 ]
 KITCHEN="WhatsApp Image 2026-08-28 at 12.17.50 (3).jpeg"
 
@@ -77,6 +80,7 @@ def main():
         fname=f"food-{i:02}.jpg"
         clean.save(OUT/fname,"JPEG",quality=94,subsampling=0,optimize=True)
         newmap[name]=f"social/cleaned/{fname}"
+        data["items"][name]["cleaned_image"]=newmap[name]
         checked.append({"original":name,"clean":newmap[name],"mask_coverage":coverage,
                         "width":clean.width,"height":clean.height,
                         "original_untouched":True})
@@ -93,6 +97,7 @@ def main():
         cropped.save(OUT/"kitchen-real-original-clean-framing.jpg","JPEG",
                      quality=95,subsampling=0,optimize=True)
         newmap[KITCHEN]="social/cleaned/kitchen-real-original-clean-framing.jpg"
+        data["items"][KITCHEN]["cleaned_image"]=newmap[KITCHEN]
         checked.append({"original":KITCHEN,"clean":newmap[KITCHEN],
                         "operation":"frame out right-side trash with exact original food pixels",
                         "width":cropped.width,"height":cropped.height,
