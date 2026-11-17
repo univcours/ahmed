@@ -1,0 +1,66 @@
+{
+  "source_originals_preserved": true,
+  "no_crop_or_new_background": true,
+  "items": [
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.48 (3).jpeg",
+      "output": "social/cleaned/original-table-decor-12.17.48_3.png",
+      "width": 1600,
+      "height": 1200,
+      "dish_and_source_table_unchanged_outside_masks": true,
+      "dirt_pixels": 95181,
+      "bouquet_pixels": 0,
+      "bouquet_box": null,
+      "total_edited_pct": 4.9573
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (5).jpeg",
+      "output": "social/cleaned/original-table-decor-12.17.47_5.png",
+      "width": 1200,
+      "height": 1600,
+      "dish_and_source_table_unchanged_outside_masks": true,
+      "dirt_pixels": 6800,
+      "bouquet_pixels": 0,
+      "bouquet_box": null,
+      "total_edited_pct": 0.3542
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (4).jpeg",
+      "output": "social/cleaned/original-table-decor-12.17.47_4.png",
+      "width": 1200,
+      "height": 1600,
+      "dish_and_source_table_unchanged_outside_masks": true,
+      "dirt_pixels": 4665,
+      "bouquet_pixels": 0,
+      "bouquet_box": null,
+      "total_edited_pct": 0.243
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.50 (2).jpeg",
+      "output": "social/cleaned/original-table-decor-12.17.50_2.png",
+      "width": 1600,
+      "height": 1200,
+      "dish_and_source_table_unchanged_outside_masks": true,
+      "dirt_pixels": 2112,
+      "bouquet_pixels": 0,
+      "bouquet_box": null,
+      "total_edited_pct": 0.11
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.50 (3).jpeg",
+      "output": "social/cleaned/original-table-decor-12.17.50_3.png",
+      "width": 1280,
+      "height": 960,
+      "dish_and_source_table_unchanged_outside_masks": true,
+      "dirt_pixels": 2378,
+      "bouquet_pixels": 17495,
+      "bouquet_box": [
+        69,
+        230,
+        262,
+        461
+      ],
+      "total_edited_pct": 1.6042
+    }
+  ]
+}

@@ -46,7 +46,7 @@
       "price": 0,
       "category": "مأكولات بحرية",
       "hidden": false,
-      "cleaned_image": "social/cleaned/real-table-12.17.47_4.png"
+      "cleaned_image": "social/cleaned/original-table-decor-12.17.47_4.png"
     },
     "WhatsApp Image 2026-08-28 at 12.17.47 (5).jpeg": {
       "name_ar": "صينية السمك المعمر",
@@ -56,7 +56,7 @@
       "price": 0,
       "category": "مأكولات بحرية",
       "hidden": false,
-      "cleaned_image": "social/cleaned/real-table-12.17.47_5.png"
+      "cleaned_image": "social/cleaned/original-table-decor-12.17.47_5.png"
     },
     "WhatsApp Image 2026-08-28 at 12.17.47 (6).jpeg": {
       "name_ar": "تحضير أطباق المناسبات",
@@ -102,7 +102,7 @@
       "price": 0,
       "category": "بسطيلة",
       "hidden": false,
-      "cleaned_image": "social/cleaned/real-table-12.17.48_3.png"
+      "cleaned_image": "social/cleaned/original-table-decor-12.17.48_3.png"
     },
     "WhatsApp Image 2026-08-28 at 12.17.48 (4).jpeg": {
       "name_ar": "مقبلات وكاناپي",
@@ -166,7 +166,7 @@
       "price": 0,
       "category": "بسطيلة",
       "hidden": false,
-      "cleaned_image": "social/cleaned/real-table-12.17.50_2.png"
+      "cleaned_image": "social/cleaned/original-table-decor-12.17.50_2.png"
     },
     "WhatsApp Image 2026-08-28 at 12.17.50 (3).jpeg": {
       "name_ar": "تحضير صواني المأكولات البحرية",
@@ -175,7 +175,8 @@
       "desc_en": "Behind the scenes: seafood trays prepared with care.",
       "price": 0,
       "category": "أجواء المطبخ",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/original-table-decor-12.17.50_3.png"
     },
     "WhatsApp Image 2026-08-28 at 12.17.50 (4).jpeg": {
       "name_ar": "بسطيلة بالدجاج",
