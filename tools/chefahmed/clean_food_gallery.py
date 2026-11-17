@@ -50,7 +50,7 @@ def studio(width,height):
     arr=np.stack([244+v+grain,238+v+grain,229+v+grain],axis=2)
     return Image.fromarray(np.uint8(np.clip(arr,0,255)),"RGB")
 
-def clean_dish(photo,session):
+def clean_dish(photo,session,preserve_full_platter=False):
     w,h=photo.size
     factor=min(1,950/max(w,h))
     preview=photo.resize((round(w*factor),round(h*factor)),Image.Resampling.LANCZOS)
@@ -62,6 +62,14 @@ def clean_dish(photo,session):
     radius=max(5,round(min(w,h)*.009))
     kernel=cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(radius*2+1,radius*2+1))
     solid=cv2.dilate((mask>95).astype(np.uint8)*255,kernel)
+    if preserve_full_platter:
+        # Preserve the complete photographed serving tray and garnishes.
+        ys,xs=np.where(mask>95)
+        if len(xs)<200: raise ValueError('Insufficient subject mask')
+        hull=cv2.convexHull(np.stack((xs,ys),axis=1).astype(np.int32))
+        solid=np.zeros((h,w),np.uint8)
+        cv2.fillConvexPoly(solid,hull,255)
+        solid=cv2.dilate(solid,kernel,iterations=1)
     feather=cv2.GaussianBlur(solid,(0,0),sigmaX=max(2,min(w,h)*.004))
     result=Image.composite(photo,studio(w,h),Image.fromarray(feather,"L"))
     return result,round(float(coverage),3)
@@ -76,7 +84,7 @@ def main():
         if name not in data["items"] or data["items"][name].get("hidden"):
             raise ValueError("Not a selected public original")
         original=ImageOps.exif_transpose(Image.open(ROOT/name)).convert("RGB")
-        clean,coverage=clean_dish(original,session)
+        clean,coverage=clean_dish(original,session,preserve_full_platter=(name=='WhatsApp Image 2026-08-28 at 12.17.49 (2).jpeg'))
         fname=f"food-{i:02}.jpg"
         clean.save(OUT/fname,"JPEG",quality=94,subsampling=0,optimize=True)
         newmap[name]=f"social/cleaned/{fname}"
