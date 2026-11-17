@@ -22,7 +22,13 @@ tags.forEach((m,i)=>{
 });
 const visible=Object.entries(menu.items).filter(([name,v])=>!v.hidden);
 assert(visible.length>=35,'Visible food catalog unexpectedly small');
-const missing=visible.filter(([name])=>!fs.existsSync(name));
+const missing=visible.filter(([name,item])=>!fs.existsSync(item.public_image || name));
+for(const [name,item] of visible){
+  if(item.public_image){
+    assert(/^social\/cleaned\/[a-zA-Z0-9._-]+\.(?:jpe?g|png|webp)$/i.test(item.public_image),'Invalid public image override for '+name);
+    assert(fs.existsSync(item.public_image),'Public replacement image missing for '+name);
+  }
+}
 assert.equal(missing.length,0,'Missing menu pictures: '+missing.map(([n])=>n).join('; '));
 for(const media of [
  'WhatsApp Image 2026-08-28 at 12.17.51 (2).jpeg',
