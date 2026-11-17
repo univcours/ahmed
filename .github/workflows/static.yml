@@ -37,6 +37,7 @@ jobs:
           mkdir -p _public/share _public/social/cleaned
           cp index.html luxury.css menu.json sitemap.xml robots.txt .nojekyll _public/
           for file in *.jpg *.jpeg *.png *.webp *.gif *.mp4 *.mp3; do
+            if [ "$file" = "WhatsApp Image 2026-08-28 at 22.03.51 (2).jpeg" ]; then continue; fi
             if [ -f "$file" ]; then cp -- "$file" _public/; fi
           done
           for file in fb-helper.html fb-phone-fix.html fb-posts.html google*.html; do

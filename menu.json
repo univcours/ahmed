@@ -253,11 +253,13 @@
     "WhatsApp Image 2026-08-28 at 22.03.51 (2).jpeg": {
       "hidden": false,
       "price": 0,
-      "name_ar": "من كواليس العمل",
-      "name_en": "Behind the scenes",
-      "desc_ar": "الشيف أحمد في إدارة العمل اليومي.",
-      "desc_en": "Chef Ahmed managing daily operations.",
-      "category": "أجواء المطبخ"
+      "name_ar": "الشيف أحمد — المائدة المغربية الفاخرة",
+      "name_en": "Chef Ahmed — Moroccan feast",
+      "desc_ar": "صورة فنية تصوّر الشيف أحمد بأناقة وسط أطباق مغربية تقليدية فاخرة، مولّدة بالذكاء الاصطناعي.",
+      "desc_en": "AI-generated artistic portrait of Chef Ahmed in an elegant Moroccan dining setting.",
+      "category": "أجواء المطبخ",
+      "public_image": "social/cleaned/chef-ahmed-moroccan-feast.jpg",
+      "cleaned_image": "social/cleaned/chef-ahmed-moroccan-feast.jpg"
     },
     "og-image.jpg": {
       "hidden": true,
@@ -395,6 +397,15 @@
       "desc_ar": "أطباق مقدمة بأسلوب المطاعم الراقية والفنادق.",
       "desc_en": "Dishes plated in refined hotel-restaurant style.",
       "category": "سلطات",
+      "price": 0,
+      "hidden": false
+    },
+    "social/cleaned/chef-ahmed-wedding-service.jpg": {
+      "name_ar": "الشيف أحمد يشرف على تقديم عرس مغربي فاخر",
+      "name_en": "Chef Ahmed directing a Moroccan wedding banquet",
+      "desc_ar": "تصميم فني مولّد بالذكاء الاصطناعي للشيف أحمد وهو يشرف على تقديم الخرفان المشوية والسلطات في عرس مغربي فاخر.",
+      "desc_en": "AI-generated concept image of Chef Ahmed directing a luxury Moroccan wedding buffet featuring roast lamb and salads.",
+      "category": "أجواء المطبخ",
       "price": 0,
       "hidden": false
     }

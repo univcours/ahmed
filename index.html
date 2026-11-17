@@ -839,7 +839,9 @@ const CONFIG = {
     S.chefImgs = [{name:'chef.jpg', url:localImageUrl(prefix+'chef.jpg')}];
     // Cleaned surroundings can be toggled off; source dish photos stay available.
     S.files = names.map(name => {
-      const originalUrl = localImageUrl(prefix + name);
+      const publicName = (S.data.items[name] || {}).public_image;
+      const safePublicName = typeof publicName === 'string' && /^social\/cleaned\/[a-zA-Z0-9._-]+\.(?:jpe?g|png|webp)$/i.test(publicName) ? publicName : name;
+      const originalUrl = localImageUrl(prefix + safePublicName);
       const cleanedName = (S.data.items[name] || {}).cleaned_image;
       const cleanedUrl = typeof cleanedName === 'string' && /^social\/cleaned\/[a-zA-Z0-9._-]+\.(?:jpe?g|png|webp)$/i.test(cleanedName)
         ? localImageUrl(prefix + cleanedName) : null;
