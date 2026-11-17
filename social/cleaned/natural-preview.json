@@ -1,0 +1,61 @@
+{
+  "mode": "natural counter/floor cleanup, exact original food preserved",
+  "images": [
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.46.jpeg",
+      "clean": null,
+      "method": "original_chef_preserved",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (1).jpeg",
+      "clean": null,
+      "method": "original_fallback_RuntimeError",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (2).jpeg",
+      "clean": null,
+      "method": "original_fallback_RuntimeError",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (3).jpeg",
+      "clean": null,
+      "method": "original_fallback_RuntimeError",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (4).jpeg",
+      "clean": null,
+      "method": "original_fallback_RuntimeError",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (5).jpeg",
+      "clean": null,
+      "method": "original_fallback_RuntimeError",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (6).jpeg",
+      "clean": null,
+      "method": "original_chef_preserved",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47.jpeg",
+      "clean": null,
+      "method": "original_fallback_RuntimeError",
+      "coverage": null,
+      "original_untouched": true
+    }
+  ]
+}
