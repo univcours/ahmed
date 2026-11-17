@@ -258,8 +258,8 @@
       "desc_ar": "صورة فنية تصوّر الشيف أحمد بأناقة وسط أطباق مغربية تقليدية فاخرة، مولّدة بالذكاء الاصطناعي.",
       "desc_en": "AI-generated artistic portrait of Chef Ahmed in an elegant Moroccan dining setting.",
       "category": "أجواء المطبخ",
-      "public_image": "social/cleaned/chef-ahmed-moroccan-feast-sharp.webp",
-      "cleaned_image": "social/cleaned/chef-ahmed-moroccan-feast-sharp.webp"
+      "public_image": "social/cleaned/chef-ahmed-moroccan-feast-full.jpg",
+      "cleaned_image": "social/cleaned/chef-ahmed-moroccan-feast-full.jpg"
     },
     "og-image.jpg": {
       "hidden": true,
@@ -408,7 +408,8 @@
       "category": "أجواء المطبخ",
       "price": 0,
       "hidden": false,
-      "public_image": "social/cleaned/chef-ahmed-wedding-service-sharp.webp"
+      "public_image": "social/cleaned/chef-ahmed-wedding-service-full.jpg",
+      "cleaned_image": "social/cleaned/chef-ahmed-wedding-service-full.jpg"
     }
   },
   "settings": {

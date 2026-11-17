@@ -36,6 +36,9 @@ def download_model():
             time.sleep(3)
 
 def main():
+    if (DEST/"chef-ahmed-moroccan-feast-full.jpg").exists() and (DEST/"chef-ahmed-wedding-service-full.jpg").exists():
+        print("Native high-quality portraits are installed; declining to replace them with reconstructed thumbnails.")
+        return
     download_model()
     sr=cv2.dnn_superres.DnnSuperResImpl_create()
     sr.readModel(str(MODEL))
