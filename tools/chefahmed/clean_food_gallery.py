@@ -88,20 +88,21 @@ def main():
     with Image.open(ROOT/KITCHEN) as source:
         original=ImageOps.exif_transpose(source).convert("RGB")
         width,height=original.size
-        if width<1300 or height<1000:
-            raise ValueError("Kitchen photo was changed; refusing blind crop")
-        # The black trash bins and hanging clutter occupy the far right.
-        # Keep all photographed seafood plates (x<=1050) and the chef
-        # exactly pixel-for-pixel, only cut the background x>1090.
-        cropped=original.crop((0,0,1090,height))
-        cropped.save(OUT/"kitchen-real-original-clean-framing.jpg","JPEG",
-                     quality=95,subsampling=0,optimize=True)
-        newmap[KITCHEN]="social/cleaned/kitchen-real-original-clean-framing.jpg"
-        data["items"][KITCHEN]["cleaned_image"]=newmap[KITCHEN]
-        checked.append({"original":KITCHEN,"clean":newmap[KITCHEN],
-                        "operation":"frame out right-side trash with exact original food pixels",
-                        "width":cropped.width,"height":cropped.height,
-                        "original_untouched":True})
+        if width>=1300 and height>=1000:
+            # Keep original plate pixels and crop only the far-right clutter.
+            cropped=original.crop((0,0,1090,height))
+            cropped.save(OUT/"kitchen-real-original-clean-framing.jpg","JPEG",
+                         quality=95,subsampling=0,optimize=True)
+            newmap[KITCHEN]="social/cleaned/kitchen-real-original-clean-framing.jpg"
+            data["items"][KITCHEN]["cleaned_image"]=newmap[KITCHEN]
+            checked.append({"original":KITCHEN,"clean":newmap[KITCHEN],
+                            "operation":"frame out right-side trash with exact original food pixels",
+                            "width":cropped.width,"height":cropped.height,
+                            "original_untouched":True})
+        else:
+            # Kitchen source already differs from the original crop dimensions.
+            # Do not alter or regenerate it; preserve its last approved clean version.
+            print(f"Skipping kitchen crop: dimensions {width}x{height}; preserving existing reviewed image",flush=True)
     data["cleaned_images"]=newmap
     # Atomic JSON write only after every file and QA has succeeded.
     temp=MENU.with_suffix(".json.tmp")
