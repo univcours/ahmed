@@ -45,7 +45,8 @@
       "desc_en": "Fresh baked fish with saucy shrimp bowls and garnished vegetables.",
       "price": 0,
       "category": "مأكولات بحرية",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/real-table-12.17.47_4.png"
     },
     "WhatsApp Image 2026-08-28 at 12.17.47 (5).jpeg": {
       "name_ar": "صينية السمك المعمر",
@@ -54,7 +55,8 @@
       "desc_en": "Stuffed fish with rich seafood filling, beautifully presented.",
       "price": 0,
       "category": "مأكولات بحرية",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/real-table-12.17.47_5.png"
     },
     "WhatsApp Image 2026-08-28 at 12.17.47 (6).jpeg": {
       "name_ar": "تحضير أطباق المناسبات",
@@ -99,7 +101,8 @@
       "desc_en": "Crispy pastilla with shrimp and vermicelli filling.",
       "price": 0,
       "category": "بسطيلة",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/real-table-12.17.48_3.png"
     },
     "WhatsApp Image 2026-08-28 at 12.17.48 (4).jpeg": {
       "name_ar": "مقبلات وكاناپي",
@@ -162,7 +165,8 @@
       "desc_en": "Crispy seafood pastilla topped with shrimp and vermicelli.",
       "price": 0,
       "category": "بسطيلة",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/real-table-12.17.50_2.png"
     },
     "WhatsApp Image 2026-08-28 at 12.17.50 (3).jpeg": {
       "name_ar": "تحضير صواني المأكولات البحرية",

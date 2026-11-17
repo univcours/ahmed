@@ -1,0 +1,30 @@
+{
+  "intent": "Keep the ENTIRE real serving plate and original photographed table; retouch tiny dirt marks only",
+  "source_originals_unchanged": true,
+  "items": [
+    {
+      "name": "WhatsApp Image 2026-08-28 at 12.17.48 (3).jpeg",
+      "retouched": "social/cleaned/real-table-12.17.48_3.png",
+      "masked_pixels": 17958,
+      "masked_share": 0.009353
+    },
+    {
+      "name": "WhatsApp Image 2026-08-28 at 12.17.47 (5).jpeg",
+      "retouched": "social/cleaned/real-table-12.17.47_5.png",
+      "masked_pixels": 3806,
+      "masked_share": 0.001982
+    },
+    {
+      "name": "WhatsApp Image 2026-08-28 at 12.17.47 (4).jpeg",
+      "retouched": "social/cleaned/real-table-12.17.47_4.png",
+      "masked_pixels": 4760,
+      "masked_share": 0.002479
+    },
+    {
+      "name": "WhatsApp Image 2026-08-28 at 12.17.50 (2).jpeg",
+      "retouched": "social/cleaned/real-table-12.17.50_2.png",
+      "masked_pixels": 2105,
+      "masked_share": 0.001096
+    }
+  ]
+}
