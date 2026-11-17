@@ -36,6 +36,9 @@ jobs:
           set -euo pipefail
           git config user.name "chef-ahmed-photo-cleanup[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Preview script also writes temporary samples; keep them out of the commit.
+          git restore -- social/cleaned/natural-preview.jpg social/cleaned/natural-preview.json || true
+          rm -f social/cleaned/natural-[0-9][0-9].jpg
           git add social/cleaned/natural-preview-v2.jpg social/cleaned/natural-preview-v2.json
           if ! git diff --cached --quiet; then
             git commit -m "Preview real-food-only cleanup before publishing kitchen surfaces"
