@@ -1009,7 +1009,7 @@ const CONFIG = {
           </div>
           <div class="luxe-photo-wall">
             <figure class="luxe-photo main">
-              <img src="WhatsApp%20Image%202026-08-28%20at%2012.17.50%20%283%29.jpeg" alt="${S.lang==='ar'?'صينية المأكولات البحرية من أطباق الشيف أحمد':'Chef Ahmed seafood platter'}" fetchpriority="high">
+              <img src="social/cleaned/original-table-decor-12.17.50_3.png" alt="${S.lang==='ar'?'صينية المأكولات البحرية من أطباق الشيف أحمد':'Chef Ahmed seafood platter'}" fetchpriority="high">
               <figcaption>${S.lang==='ar'?'فواكه البحر':'Seafood'}</figcaption>
             </figure>
             <figure class="luxe-photo mini">
@@ -1182,7 +1182,7 @@ const CONFIG = {
         <div class="dish-img" data-lb="${esc(f.name)}" title="${S.lang==='ar'?'اضغط للتكبير':'Click to zoom'}">
           <img src="${esc(f.url)}" data-fallback="${esc(f.originalUrl || f.url)}" alt="${esc(iname(f))}" loading="lazy">
           <span class="zoom-hint">⤢</span>
-          ${S.showCleaned && f.cleanedUrl ? `<span class="clean-tag">${S.lang==='ar'?'خلفية منظفة':'Clean backdrop'}</span>` : ''}
+          ${S.showCleaned && f.cleanedUrl ? `<span class="clean-tag">${S.lang==='ar'?'تنظيف وتزيين خفيف':'Lightly cleaned & styled'}</span>` : ''}
           <span class="price-tag" data-pclick="${esc(f.name)}" title="">${isale(f)?`<s>${iold(f)}</s> `:''}${priceText(f)}${isale(f)?` <b class="off">${t('saleTag')}</b>`:''}</span>
           ${it.hidden && adminCard ? `<span class="hid-tag">${t('hidden')}</span>` : ''}
         </div>
