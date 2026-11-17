@@ -73,7 +73,9 @@ def make_mask(rgb, filename):
     candidate=(dark & (roi>0)).astype(np.uint8)
     n,labels,stats,_=cv2.connectedComponentsWithStats(candidate,8)
     mask=np.zeros((h,w),np.uint8)
-    max_component=int(h*w*.009)
+    # Large black grime patches around this pastilla are on the original table,
+    # far outside the photographically preserved serving plate.
+    max_component=int(h*w*(.06 if filename=="WhatsApp Image 2026-08-28 at 12.17.48 (3).jpeg" else .009))
     for i in range(1,n):
         area=int(stats[i,cv2.CC_STAT_AREA])
         if 4<=area<=max_component:
