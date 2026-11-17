@@ -19,7 +19,7 @@ import numpy as np
 from PIL import Image, ImageOps, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "social" / "retouched-tables"
+OUT = ROOT / "social" / "cleaned"
 MENU = ROOT / "menu.json"
 
 # Coordinates are fractions (x / width, y / height), visually reviewed against
@@ -125,7 +125,7 @@ def main():
         if name not in data["items"]:raise KeyError("Original item missing: "+name)
         source=ROOT/name
         if not source.is_file():raise FileNotFoundError(source)
-        target=OUT/(source.stem.replace("WhatsApp Image 2026-08-28 at ","").replace(" ","_").replace("(","").replace(")","")+".png")
+        target=OUT/("real-table-"+source.stem.replace("WhatsApp Image 2026-08-28 at ","").replace(" ","_").replace("(","").replace(")","")+".png")
         old,new,count,pct=clean_one(source,target)
         print(f"{name}: small dirt-pixel cleanup {count} pixels ({pct:.2%}); no crop; real plate and table.",flush=True)
         rows.append((name,old,new,count,pct))
@@ -136,7 +136,7 @@ def main():
     (OUT/"audit.json").write_text(json.dumps({
         "intent":"Keep the ENTIRE real serving plate and original photographed table; retouch tiny dirt marks only",
         "source_originals_unchanged":True,
-        "items":[{"name":name,"retouched":str((OUT/(Path(name).stem.replace("WhatsApp Image 2026-08-28 at ","").replace(" ","_").replace("(","").replace(")","")+".png")).relative_to(ROOT)),
+        "items":[{"name":name,"retouched":str((OUT/("real-table-"+Path(name).stem.replace("WhatsApp Image 2026-08-28 at ","").replace(" ","_").replace("(","").replace(")","")+".png")).relative_to(ROOT)),
                   "masked_pixels":count,"masked_share":round(pct,6)} for name,_,_,count,pct in rows]
     },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     if args.publish:
