@@ -80,10 +80,14 @@ def clean_photo(src, session, category, seed):
     darken = (shadow.astype(np.float32) / 255.0)*14.0
     backdrop = np.maximum(backdrop-darken[:,:,None],0)
     alpha = cv2.GaussianBlur(solid, (0,0), sigmaX=max(1.0, minside*.0012))
+    # Make foreground cores fully opaque; feather only at the external edges.
+    interior=cv2.erode(solid,cv2.getStructuringElement(
+        cv2.MORPH_ELLIPSE,(radius*2+1,radius*2+1)))
+    alpha[interior==255]=255
     alpha = alpha.astype(np.float32)[:,:,None]/255.0
-    # In solid foreground areas alpha is 1.0: original meal pixels are unaltered.
+    # Pixel-exact conservation of every original meal pixel in the core.
     composed = (base*alpha + backdrop*(1-alpha)).clip(0,255).astype(np.uint8)
-    if not np.array_equal(composed[solid==255], np.asarray(src)[solid==255]):
+    if not np.array_equal(composed[interior==255], np.asarray(src)[interior==255]):
         raise RuntimeError("Original meal pixels were modified")
     return Image.fromarray(composed, "RGB"), area, "original_subject_clean_worktop"
 
