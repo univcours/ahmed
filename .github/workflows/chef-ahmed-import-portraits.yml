@@ -1,0 +1,76 @@
+name: Chef Ahmed - import two AI portraits
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/chef-ahmed-import-portraits.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install 'Pillow>=10,<12'
+      - name: Retrieve existing generated portraits and preserve as permanent website photos
+        shell: bash
+        run: |
+          cat > /tmp/chef_images.py <<'CHEFPY'
+          import os,io,json,urllib.request,urllib.parse,sys,time
+          from PIL import Image,ImageOps,ImageEnhance
+          assets=json.loads("[{\"name\":\"chef-ahmed-moroccan-feast.jpg\",\"url\":\"https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2Fc5764136-7cfe-4bdd-9bcc-933f1567e5b0/watermark:F/width:160?csig=AAAAAAAAAAAAAAAAAAAAABIWExOkRDso3ziuhULDc_I3BFb4Ryt1Jq9_ta8O4cZb&exp=1794972103&osig=AAAAAAAAAAAAAAAAAAAAAKuh0buANWGczNmG1F0XHSv4tPqTw4Tm5K0FYNC6Ht46&signer=media-rpc&token=AAIAAU0AJGM1NzY0MTM2LTdjZmUtNGJkZC05YmNjLTkzM2YxNTY3ZTViMAAAAAABoeyssVivR1Et7Sqo7BcOgT5pQfhJPTix7lP9SFzepkKpi3ARgQ&x-canva-quality=thumbnail\",\"min_ratio\":0.7,\"max_ratio\":0.9},{\"name\":\"chef-ahmed-wedding-service.jpg\",\"url\":\"https://media.canva.com/v2/image-resize/format:PNG/height:133/quality:100/uri:ifs%3A%2F%2FM%2Fd493fc4c-ca55-40f7-b40c-965958ec0633/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAMsz07tNiuYMZFg_ZdQRCbjT8_uo7LMcyHk0Io0wk8Vj&exp=1794970952&osig=AAAAAAAAAAAAAAAAAAAAAPvtNk3ilnFddCsPAH6L2njCEvT--acSLv4EN9ay06DJ&signer=media-rpc&token=AAIAAU0AJGQ0OTNmYzRjLWNhNTUtNDBmNy1iNDBjLTk2NTk1OGVjMDYzMwAAAAABoeybIUDnaIN6f14wIlRDaWQPTqbeYRuo07Snwuw2igNQ33jp5Q&x-canva-quality=thumbnail\",\"min_ratio\":1.4,\"max_ratio\":1.6}]")
+          os.makedirs('social/cleaned',exist_ok=True)
+          for item in assets:
+              url=item['url']
+              parsed=urllib.parse.urlsplit(url)
+              base=parsed.path
+              raw=[]
+              # Prefer the original asset resolution if the media server permits a large rendition.
+              for h,w in [(1200,960),(1600,1600),(1000,750)]:
+                  import re
+                  path=re.sub(r'/height:[0-9]+/',f'/height:{h}/',base)
+                  path=re.sub(r'/width:[0-9]+',f'/width:{w}',path)
+                  raw.append(urllib.parse.urlunsplit((parsed.scheme,parsed.netloc,path,parsed.query,'')))
+                  raw.append(urllib.parse.urlunsplit((parsed.scheme,parsed.netloc,path,'','')))
+              raw.append(url)
+              best=None
+              for i,candidate in enumerate(raw):
+                  try:
+                      req=urllib.request.Request(candidate,headers={'User-Agent':'Mozilla/5.0'})
+                      with urllib.request.urlopen(req,timeout=12) as stream: data=stream.read(9000000)
+                      test=Image.open(io.BytesIO(data)); test.load()
+                      if test.width<100 or test.height<100:continue
+                      ratio=test.width/test.height
+                      if not item['min_ratio']<=ratio<=item['max_ratio']:continue
+                      if best is None or test.width*test.height>best.width*best.height:
+                          best=test.copy()
+                      print(item['name'],'candidate',i,'size',test.size,flush=True)
+                  except Exception as e:
+                      print(item['name'],'candidate',i,'error',str(e)[:100],flush=True)
+              if best is None:raise RuntimeError('No accessible media source for '+item['name'])
+              if max(best.size)<800:
+                  # Preserve proportions, improve perceived quality when the host only
+                  # exposes a small rendition. The original AI photograph is not modified.
+                  out_w=960 if best.width>best.height else 720
+                  out_h=round(out_w/best.width*best.height)
+                  best=best.resize((out_w,out_h),Image.Resampling.LANCZOS)
+              target='social/cleaned/'+item['name']
+              best=ImageOps.exif_transpose(best).convert('RGB')
+              best.save(target,'JPEG',quality=88,subsampling=0,optimize=True)
+              print('Saved',target,'dimensions',best.size,flush=True)
+          
+          CHEFPY
+          python /tmp/chef_images.py
+      - name: Commit photo assets without replacing historical source photographs
+        run: |
+          git config user.name "chef-ahmed-publisher[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social/cleaned/chef-ahmed-moroccan-feast.jpg social/cleaned/chef-ahmed-wedding-service.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m "Add approved Moroccan feast and wedding photographs of Chef Ahmed"
+            git pull --rebase origin main
+            git push
+          fi
