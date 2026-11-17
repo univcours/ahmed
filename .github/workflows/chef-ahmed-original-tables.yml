@@ -1,0 +1,66 @@
+name: Chef Ahmed - spot-clean original tables without cropping plates
+on:
+  push:
+    branches: [main]
+    paths:
+      - tools/chefahmed/retouch_real_tables.py
+      - .github/workflows/chef-ahmed-original-tables.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: chef-ahmed-original-table-clean
+  cancel-in-progress: false
+jobs:
+  clean:
+    if: github.repository == 'univcours/ahmed' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install image libraries
+        run: python -m pip install --disable-pip-version-check 'numpy<3' 'opencv-python-headless>=4.8,<5' 'Pillow>=10,<12'
+      - name: Carefully remove small dark stains ONLY from original photographed table
+        run: python tools/chefahmed/retouch_real_tables.py --publish
+      - name: Verify original dish, original table, exact dimensions and stain isolation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import numpy as np
+          from PIL import Image,ImageOps
+          data=json.loads(Path("menu.json").read_text(encoding="utf-8"))
+          audit=json.loads(Path("social/cleaned/audit.json").read_text(encoding="utf-8"))
+          assert len(audit['items'])==4
+          for row in audit['items']:
+              name=row['name']
+              path=Path(row['retouched'])
+              assert path.is_file(),path
+              original=np.asarray(ImageOps.exif_transpose(Image.open(name)).convert("RGB"))
+              result=np.asarray(Image.open(path).convert("RGB"))
+              assert original.shape==result.shape, "Cropped or resized original!"
+              changed=np.any(original!=result,axis=2)
+              assert float(changed.mean()) <= .09,"Too much altered; stop deployment"
+              assert int(changed.sum()) <= int(row['masked_pixels']),"Modified outside approved spot masks"
+              assert data['items'][name]['cleaned_image']==str(path)
+              print('PASS: original table and full plate unchanged except tiny stains:',name,
+                    round(100*float(changed.mean()),3),'%')
+          PY
+          node tools/chefahmed/site_qa.js
+      - name: Commit original-table spot retouches and live menu references
+        run: |
+          set -euo pipefail
+          git config user.name "chef-ahmed-spot-retouch[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add menu.json social/cleaned/real-table-*.png \
+              social/cleaned/full-plates-original-tables-preview.jpg social/cleaned/audit.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Clean stains on real kitchen tables with full original dishes kept intact"
+            git pull --rebase origin main
+            git push
+          fi
