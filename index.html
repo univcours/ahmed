@@ -1054,7 +1054,7 @@ const CONFIG = {
         <p>${S.lang==='ar'?'أطباق حقيقية · '+S.files.filter(f=>!itemOf(f).hidden).length+' اختيار':'Real dishes · '+S.files.filter(f=>!itemOf(f).hidden).length+' selections'}</p>
       </div>
       <div class="toolbar"><div class="toolbar-card">
-        ${S.files.some(f=>f.cleanedUrl) ? `<button id="photos-switch" class="photos-switch" aria-pressed="${S.showCleaned}" type="button">${S.showCleaned ? (S.lang==='ar'?'📷 عرض الصور الأصلية':'📷 View original photos') : (S.lang==='ar'?'✨ عرض الصور المنظفة':'✨ View cleaned photos')}</button>` : ''}
+
         <div class="search"><span>🔍</span>
           <input id="search-in" type="search" aria-label="${t('search')}" placeholder="${t('search')}" value="${esc(S.q)}">
           ${query ? '<button class="xbtn" id="clear-q" style="width:30px;height:30px;font-size:13px">✕</button>' : ''}
@@ -1184,7 +1184,7 @@ const CONFIG = {
         <div class="dish-img" data-lb="${esc(f.name)}" title="${S.lang==='ar'?'اضغط للتكبير':'Click to zoom'}">
           <img src="${esc(f.url)}" data-fallback="${esc(f.originalUrl || f.url)}" alt="${esc(iname(f))}" loading="lazy">
           <span class="zoom-hint">⤢</span>
-          ${S.showCleaned && f.cleanedUrl ? `<span class="clean-tag">${S.lang==='ar'?'تنظيف وتزيين خفيف':'Lightly cleaned & styled'}</span>` : ''}
+
           <span class="price-tag" data-pclick="${esc(f.name)}" title="">${isale(f)?`<s>${iold(f)}</s> `:''}${priceText(f)}${isale(f)?` <b class="off">${t('saleTag')}</b>`:''}</span>
           ${it.hidden && adminCard ? `<span class="hid-tag">${t('hidden')}</span>` : ''}
         </div>
@@ -1593,11 +1593,6 @@ const CONFIG = {
         const n=$('search-in'); if(n){ n.focus(); n.setSelectionRange(n.value.length,n.value.length);} }, 300); };
     }
     if ($('clear-q')) $('clear-q').onclick = () => { S.q=''; render(); };
-    if ($('photos-switch')) $('photos-switch').onclick = () => {
-      S.showCleaned = !S.showCleaned;
-      S.files.forEach(f => {f.url = S.showCleaned && f.cleanedUrl ? f.cleanedUrl : f.originalUrl;});
-      render();
-    };
 
     all('[data-cat]', b => b.onclick = () => { S.cat=b.dataset.cat; render(); });
     all('[data-add]', b => b.onclick = () => { S.cart[b.dataset.add]=1; render(); toast(t('added')); });

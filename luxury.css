@@ -154,20 +154,4 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
  .luxe-hero-in{padding-inline:12px}.luxe-photo-wall{grid-template-rows:125px 125px}
  .luxe-menu-heading{padding:0 14px}.grid{grid-template-columns:1fr}
 }
-/* Safe, accessible switch between cleaned surroundings and source photographs. */
-.photos-switch{justify-self:start;display:inline-flex;align-items:center;justify-content:center;
- min-height:44px;max-width:100%;border:1px solid #D3BB8C;border-radius:10px;
- padding:9px 15px;background:#F6EBD7;color:#274238;font-size:12px;font-weight:700;
- font-family:'Alexandria',sans-serif;cursor:pointer;white-space:normal;text-align:center}
-.photos-switch:hover{background:#EDDFC2}
-.photos-switch:focus-visible{outline:3px solid #C69A49;outline-offset:3px}
-.clean-tag{position:absolute;top:9px;inset-inline-end:9px;z-index:4;
- background:rgba(23,59,52,.94);color:#fff;font:700 10px 'Alexandria',sans-serif;
- border-radius:8px;padding:5px 7px;max-width:60%;pointer-events:none}
-.price-tag{max-width:94%;white-space:normal;line-height:1.5;text-align:center}
-@media (max-width:720px){
- .photos-switch{width:100%;justify-self:stretch;font-size:11px}
- .clean-tag{font-size:9px;max-width:63%}
- .price-tag{font-size:10px;line-height:1.35}
-}
 @media (prefers-reduced-motion:reduce){.luxe-cta,.dish{transition:none}}

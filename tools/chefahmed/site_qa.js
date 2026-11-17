@@ -44,7 +44,8 @@ for (const [name,item] of cleaned){
     'Invalid cleaned image path for '+name);
   assert(fs.existsSync(item.cleaned_image), 'Cleaned menu file missing: '+item.cleaned_image);
 }
-assert(html.includes('id="photos-switch"'),'Original/cleaned picture toggle missing');
+assert(!html.includes('id="photos-switch"'),'Public photo comparison control must not be shown');
+assert(!html.includes('تنظيف وتزيين خفيف'),'No editing or styling badges should be shown to visitors');
 assert(html.includes('S.showCleaned') && html.includes('f.originalUrl'),'Gallery is not reversible');
 assert(html.includes('const priceText = f =>'),'Quote-only items must not display 0 MAD');
 assert(html.includes('const cartTotalText = () =>'),'Unpriced items need an honest cart total');
