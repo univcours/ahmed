@@ -17,7 +17,8 @@
       "desc_en": "Crispy seafood pastilla topped with shrimp and vermicelli.",
       "price": 0,
       "category": "بسطيلة",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/food-16.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.47 (2).jpeg": {
       "name_ar": "سلطة مشكلة",
@@ -143,7 +144,8 @@
       "desc_en": "Whole traditional roasted lamb, decorated for celebrations.",
       "price": 0,
       "category": "لحوم ومشوي",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/food-17.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.49 (3).jpeg": {
       "name_ar": "سلطة خضار مبخرة",
@@ -209,7 +211,8 @@
       "desc_en": "Premium smoked salmon slices arranged artfully.",
       "price": 0,
       "category": "مأكولات بحرية",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/food-18.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.51 (1).jpeg": {
       "name_ar": "بسطيلة فواكه البحر",
@@ -414,5 +417,25 @@
     "whatsapp": [
       "212689199142"
     ]
+  },
+  "cleaned_images": {
+    "WhatsApp Image 2026-08-28 at 12.17.47 (2).jpeg": "social/cleaned/food-01.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.47 (3).jpeg": "social/cleaned/food-02.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.47 (4).jpeg": "social/cleaned/food-03.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.47 (5).jpeg": "social/cleaned/food-04.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.48 (1).jpeg": "social/cleaned/food-05.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.48 (2).jpeg": "social/cleaned/food-06.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.48 (3).jpeg": "social/cleaned/food-07.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.48.jpeg": "social/cleaned/food-08.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.50 (2).jpeg": "social/cleaned/food-09.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.50 (5).jpeg": "social/cleaned/food-10.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.51 (1).jpeg": "social/cleaned/food-11.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.51 (3).jpeg": "social/cleaned/food-12.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.51.jpeg": "social/cleaned/food-13.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.50 (1).jpeg": "social/cleaned/food-14.jpg",
+    "WhatsApp Image 2026-08-28 at 22.03.51.jpeg": "social/cleaned/food-15.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.47 (1).jpeg": "social/cleaned/food-16.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.49 (2).jpeg": "social/cleaned/food-17.jpg",
+    "WhatsApp Image 2026-08-28 at 12.17.50.jpeg": "social/cleaned/food-18.jpg"
   }
 }

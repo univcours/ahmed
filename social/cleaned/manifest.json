@@ -1,5 +1,5 @@
 {
-  "selected_count": 16,
+  "selected_count": 19,
   "mode": "original pixels preserved, dirty surroundings replaced; photo sources untouched",
   "images": [
     {
@@ -123,11 +123,27 @@
       "original_untouched": true
     },
     {
-      "original": "WhatsApp Image 2026-08-28 at 12.17.50 (3).jpeg",
-      "clean": "social/cleaned/kitchen-real-original-clean-framing.jpg",
-      "operation": "frame out right-side trash with exact original food pixels",
-      "width": 1090,
-      "height": 1086,
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (1).jpeg",
+      "clean": "social/cleaned/food-16.jpg",
+      "mask_coverage": 0.584,
+      "width": 1600,
+      "height": 1200,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.49 (2).jpeg",
+      "clean": "social/cleaned/food-17.jpg",
+      "mask_coverage": 0.446,
+      "width": 1600,
+      "height": 1200,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.50.jpeg",
+      "clean": "social/cleaned/food-18.jpg",
+      "mask_coverage": 0.6,
+      "width": 1600,
+      "height": 1200,
       "original_untouched": true
     }
   ]
