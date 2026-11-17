@@ -1,0 +1,76 @@
+name: Chef Ahmed - clean real floors and add flower bouquet safely
+on:
+  push:
+    branches: [main]
+    paths:
+      - tools/chefahmed/clean_and_style_real_photos.py
+      - .github/workflows/chef-ahmed-real-tables-flowers.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: chef-ahmed-real-tables-flowers
+  cancel-in-progress: false
+
+jobs:
+  retouch:
+    if: github.repository == 'univcours/ahmed' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout authentic full-size source photos
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deterministic editing libraries
+        run: python -m pip install --disable-pip-version-check 'Pillow>=10,<12' 'opencv-python-headless>=4.8,<5' 'numpy<3'
+      - name: Clean off-plate food crumbs and add a bouquet on free kitchen countertop
+        run: python tools/chefahmed/clean_and_style_real_photos.py
+      - name: Validate full original plate, original table, source framing and clean version
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image, ImageOps
+          import numpy as np
+          audit=json.loads(Path('social/cleaned/real-floor-and-flower-audit.json').read_text('utf-8'))
+          menu=json.loads(Path('menu.json').read_text('utf-8'))
+          assert audit['source_originals_preserved'] and audit['no_crop_or_new_background']
+          assert len(audit['items'])==5
+          bouquet=0
+          for row in audit['items']:
+              original=Path(row['original'])
+              dest=Path(row['output'])
+              assert original.is_file() and dest.is_file()
+              a=np.asarray(ImageOps.exif_transpose(Image.open(original)).convert('RGB'))
+              b=np.asarray(Image.open(dest).convert('RGB'))
+              assert a.shape==b.shape, 'Dish cropped/resized'
+              changed=int(np.count_nonzero(np.any(a!=b,axis=2)))
+              assert changed <= row['dirt_pixels']+row['bouquet_pixels'], 'Edit escaped safe masks'
+              assert changed < a.shape[0]*a.shape[1]*.105, 'Unexpectedly broad edit'
+              assert menu['items'][row['original']]['cleaned_image']==row['output']
+              if row['bouquet_box']:
+                  bouquet+=1
+                  assert row['bouquet_pixels']>100
+              print('PASS', row['original'], 'local-only change', round(row['total_edited_pct'],2),'%')
+          assert bouquet==1, 'Only photographed empty countertop should carry new flowers'
+          PY
+          node tools/chefahmed/site_qa.js
+      - name: Commit independent clean photos and their menu references
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "chef-ahmed-real-photo-cleanup[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add menu.json social/cleaned/original-table-decor-*.png \
+              social/cleaned/real-floor-and-flower-audit.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Remove floor/table food leftovers and style free counter with flowers; real dishes unchanged"
+            git pull --rebase origin main
+            git push
+          fi
