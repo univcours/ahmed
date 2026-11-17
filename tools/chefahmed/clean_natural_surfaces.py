@@ -63,7 +63,7 @@ def clean_photo(src, session, category, seed):
     raw = np.asarray(segmented.convert("L").resize((w, h), Image.Resampling.BILINEAR))
     area = float(np.mean(raw > 90))
     # If the subject detector is unsure, NEVER edit the original photo.
-    if area < .16 or area > .91:
+    if area < .36 or area > .91:
         return None, area, "unsafe_foreground_coverage"
     minside = min(w, h)
     # Close holes among food elements, include all plate and garnish edges.
@@ -135,7 +135,7 @@ def main():
             coverage=None
         elif name==KITCHEN:
             result=None
-            method="original_kitchen_preserved"
+            method="original_kitchen_framing_preserved"
             coverage=None
         else:
             try:
@@ -151,8 +151,12 @@ def main():
             result.save(file,"JPEG",quality=95,subsampling=0,optimize=True)
             item["cleaned_image"]=clean_path
         elif not args.preview:
-            item.pop("cleaned_image",None)
-            clean_path=None
+            if name==KITCHEN and (ROOT/"social/cleaned/kitchen-real-original-clean-framing.jpg").is_file():
+                clean_path="social/cleaned/kitchen-real-original-clean-framing.jpg"
+                item["cleaned_image"]=clean_path
+            else:
+                item.pop("cleaned_image",None)
+                clean_path=None
         else:
             clean_path=None
         manifest.append({"original":name,"clean":clean_path,
