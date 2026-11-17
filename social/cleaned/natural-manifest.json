@@ -1,0 +1,306 @@
+{
+  "mode": "natural counter/floor cleanup, exact original food preserved",
+  "images": [
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.46.jpeg",
+      "clean": null,
+      "method": "original_chef_preserved",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (1).jpeg",
+      "clean": "social/cleaned/natural-02.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.5846192708333333,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (2).jpeg",
+      "clean": "social/cleaned/natural-03.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.6194989583333333,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (3).jpeg",
+      "clean": "social/cleaned/natural-04.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.6680088541666667,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (4).jpeg",
+      "clean": "social/cleaned/natural-05.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.6987296875,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (5).jpeg",
+      "clean": "social/cleaned/natural-06.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.64821875,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47 (6).jpeg",
+      "clean": null,
+      "method": "original_chef_preserved",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.47.jpeg",
+      "clean": null,
+      "method": "unsafe_foreground_coverage",
+      "coverage": 0.2884010416666667,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.48 (1).jpeg",
+      "clean": "social/cleaned/natural-09.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.5378161458333334,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.48 (2).jpeg",
+      "clean": "social/cleaned/natural-10.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.5682833333333334,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.48 (3).jpeg",
+      "clean": "social/cleaned/natural-11.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.5888171875,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.48 (4).jpeg",
+      "clean": "social/cleaned/natural-12.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.8211614583333333,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.48 (5).jpeg",
+      "clean": "social/cleaned/natural-13.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.519075,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.48.jpeg",
+      "clean": "social/cleaned/natural-14.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.4457625,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.49 (2).jpeg",
+      "clean": "social/cleaned/natural-15.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.4461744791666667,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.49 (3).jpeg",
+      "clean": "social/cleaned/natural-16.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.646484375,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.49.jpeg",
+      "clean": "social/cleaned/natural-17.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.6964619791666666,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.50 (2).jpeg",
+      "clean": "social/cleaned/natural-18.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.6412119791666666,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.50 (3).jpeg",
+      "clean": "social/cleaned/kitchen-real-original-clean-framing.jpg",
+      "method": "original_chef_preserved",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.50 (4).jpeg",
+      "clean": "social/cleaned/natural-20.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.5761444444444445,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.50 (5).jpeg",
+      "clean": "social/cleaned/natural-21.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.5877902777777778,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.50.jpeg",
+      "clean": "social/cleaned/natural-22.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.6006114583333333,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.51 (1).jpeg",
+      "clean": "social/cleaned/natural-23.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.7048225911458333,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.51 (2).jpeg",
+      "clean": "social/cleaned/natural-24.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.7273649088541667,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.51 (3).jpeg",
+      "clean": "social/cleaned/natural-25.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.4842582094566222,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.51 (4).jpeg",
+      "clean": "social/cleaned/natural-26.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.4579988727744184,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.51.jpeg",
+      "clean": "social/cleaned/natural-27.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.5679728190104166,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 22.03.51 (2).jpeg",
+      "clean": null,
+      "method": "original_chef_preserved",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 22.03.52 (2).jpeg",
+      "clean": null,
+      "method": "original_chef_preserved",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.49 (1).jpeg",
+      "clean": null,
+      "method": "unsafe_foreground_coverage",
+      "coverage": 0.30361822916666664,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 12.17.50 (1).jpeg",
+      "clean": "social/cleaned/natural-31.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.539975,
+      "original_untouched": true
+    },
+    {
+      "original": "تحضير المناسبات.png",
+      "clean": null,
+      "method": "original_chef_preserved",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "حلويات الاعراس و المناسبات.png",
+      "clean": null,
+      "method": "unsafe_foreground_coverage",
+      "coverage": 0.289265437562956,
+      "original_untouched": true
+    },
+    {
+      "original": "طبخ الفنادق.png",
+      "clean": null,
+      "method": "original_chef_preserved",
+      "coverage": null,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 22.03.51 (1).jpeg",
+      "clean": "social/cleaned/natural-35.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.6164322916666667,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 22.03.51 (3).jpeg",
+      "clean": "social/cleaned/natural-36.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.406978125,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 22.03.51 (4).jpeg",
+      "clean": "social/cleaned/natural-37.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.5818326388888889,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 22.03.51 (5).jpeg",
+      "clean": "social/cleaned/natural-38.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.4587036747315044,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 22.03.51 (6).jpeg",
+      "clean": "social/cleaned/natural-39.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.41548473897467186,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 22.03.51.jpeg",
+      "clean": "social/cleaned/natural-40.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.5245527777777778,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 22.03.52 (1).jpeg",
+      "clean": null,
+      "method": "unsafe_foreground_coverage",
+      "coverage": 0.0618473259469862,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 22.03.52 (3).jpeg",
+      "clean": "social/cleaned/natural-42.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.36220238095238094,
+      "original_untouched": true
+    },
+    {
+      "original": "WhatsApp Image 2026-08-28 at 22.03.52 (4).jpeg",
+      "clean": "social/cleaned/natural-43.jpg",
+      "method": "original_subject_clean_worktop",
+      "coverage": 0.3884796875,
+      "original_untouched": true
+    }
+  ]
+}

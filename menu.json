@@ -18,7 +18,7 @@
       "price": 0,
       "category": "بسطيلة",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-16.jpg"
+      "cleaned_image": "social/cleaned/natural-02.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.47 (2).jpeg": {
       "name_ar": "سلطة مشكلة",
@@ -29,7 +29,7 @@
       "category": "سلطات",
       "hidden": false,
       "old_price": 0,
-      "cleaned_image": "social/cleaned/food-01.jpg"
+      "cleaned_image": "social/cleaned/natural-03.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.47 (3).jpeg": {
       "name_ar": "صينية مأكولات بحرية ملكية",
@@ -39,7 +39,7 @@
       "price": 0,
       "category": "مأكولات بحرية",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-02.jpg"
+      "cleaned_image": "social/cleaned/natural-04.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.47 (4).jpeg": {
       "name_ar": "صينية السمك بالمأكولات البحرية",
@@ -49,7 +49,7 @@
       "price": 0,
       "category": "مأكولات بحرية",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-03.jpg"
+      "cleaned_image": "social/cleaned/natural-05.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.47 (5).jpeg": {
       "name_ar": "صينية السمك المعمر",
@@ -59,7 +59,7 @@
       "price": 0,
       "category": "مأكولات بحرية",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-04.jpg"
+      "cleaned_image": "social/cleaned/natural-06.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.47 (6).jpeg": {
       "name_ar": "تحضير أطباق المناسبات",
@@ -87,7 +87,7 @@
       "price": 0,
       "category": "بسطيلة",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-05.jpg"
+      "cleaned_image": "social/cleaned/natural-09.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.48 (2).jpeg": {
       "name_ar": "سلطة ملكية بالقمرون",
@@ -97,7 +97,7 @@
       "price": 0,
       "category": "سلطات",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-06.jpg"
+      "cleaned_image": "social/cleaned/natural-10.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.48 (3).jpeg": {
       "name_ar": "بسطيلة بالقمرون",
@@ -107,7 +107,7 @@
       "price": 0,
       "category": "بسطيلة",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-07.jpg"
+      "cleaned_image": "social/cleaned/natural-11.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.48 (4).jpeg": {
       "name_ar": "مقبلات وكاناپي",
@@ -116,7 +116,8 @@
       "desc_en": "Elegant assorted mini canapés, perfect for welcoming guests.",
       "price": 0,
       "category": "مقبلات",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-12.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.48 (5).jpeg": {
       "name_ar": "لحم محمر بالبرقوق",
@@ -125,7 +126,8 @@
       "desc_en": "Moroccan braised meat with prunes, apricots and eggs — the classic wedding dish.",
       "price": 0,
       "category": "لحم بالبرقوق",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-13.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.48.jpeg": {
       "name_ar": "رولي معمر",
@@ -135,7 +137,7 @@
       "price": 0,
       "category": "لحوم ومشوي",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-08.jpg"
+      "cleaned_image": "social/cleaned/natural-14.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.49 (2).jpeg": {
       "name_ar": "المشوي — خروف محمر",
@@ -145,7 +147,7 @@
       "price": 0,
       "category": "لحوم ومشوي",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-17.jpg"
+      "cleaned_image": "social/cleaned/natural-15.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.49 (3).jpeg": {
       "name_ar": "سلطة خضار مبخرة",
@@ -154,7 +156,8 @@
       "desc_en": "Fresh healthy steamed vegetable plates in vivid colors.",
       "price": 0,
       "category": "خضار",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-16.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.49.jpeg": {
       "name_ar": "كسكس بالتفاية",
@@ -163,7 +166,8 @@
       "desc_en": "Couscous with meat, caramelized-onion tfaya and chickpeas.",
       "price": 0,
       "category": "كسكس وسفة",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-17.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.50 (2).jpeg": {
       "name_ar": "بسطيلة الحوت",
@@ -173,7 +177,7 @@
       "price": 0,
       "category": "بسطيلة",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-09.jpg"
+      "cleaned_image": "social/cleaned/natural-18.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.50 (3).jpeg": {
       "name_ar": "تحضير صواني المأكولات البحرية",
@@ -192,7 +196,8 @@
       "desc_en": "Golden seffa with cinnamon and almonds hiding savory meat.",
       "price": 0,
       "category": "بسطيلة",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-20.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.50 (5).jpeg": {
       "name_ar": "تشكيلة فواكه البحر",
@@ -202,7 +207,7 @@
       "price": 0,
       "category": "مأكولات بحرية",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-10.jpg"
+      "cleaned_image": "social/cleaned/natural-21.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.50.jpeg": {
       "name_ar": "طبق السلمون المدخن",
@@ -212,7 +217,7 @@
       "price": 0,
       "category": "مأكولات بحرية",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-18.jpg"
+      "cleaned_image": "social/cleaned/natural-22.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.51 (1).jpeg": {
       "name_ar": "بسطيلة فواكه البحر",
@@ -222,7 +227,7 @@
       "price": 0,
       "category": "بسطيلة",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-11.jpg"
+      "cleaned_image": "social/cleaned/natural-23.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.51 (2).jpeg": {
       "name_ar": "صينية ملكية بفواكه البحر",
@@ -231,7 +236,8 @@
       "desc_en": "Lobster, mussels and king prawns on one lavish tray.",
       "price": 0,
       "category": "مأكولات بحرية",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-24.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.51 (3).jpeg": {
       "name_ar": "بسطيلة بالقمرون",
@@ -241,7 +247,7 @@
       "price": 0,
       "category": "بسطيلة",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-12.jpg"
+      "cleaned_image": "social/cleaned/natural-25.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.51 (4).jpeg": {
       "name_ar": "سلطة ملكية مشكلة",
@@ -250,7 +256,8 @@
       "desc_en": "Grand royal salad with vegetables, corn and seasonal fruits.",
       "price": 0,
       "category": "سلطات",
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-26.jpg"
     },
     "WhatsApp Image 2026-08-28 at 12.17.51.jpeg": {
       "name_ar": "بسطيلة فواكه البحر",
@@ -260,7 +267,7 @@
       "price": 0,
       "category": "بسطيلة",
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-13.jpg"
+      "cleaned_image": "social/cleaned/natural-27.jpg"
     },
     "WhatsApp Image 2026-08-28 at 22.03.51 (2).jpeg": {
       "hidden": false,
@@ -295,7 +302,7 @@
       "name_en": "",
       "category": "دجاج محمر",
       "price": 0,
-      "cleaned_image": "social/cleaned/food-14.jpg"
+      "cleaned_image": "social/cleaned/natural-31.jpg"
     },
     "تحضير المناسبات.png": {
       "price": 0,
@@ -337,7 +344,8 @@
       "desc_en": "A lavish assortment of decorated mini canapés, perfect for guests.",
       "category": "مقبلات",
       "price": 0,
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-35.jpg"
     },
     "WhatsApp Image 2026-08-28 at 22.03.51 (3).jpeg": {
       "name_ar": "بسطيلات المناسبات",
@@ -346,7 +354,8 @@
       "desc_en": "Large shrimp-topped pastillas prepared in event quantities.",
       "category": "بسطيلة",
       "price": 0,
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-36.jpg"
     },
     "WhatsApp Image 2026-08-28 at 22.03.51 (4).jpeg": {
       "name_ar": "بريوات ومملحات مشكلة",
@@ -355,7 +364,8 @@
       "desc_en": "Crispy briouates and assorted fresh savoury bites.",
       "category": "مقبلات",
       "price": 0,
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-37.jpg"
     },
     "WhatsApp Image 2026-08-28 at 22.03.51 (5).jpeg": {
       "name_ar": "بريوات مالحة بالحوت المناسبات",
@@ -364,7 +374,8 @@
       "desc_en": "Elegant stuffed mini sandwiches topped with shrimp.",
       "category": "مقبلات",
       "price": 0,
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-38.jpg"
     },
     "WhatsApp Image 2026-08-28 at 22.03.51 (6).jpeg": {
       "name_ar": "فيرين بالقمرون والأفوكادو",
@@ -373,7 +384,8 @@
       "desc_en": "Elegant verrine cups with shrimp, avocado and fresh veggies.",
       "category": "مقبلات",
       "price": 0,
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-39.jpg"
     },
     "WhatsApp Image 2026-08-28 at 22.03.51.jpeg": {
       "name_ar": "سلطة ملكية مزينة",
@@ -383,7 +395,7 @@
       "category": "سلطات",
       "price": 0,
       "hidden": false,
-      "cleaned_image": "social/cleaned/food-15.jpg"
+      "cleaned_image": "social/cleaned/natural-40.jpg"
     },
     "WhatsApp Image 2026-08-28 at 22.03.52 (1).jpeg": {
       "name_ar": "كوكتيل القمرون في كؤوس",
@@ -401,7 +413,8 @@
       "desc_en": "Golden crispy spring rolls with sweet chili sauce.",
       "category": "مقبلات",
       "price": 0,
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-42.jpg"
     },
     "WhatsApp Image 2026-08-28 at 22.03.52 (4).jpeg": {
       "name_ar": "أطباق راقية بلمسة فندقية",
@@ -410,7 +423,8 @@
       "desc_en": "Dishes plated in refined hotel-restaurant style.",
       "category": "سلطات",
       "price": 0,
-      "hidden": false
+      "hidden": false,
+      "cleaned_image": "social/cleaned/natural-43.jpg"
     }
   },
   "settings": {
